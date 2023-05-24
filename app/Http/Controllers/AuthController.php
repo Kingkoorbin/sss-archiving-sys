@@ -2,40 +2,45 @@
 
 namespace App\Http\Controllers;
 
+// Custom Imports
+use App\Http\Validators\AuthValidator;
+
+// Laravel Imports
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+
+// Model Imports
 use App\Models\User;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
+        $validator = AuthValidator::validateLogin($request);
+    
         if ($validator->fails()) {
+            $errors = $validator->errors();
             return response()->json([
                 'status' => 'error',
-                'message' => $validator->errors()->first(),
+                'message' => $errors->all(),
             ], 400);
         }
+
         // Extract email and password only from client
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            $token = JWTAuth::fromUser(Auth::user());
+            $token = JWTAuth::customClaims(['payload' => $user])->fromUser($user);
 
             return response()->json([
                 'status' => 'ok',
                 'message' => 'Login successful',
-                'data' => ['access_token' => $token],
+                'data' => $token,
             ]);
         }
 
@@ -48,20 +53,26 @@ class AuthController extends Controller
     
     public function register(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
-
+        $validator = AuthValidator::validateRegistration($request);
+    
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json([
+                'status' => 'error',
+                'message' => $errors->all(),
+            ], 400);
+        }
+    
         $user = User::create([
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'phone_number' => $request->phone_number,
+            'role' => $request->role,
         ]);
-
+    
         return response()->json([
             'status' => 'ok',
-            'message' => 'User registered successfully',
-            'user' => $user,
+            'message' => 'User registered successfully'
         ], 201); // Created status code
     }
 }

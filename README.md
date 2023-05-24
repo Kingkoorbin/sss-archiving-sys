@@ -1,3 +1,20 @@
+## Running the Application
+Please ensure that you have Laravel, PHP, and Node.js installed and properly set up in your environment before proceeding with the following steps.
+
+<br/>
+
+Step 1: Install Dependencies<br/>
+Open a terminal or command prompt, navigate to the project directory, and run the following command to install the required dependencies:
+```
+    $ npm install
+```
+
+Step 2: Start the Application <br/>
+Once the dependencies are installed, run the following command to start the application:
+```
+    $ npm run start:app
+```
+
 ## Migrations using PHP
 ```
     $ php artisan make:migration <MIGRATION_NAME> --create=<TABLE_NAME>

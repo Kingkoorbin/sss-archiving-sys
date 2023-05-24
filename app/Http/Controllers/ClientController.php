@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+// Custom Imports
+use App\Http\Validators\ClientValidator;
+
+// Laravel Imports
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+
+// Model Imports
 use App\Models\Client;
 
 class ClientController extends Controller
@@ -17,21 +23,17 @@ class ClientController extends Controller
     public function createClient(Request $request)
     {
         // Validate the request data
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'present_address' => 'required|string',
-            'permanent_address' => 'required|string',
-            'birthdate' => 'required|date',
-        ]);
+ 
+        $validator = ClientValidator::validateCreateClient($request);
 
         if ($validator->fails()) {
+            $errors = $validator->errors();
             return response()->json([
                 'status' => 'error',
-                'message' => $validator->errors()->first(),
+                'message' => $errors->all(),
             ], 400);
         }
-
+    
         // Check if a client with the same user_id already exists
         $existingClient = Client::where('user_id', auth()->user()->id)->first();
         if ($existingClient) {

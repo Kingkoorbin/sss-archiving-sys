@@ -5,11 +5,15 @@
         "dev": "vite",
         "build": "vite build",
         "start:local": "php artisan serve",
+        "start:app": "concurrently \"npm run start:local\" \"cd client && npm start\"",
+        "cache:clear": "php artisan cache:clear",
+        "create:mc": "php artisan make:controller %npm_config_name% --model=%npm_config_model%",
         "migration:run": "php artisan migrate",
         "migration:create": "php artisan make:migration %npm_config_name% --create=%npm_config_table%"
     },
     "devDependencies": {
         "axios": "^1.1.2",
+        "concurrently": "^8.0.1",
         "laravel-vite-plugin": "^0.7.5",
         "vite": "^4.0.0"
     }
