@@ -40,13 +40,16 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'ok',
                 'message' => 'Login successful',
-                'data' => $token,
+                'data' => [
+                    'role' => $user->role,
+                    'access_token' => $token,
+                ],
             ]);
         }
 
         return response()->json([
             'status' => 'error',
-            'message' => 'Invalid credentials',
+            'message' => 'Email and/or Password is Incorrect.',
         ], 401);
 
     }
