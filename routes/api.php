@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\SubscriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,8 +32,28 @@ Route::controller(AuthController::class)->group(function () {
 Route::controller(ClientController::class)->group(function () {
     Route::get('/c/me', 'getClient');
     Route::post('/c/me', 'createClient');
-    // Route::get('todo/{id}', 'show');
-    // Route::put('todo/{id}', 'update');
-    // Route::delete('todo/{id}', 'destroy');
+
 }); 
 
+// Stripe Subscription
+Route::get('/stripe/subscription/{id}', 
+    [SubscriptionController::class, 'getSubscription']
+);
+Route::get('/stripe/subscription/{product_id}/{price_id}/payment-link', 
+    [SubscriptionController::class, 'generatePaymentLink']
+);
+Route::get('/stripe/subscription/{paymentLinkId}/payment-link/status', 
+    [SubscriptionController::class, 'checkPaymentLinkStatus']
+);
+Route::post('/stripe/subscribe/{id}', 
+    [SubscriptionController::class, 'createSubscription']
+);
+Route::get('/stripe/payment/{payment_intent_id}/status', 
+    [SubscriptionController::class, 'checkPaymentStatus']
+);
+Route::post('/stripe/payment/one-time', 
+    [SubscriptionController::class, 'createOneTimePayment']
+);
+Route::post('/stripe/payment/checkout-session', 
+    [SubscriptionController::class, 'createCheckoutSession']
+);

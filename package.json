@@ -7,6 +7,7 @@
         "start:local": "php artisan serve",
         "start:app": "concurrently \"npm run start:local\" \"cd client && npm start\"",
         "cache:clear": "php artisan cache:clear",
+        "route:clear": "php artisan route:clear",
         "create:mc": "php artisan make:controller %npm_config_name% --model=%npm_config_model%",
         "migration:run": "php artisan migrate",
         "migration:create": "php artisan make:migration %npm_config_name% --create=%npm_config_table%"
