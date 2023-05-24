@@ -1,8 +1,15 @@
-## Migrations 
+## Migrations using PHP
 ```
     $ php artisan make:migration <MIGRATION_NAME> --create=<TABLE_NAME>
     $ php artisan migrate
 ```
+
+## Migrations using NMP
+```
+    $ npm run migration:crate --name=migration_name --table=table_name
+    $ npm run migration:run 
+```
+
 ## Migrations | How to?
 
 #### Create table

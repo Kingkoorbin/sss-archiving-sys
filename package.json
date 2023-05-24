@@ -3,7 +3,10 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "start:local": "php artisan serve",
+        "migration:run": "php artisan migrate",
+        "migration:create": "php artisan make:migration %npm_config_name% --create=%npm_config_table%"
     },
     "devDependencies": {
         "axios": "^1.1.2",
