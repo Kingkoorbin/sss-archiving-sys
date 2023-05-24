@@ -3,13 +3,13 @@ Please ensure that you have Laravel, PHP, and Node.js installed and properly set
 
 <br/>
 
-Step 1: Install Dependencies<br/>
+### Step 1: Install Dependencies<br/>
 Open a terminal or command prompt, navigate to the project directory, and run the following command to install the required dependencies:
 ```
     $ npm install
 ```
 
-Step 2: Start the Application <br/>
+### Step 2: Start the Application <br/>
 Once the dependencies are installed, run the following command to start the application:
 ```
     $ npm run start:app
