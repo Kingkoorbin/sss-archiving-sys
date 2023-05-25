@@ -17,6 +17,8 @@ interface IInputs  {
 function Register() {
     const { register, handleSubmit, getValues, formState: { errors, isSubmitting } } = useForm<IInputs>();
     const [user, setUser, removeUser] = useLocalStorage<any>('user');
+    const [accessToken, setAccessToken, removeAccessToken] = useLocalStorage<string>('token');
+
 
     const navigate = useNavigate();
 
@@ -40,8 +42,9 @@ function Register() {
     }
 
    useEffect(() => {
-        if(user) {
+        if(user || accessToken) {
             removeUser();
+            removeAccessToken();
         }
     }, []);
   return <>

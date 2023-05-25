@@ -7,10 +7,7 @@ export interface ILoginResponse {
     }
 }
 
-export interface IRegistrationResponse {
-    status: string;
-    message: string;
-}
+export type TRegistrationResponse = ILoginResponse;
 
 export interface IRegistrationLocalStorage {
     email: string;

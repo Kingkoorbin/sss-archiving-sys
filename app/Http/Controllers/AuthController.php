@@ -73,9 +73,15 @@ class AuthController extends Controller
             'role' => $request->role,
         ]);
     
+        $token = JWTAuth::customClaims(['payload' => $user])->fromUser($user);
+
         return response()->json([
             'status' => 'ok',
-            'message' => 'User registered successfully'
+            'message' => 'User registered successfully',
+               'data' => [
+                    'role' => $user->role,
+                    'access_token' => $token,
+                ],
         ], 201); // Created status code
     }
 }

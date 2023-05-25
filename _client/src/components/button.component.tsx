@@ -16,12 +16,12 @@ export const LoginButton = ({ isLoading, isSubmitting }: IButtonProperties) => {
     <Button
       colorScheme="facebook"
       variant="solid"
-      size="md"
       w="full"
       type="submit"
       isLoading={isLoading}
       loadingText="Logging in..."
       disabled={isSubmitting}
+      size={"lg"}
     >
       Login
     </Button>
@@ -33,7 +33,7 @@ export const RegisterButton = ({ isLoading, isSubmitting }: IButtonProperties) =
     <Button
       colorScheme="facebook"
       variant="solid"
-      size="md"
+      size="lg"
       w="full"
       type="submit"
       isLoading={isLoading}

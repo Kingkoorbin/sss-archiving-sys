@@ -39,7 +39,7 @@ class ClientController extends Controller
         if ($existingClient) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Client already exists for the user',
+                'message' => 'Profile already exists',
                 'data' => null,
             ], 400);
         }
@@ -57,7 +57,7 @@ class ClientController extends Controller
 
         return response()->json([
             'status' => 'ok',
-            'message' => 'Client created successfull',
+            'message' => 'Profile created successfully',
             'data' => $client,
         ], 201);
     }

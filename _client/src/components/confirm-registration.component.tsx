@@ -77,6 +77,7 @@ export function ConfirmRegistration({ isOpen, onClose, data, onConfirm }: IConfi
               colorScheme={"facebook"} 
               isLoading={isLoading}
               loadingText={"Creating Account..."}
+              size="lg"
               w={"full"} >Confirm</Button>
           </ModalFooter>
         </ModalContent>

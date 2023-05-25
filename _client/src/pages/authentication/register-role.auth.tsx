@@ -7,11 +7,14 @@ import { ConfirmRegistration } from "../../components";
 import { useState } from 'react';
 import { HttpClient } from '../../utils/HttpClient';
 import { HttpMethod } from '../../enum/http-methods.enum';
-import { IRegistrationLocalStorage, IRegistrationResponse } from "../../interface";
+import { IRegistrationLocalStorage } from "../../interface";
 import { useNavigate } from "react-router-dom";
+import { TRegistrationResponse } from '../../interface/auth.interface';
 
 function RegisterRole() {
   const [user, setUser, removeUser] = useLocalStorage<IRegistrationLocalStorage | any>('user');
+  const [accessToken, setAccessToken, removeAccessToken] = useLocalStorage<string>('token');
+
   const [isModalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
@@ -34,15 +37,16 @@ function RegisterRole() {
   }
 
   const onRegisterUser = async (payload: IRegistrationLocalStorage): Promise<void> => {
-    await HttpClient<IRegistrationResponse>(HttpMethod.POST, "/api/register", { 
+    if(!["USER", "TENANT", "ADMIN"].includes(payload.role)) 
+      return navigate("/register");
+
+    await HttpClient<TRegistrationResponse>(HttpMethod.POST, "/api/register", { 
       ...payload,
       phone_number: payload.mobileNumber
      })
     .then((response) => {
         console.log("@onRegisterUser response -> ", response);
-        if(!["USER", "TENANT", "ADMIN"].includes(payload.role)) 
-          return navigate("/register");
-        
+        setAccessToken(response.data.access_token);
         toast({
           colorScheme: "facebook",
           description: response.message,
