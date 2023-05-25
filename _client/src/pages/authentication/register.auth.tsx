@@ -45,21 +45,26 @@ function Register() {
         }
     }, []);
   return <>
-    <Container maxW={"350px"}>
+    <Container 
+        maxW={"350px"} 
+        height={"100vh"}
+        display="flex"
+        alignItems="center"
+        justifyContent="center">
         <form onSubmit={handleSubmit(onProceed)}>
-            <VStack mt={"52"}>
+            <VStack textAlign={"center"}>
                 <Text 
                     color={"facebook.700"}
-                    fontSize={"8xl"} 
+                    fontSize={"7xl"} 
                     fontWeight={"black"} 
-                    letterSpacing={"10px"}
-                    lineHeight={"100px"}>LARA</Text>
+                    letterSpacing={""}
+                    lineHeight={"100px"}>E-DIARY</Text>
                 <Text 
                     color={"facebook.700"}
-                    fontSize={"md"} 
+                    fontSize={"sm"} 
                     fontWeight={"thin"} 
                     textTransform={"uppercase"} 
-                    letterSpacing={"10px"}>Online Banking</Text>
+                    letterSpacing={"10px"}>A Laravel Powered Application</Text>
             </VStack>
             <VStack gap={"1"} align={"start"} mt={"10"}>
                 <Input

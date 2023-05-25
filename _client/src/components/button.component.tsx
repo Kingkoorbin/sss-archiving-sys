@@ -37,7 +37,7 @@ export const RegisterButton = ({ isLoading, isSubmitting }: IButtonProperties) =
       w="full"
       type="submit"
       isLoading={isLoading}
-      loadingText="Creating account..."
+      loadingText="Redirecting..."
       disabled={isSubmitting}
     >
       Register

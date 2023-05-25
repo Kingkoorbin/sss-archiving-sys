@@ -1,14 +1,20 @@
-import { Button, Card, CardBody, CardFooter, CardHeader, Container, Flex, Heading, Image, Spacer, Text } from "@chakra-ui/react"
+import { Button, Card, CardBody, CardFooter, CardHeader, Container, Flex, Image, Text, useToast } from "@chakra-ui/react"
 import { useLocalStorage } from '../../hooks/useLocalStorage.hook';
 import modelUser from "../../assets/model/undraw_People_re_8spw.png";
 import modelTenant from "../../assets/model/undraw_Credit_card_payment_re_o911.png";
 import modelAdmin from "../../assets/model/undraw_Software_engineer_re_tnjc.png";
 import { ConfirmRegistration } from "../../components";
 import { useState } from 'react';
+import { HttpClient } from '../../utils/HttpClient';
+import { HttpMethod } from '../../enum/http-methods.enum';
+import { IRegistrationLocalStorage, IRegistrationResponse } from "../../interface";
+import { useNavigate } from "react-router-dom";
 
 function RegisterRole() {
-  const [user, setUser, removeUser] = useLocalStorage<any>('user');
+  const [user, setUser, removeUser] = useLocalStorage<IRegistrationLocalStorage | any>('user');
   const [isModalOpen, setModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const toast = useToast();
 
   const onAddRole = async (role: string) => {
     setUser({ ...user, role: role });
@@ -20,20 +26,59 @@ function RegisterRole() {
   };
 
   const onGenerateRegistrationMessage = (role: string): string => {
-    if(role === "USER") return "When users create an account, they gain access to various features and functionalities within the platform. By clicking on the 'Register' button, their provided information will be securely recorded and stored. Other users within the platform will be able to view their profile and interact with them based on the shared information. Users can leverage the platform's services, such as fund transfers, bill payments, and more, while also engaging with other users in a secure and convenient environment."
-    if(role === "TENANT") return "As tenants create an account, they gain additional privileges and responsibilities within the platform. By registering, their profile and relevant details will be recorded and made visible to other users. This allows tenants to establish connections and interact with other users, such as managing fund transfers and facilitating bill payments. Additionally, tenants possess administrative capabilities, enabling them to oversee and manage user accounts within the platform. This includes tasks such as creating and updating user profiles, granting permissions, and ensuring smooth financial operations."
-    if(role === "ADMIN")  return "As tenants create an account, they gain additional privileges and responsibilities within the platform. By registering, their profile and relevant details will be recorded and made visible to other users. This allows tenants to establish connections and interact with other users, such as managing fund transfers and facilitating bill payments. Additionally, tenants possess administrative capabilities, enabling them to oversee and manage user accounts within the platform. This includes tasks such as creating and updating user profiles, granting permissions, and ensuring smooth financial operations."
+    if(role === "USER") return "As a user, you have the privilege to create an account and access our platform's basic functionalities. Enjoy the convenience of browsing and interacting with the available features tailored to enhance your experience. While you may have limited administrative control, you can utilize our services, explore content, and engage with other users within the defined scope of your privileges."
+    if(role === "TENANT") return "By selecting the \"TENANT\" role, you gain exclusive privileges related to rental or leasing systems. Take advantage of specialized features designed to streamline your tenancy experience. Explore rental listings, submit maintenance requests, make rental payments, and communicate seamlessly with landlords or property managers. Your role as a tenant empowers you to actively participate in property management processes, ensuring a smooth and hassle-free tenancy."
+    if(role === "ADMIN")  return "As an administrator, you hold significant authority and responsibility within our application or platform. With elevated privileges, you gain access to powerful tools and administrative interfaces. Manage user accounts, moderate content, configure system settings, and enforce policies to maintain the integrity and security of the platform. Your role as an admin is pivotal in ensuring the smooth operation of the system and providing a seamless experience for all users."
 
     return ""
+  }
+
+  const onRegisterUser = async (payload: IRegistrationLocalStorage): Promise<void> => {
+    await HttpClient<IRegistrationResponse>(HttpMethod.POST, "/api/register", { 
+      ...payload,
+      phone_number: payload.mobileNumber
+     })
+    .then((response) => {
+        console.log("@onRegisterUser response -> ", response);
+        if(!["USER", "TENANT", "ADMIN"].includes(payload.role)) 
+          return navigate("/register");
+        
+        toast({
+          colorScheme: "facebook",
+          description: response.message,
+          position: "bottom",
+          duration: 2000,
+          onCloseComplete: async () => {
+            navigate(`/profile/${payload.role.toLocaleLowerCase()}/create`);
+            removeUser();
+          }
+        });
+    })
+    .catch((error) => {
+      console.log("@onRegisterUser error -> ", error.response?.data?.message)
+      toast({
+        colorScheme: "red",
+        description: error.response?.data?.message,
+        position: "bottom",
+        duration: 2000,
+      });
+    });  
   }
   
   return <>
     <ConfirmRegistration 
       isOpen={isModalOpen}
       onClose={closeModal}
+      onConfirm={() => onRegisterUser(user as IRegistrationLocalStorage)}
       data={{...user, message: onGenerateRegistrationMessage(user.role)}}/>
-    <Container maxW={"7xl"}>
-      <Flex  mt={{ base: "10", md: "56"}}  gap={"6"}flexDir={{ base: "column", md: "row"}} opacity={0.95}>
+
+    <Container 
+        maxW={"7xl"} 
+        height={"100vh"}
+        display="flex"
+        alignItems="center"
+        justifyContent="center">
+      <Flex  gap={"6"}flexDir={{ base: "column", md: "row"}} opacity={0.95}>
         <Card flex={"1"}>
           <CardHeader>
             <Flex w={"full"} justifyContent={"center"}>
@@ -41,10 +86,10 @@ function RegisterRole() {
             </Flex>
           </CardHeader>
           <CardBody>
-            <Text fontSize={"large"} fontWeight={"light"}>Users have the ability to perform various actions such as fund transfers, bill payments, and other similar transactions. They can interact with the system to manage their personal finances and make payments conveniently.</Text>
+            <Text fontSize={"md"} fontWeight={"light"}>The "USER" role refers to an individual who registers and interacts with the system as a regular user. As a user, individuals have access to the basic functionalities of the application or platform. They can perform actions such as creating an account, logging in, browsing content, and interacting with available features within the defined scope of their privileges. Users typically have limited administrative control and are primarily focused on utilizing the services or resources provided by the system.</Text>
           </CardBody>
           <CardFooter>
-            <Button w={"full"}  colorScheme={"facebook"} onClick={() => onAddRole("USER")}>Customer</Button>
+            <Button variant={"ghost"} textTransform={"uppercase"} w={"full"}  colorScheme={"facebook"} onClick={() => onAddRole("USER")}>Customer</Button>
           </CardFooter>
         </Card>  
 
@@ -55,24 +100,24 @@ function RegisterRole() {
             </Flex>
           </CardHeader>
           <CardBody>
-            <Text fontWeight={"light"}>Tenants possess additional privileges compared to regular users. In addition to fund transfers and bill payments, tenants have the authority to manage other users within the system. This includes tasks such as creating and updating user profiles, granting permissions, and overseeing fund transfers.</Text>
+            <Text fontWeight={"light"}>The "TENANT" role represents a user who is affiliated with a rental or leasing system. Tenants have specific rights and responsibilities related to their rental agreement. Within the application or platform, tenants can access features and functionalities tailored towards managing their tenancy. This may include tasks such as viewing rental listings, submitting maintenance requests, making rental payments, communicating with landlords or property managers, and accessing relevant tenancy-related information. The tenant role typically involves a higher level of involvement in property management processes compared to regular users.</Text>
           </CardBody>
           <CardFooter>
-          <Button w={"full"}  colorScheme={"facebook"} onClick={() => onAddRole("TENANT")}>Tenant</Button>
+          <Button variant={"ghost"} textTransform={"uppercase"} w={"full"}  colorScheme={"facebook"} onClick={() => onAddRole("TENANT")}>Tenant</Button>
           </CardFooter>
         </Card>   
 
-        <Card flex={"1"}>
+        <Card flex={"1"} opacity={0.4}>
           <CardHeader>
           <Flex w={"full"} justifyContent={"center"}>
              <Image src={modelAdmin} alt={"Admin"} height={"52"}/>
             </Flex>
           </CardHeader>
           <CardBody>
-            <Text  fontWeight={"light"}>Administrators hold higher-level access and responsibilities within the system. They have the capability to verify and authenticate users and tenants. Admins play a crucial role in ensuring the integrity and security of the platform by verifying the identities of users and tenants, performing necessary checks, and maintaining overall system governance.</Text>
+            <Text  fontWeight={"light"}>The "ADMIN" role pertains to users with administrative privileges and control over the application or platform. Administrators possess a higher level of authority and responsibility compared to regular users and tenants. They have access to backend systems, administrative interfaces, and additional tools for managing and overseeing the platform's operation. Administrators can perform various administrative tasks such as user management, content moderation, system configuration, and enforcing policies or rules. They play a crucial role in maintaining the system's integrity, security, and overall functionality.</Text>
           </CardBody>
           <CardFooter>
-          <Button w={"full"} colorScheme={"facebook"} onClick={() => onAddRole("ADMIN")}>Admin</Button>
+          <Button variant={"ghost"} textTransform={"uppercase"} w={"full"} colorScheme={"facebook"} onClick={() => onAddRole("ADMIN")}>Admin</Button>
           </CardFooter>
         </Card>
       </Flex>
