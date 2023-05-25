@@ -13,3 +13,17 @@ export interface ICreateClientResponse {
         id: number
     }
 }
+
+export interface ICreateTenantResponse {
+    status: string;
+    message: string;
+    data: {
+        company_name: string;
+        description: string;
+        address: string;
+        subscription_plan: string;
+        verified: string;
+        user_id: number,
+        id: number
+    }
+}

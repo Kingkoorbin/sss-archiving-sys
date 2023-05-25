@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\TenantController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,8 +33,12 @@ Route::controller(AuthController::class)->group(function () {
 Route::controller(ClientController::class)->group(function () {
     Route::get('/c/me', 'getClient');
     Route::post('/c/me', 'createClient');
-
 }); 
+
+// Tenant
+Route::post('/t/me', 
+    [TenantController::class, 'createTenant']
+);
 
 // Stripe Subscription
 Route::get('/stripe/subscription/{id}', 

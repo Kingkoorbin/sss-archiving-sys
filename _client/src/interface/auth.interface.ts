@@ -15,3 +15,9 @@ export interface IRegistrationLocalStorage {
     password: string;
     role: string;
 }
+
+export interface IRegistrationTenantLS {
+    company_name: string;
+    address: string;
+    description: string;
+}

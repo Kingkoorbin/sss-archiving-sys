@@ -5,9 +5,9 @@ import { RouterProvider } from "react-router-dom";
 import { router } from './routes';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <ChakraProvider>
       <RouterProvider router={router} />
     </ChakraProvider>
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )

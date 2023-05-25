@@ -18,6 +18,7 @@ function Register() {
     const { register, handleSubmit, getValues, formState: { errors, isSubmitting } } = useForm<IInputs>();
     const [user, setUser, removeUser] = useLocalStorage<any>('user');
     const [accessToken, setAccessToken, removeAccessToken] = useLocalStorage<string>('token');
+    const [tenant, setTenant, removeTenant] = useLocalStorage<null>('new-tenant');
 
 
     const navigate = useNavigate();
@@ -42,9 +43,10 @@ function Register() {
     }
 
    useEffect(() => {
-        if(user || accessToken) {
+        if(user || accessToken || tenant) {
             removeUser();
             removeAccessToken();
+            removeTenant();
         }
     }, []);
   return <>
