@@ -154,7 +154,7 @@ class SubscriptionController extends Controller
     public function generatePaymentLink($product_id, $price_id)
     {
         try {
-            $stripe = new \Stripe\StripeClient('sk_test_51NB7suHnf44tXPC2f6WfQejhIWlYs5De6HJdfrC7CTWdIjtU1FpKud2MzcBITMeyapdA6aSs9YHWyMT52yNLs6mC00xJfxudaL');
+            $stripe = new \Stripe\StripeClient(env('STRIPE_API_KEY'));
             // Return the payment link to the client
             $data = $stripe->paymentLinks->create([
                 'line_items' => [
@@ -181,7 +181,7 @@ class SubscriptionController extends Controller
     {
         try {
             // Retrieve the payment link using the payment link ID
-            $stripe = new \Stripe\StripeClient('sk_test_51NB7suHnf44tXPC2f6WfQejhIWlYs5De6HJdfrC7CTWdIjtU1FpKud2MzcBITMeyapdA6aSs9YHWyMT52yNLs6mC00xJfxudaL');
+            $stripe = new \Stripe\StripeClient(env('STRIPE_API_KEY'));
              // Retrieve the payment link object
             $paymentLink = $stripe->paymentLinks->retrieve($paymentLinkId);
             
