@@ -13,7 +13,7 @@ interface IRegistrationPayload {
 interface IConfirmRegistrationProps {
     isOpen:  boolean;
     onClose: () => void;
-    onConfirm: () => Promise<void>;
+    onConfirm: (() => Promise<void>) | (() => void);
     data: IRegistrationPayload;
 }
 export function ConfirmRegistration({ isOpen, onClose, data, onConfirm }: IConfirmRegistrationProps) {
@@ -84,4 +84,26 @@ export function ConfirmRegistration({ isOpen, onClose, data, onConfirm }: IConfi
       </Modal>
     </>
   );
+}
+
+
+export function SessionExpired({ isOpen, onClose, data, onConfirm }: IConfirmRegistrationProps) {
+ return <Modal isOpen={isOpen} onClose={onClose} size={"sm"} isCentered>
+    <ModalOverlay />
+    <ModalContent>
+      <ModalHeader>Session Expired</ModalHeader>
+      <ModalBody>
+        {data.message}
+      </ModalBody>
+
+      <ModalFooter>
+      <Button 
+          onClick={() => onConfirm()}
+          textTransform={"uppercase"} 
+          colorScheme={"facebook"} 
+          size="lg"
+          w={"full"} >Confirm</Button>
+      </ModalFooter>
+    </ModalContent>
+  </Modal>
 }

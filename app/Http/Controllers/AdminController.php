@@ -24,8 +24,17 @@ class AdminController extends Controller
                 'message' => 'Role not authorized',
             ], 401);
         }
-
-        $tenants = Tenant::where('verified', $params['verified'])->get();
+        if(!$params) {
+            $tenants = Tenant::orderBy('id', 'desc')->get();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Tenants retrieved successfully',
+                'data' => $tenants,
+            ], 200);
+        }
+        $tenants = Tenant::where('verified', $params['verified'])
+            ->orderBy('id', 'desc')
+            ->get();
         return response()->json([
             'status' => 'success',
             'message' => 'Tenants retrieved successfully',

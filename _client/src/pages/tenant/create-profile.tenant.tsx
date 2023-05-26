@@ -76,6 +76,14 @@ function CreateTenantProfile() {
                         required: {
                           value: true,
                           message: "Company name is required"
+                        },
+                        minLength: {
+                          value: 2,
+                          message: "Min length is 2 characters"
+                        },
+                        maxLength: {
+                          value: 25,
+                          message: "Max length is 25 characters"
                         }
                       })}/>
                   {errors.companyName && <Text 
@@ -91,6 +99,14 @@ function CreateTenantProfile() {
                         required: {
                           value: true,
                           message: "Company description is required"
+                        },
+                        minLength: {
+                          value: 6,
+                          message: "Min length is 6 characters"
+                        },
+                        maxLength: {
+                          value: 125,
+                          message: "Max length is 125 characters"
                         }
                       })}/>
                   {errors.companyDescription && <Text 
