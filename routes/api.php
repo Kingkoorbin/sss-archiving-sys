@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TenantController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,15 @@ Route::controller(ClientController::class)->group(function () {
 // Tenant
 Route::post('/t/me', 
     [TenantController::class, 'createTenant']
+);
+
+// Admin
+Route::get('/a/accounts/tenants', 
+    [AdminController::class, 'getAllTenants']
+);
+
+Route::put('/a/accounts/tenants/verify/{id}', 
+    [AdminController::class, 'verifyTenant']
 );
 
 // Stripe Subscription
