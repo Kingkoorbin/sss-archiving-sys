@@ -1,10 +1,13 @@
 import { Button, Container, Flex, Input, InputGroup, InputRightElement, Text, VStack } from '@chakra-ui/react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { HttpClient } from '../../utils/HttpClient';
 import { HttpMethod } from '../../enum/http-methods.enum';
 import { ButtonRedirect, LoginButton } from '../../components/button.component';
 import { ILoginResponse } from '../../interface';
+import { useNavigate } from 'react-router-dom';
+import { Role } from '../../interface/roles.interface';
+import { useLocalStorage } from '../../hooks/useLocalStorage.hook';
 
 interface IInputs  {
     email: string,
@@ -13,6 +16,9 @@ interface IInputs  {
 
 
 function Login() {
+    const navigate = useNavigate();
+    const [accessToken, setAccessToken, removeAccessToken] = useLocalStorage<string>('token');
+
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<IInputs>();
 
     const [state, setState] = useState({
@@ -25,8 +31,16 @@ function Login() {
             "email": data.email,
             "password": data.password
         })
-        .then((response) => {
-            console.log("@onLogin response -> ", response.data) 
+        .then(async (response) => {
+            console.log("@onLogin response -> ", response.data);
+            // ASSIGN TOKEN
+            setAccessToken(response.data.access_token);
+            // REDIRECT BY ROLES
+            if(response.data.role === Role.ADMIN) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                const token = response.data.access_token;
+                navigate(`/a/${token.substring(0, token.indexOf("."))}/dashboard`);
+            }
             setState((prev) => ({
                 ...prev,
                 loginErrorMessage: null
@@ -46,6 +60,13 @@ function Login() {
             togglePassword: !state.togglePassword 
         }))
     }
+
+    useEffect(() => {
+      if(accessToken) {
+        removeAccessToken();
+      }
+    }, []);
+    
   return <>
     <Container 
         maxW={"350px"} 

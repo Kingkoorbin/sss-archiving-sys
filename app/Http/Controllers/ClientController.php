@@ -18,10 +18,17 @@ class ClientController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
+
     }
     
     public function createClient(Request $request)
     {
+        if(auth()->user()->role !== "USER") {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Role not authorized',
+            ], 401);
+        }
         // Validate the request data
  
         $validator = ClientValidator::validateCreateClient($request);
@@ -64,6 +71,12 @@ class ClientController extends Controller
 
     public function getClient(Request $request)
     {
+        if(auth()->user()->role !== "USER") {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Role not authorized',
+            ], 401);
+        }
         if (!request()->header('Authorization')) {
             return response()->json([
                 'status' => 'error',

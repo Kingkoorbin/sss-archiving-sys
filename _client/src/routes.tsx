@@ -7,6 +7,7 @@ import CreateUserProfile from "./pages/user/create-profile.user";
 import CreateAdminProfile from "./pages/admin/create-profile.admin";
 import PaymentSuccess from "./pages/payment/success.payment";
 import PaymentCancelled from "./pages/payment/cancelled.payment";
+import AdminDashboard from "./pages/admin/dashboard.admin";
 
 export const router = createBrowserRouter([
     {
@@ -44,5 +45,9 @@ export const router = createBrowserRouter([
     {
         path: "/payment/cancelled",
         element: <PaymentCancelled />,
+    },
+    {
+        path: "/a/:id/dashboard",
+        element: <AdminDashboard />,
     },
 ]);

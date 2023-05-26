@@ -46,9 +46,15 @@ Route::get('/a/accounts/tenants',
     [AdminController::class, 'getAllTenants']
 );
 
+Route::get('/a/accounts/clients', 
+    [AdminController::class, 'getAllClients']
+);
+
 Route::put('/a/accounts/tenants/verify/{id}', 
     [AdminController::class, 'verifyTenant']
 );
+
+
 
 // Stripe Subscription
 Route::get('/stripe/subscription/{id}', 

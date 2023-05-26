@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 // Model Imports
 use App\Models\Tenant;
+use App\Models\Client;
 
 class AdminController extends Controller
 {
@@ -29,6 +30,23 @@ class AdminController extends Controller
             'status' => 'success',
             'message' => 'Tenants retrieved successfully',
             'data' => $tenants,
+        ], 200);
+    }
+
+    // Get All users
+    public function getAllClients() {
+        if(auth()->user()->role !== "ADMIN") {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Role not authorized',
+            ], 401);
+        }
+
+        $clients = Client::all();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Clients retrieved successfully',
+            'data' => $clients,
         ], 200);
     }
 
