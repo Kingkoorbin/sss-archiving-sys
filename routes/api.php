@@ -8,6 +8,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SpaceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,18 @@ Route::controller(ClientController::class)->group(function () {
 // Tenant
 Route::post('/t/me', 
     [TenantController::class, 'createTenant']
+);
+
+Route::get('/t/me', 
+    [TenantController::class, 'me']
+);
+
+// Space
+Route::post('/space', 
+    [SpaceController::class, 'create']
+);
+Route::get('/space', 
+    [SpaceController::class, 'getAll']
 );
 
 // Admin

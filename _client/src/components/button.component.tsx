@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 interface IButtonProperties {
@@ -7,8 +7,8 @@ interface IButtonProperties {
 }
 
 interface IButtonRedirectProperties {
-  path: string, 
-  title: string
+  path: string;
+  title: string;
 }
 
 export const LoginButton = ({ isLoading, isSubmitting }: IButtonProperties) => {
@@ -21,14 +21,17 @@ export const LoginButton = ({ isLoading, isSubmitting }: IButtonProperties) => {
       isLoading={isLoading}
       loadingText="Logging in..."
       disabled={isSubmitting}
-      size={"lg"}
+      size={'lg'}
     >
       Login
     </Button>
   );
 };
 
-export const RegisterButton = ({ isLoading, isSubmitting }: IButtonProperties) => {
+export const RegisterButton = ({
+  isLoading,
+  isSubmitting,
+}: IButtonProperties) => {
   return (
     <Button
       colorScheme="facebook"

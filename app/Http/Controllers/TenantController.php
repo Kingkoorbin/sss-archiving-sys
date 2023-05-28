@@ -66,4 +66,31 @@ class TenantController extends Controller
         ], 201);
     }
 
+    public function me(Request $request)
+    {
+        if(auth()->user()->role !== "TENANT") {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Role not authorized',
+            ], 401);
+        }
+
+        $user = auth()->user();
+        $tenant = $user->tenant;
+
+        if ($tenant) {
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'Success',
+                'data' => [
+                    'user' => $user,
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tenant not found for the user.',
+            ], 400);
+        }
+    }
 }

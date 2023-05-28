@@ -1,22 +1,43 @@
-import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, TableContainer, Table, Tbody, Tr, Td, Text, Heading } from '@chakra-ui/react';
+import {
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  TableContainer,
+  Table,
+  Tbody,
+  Tr,
+  Td,
+  Text,
+  Heading,
+} from '@chakra-ui/react';
 import { useState } from 'react';
 
 interface IRegistrationPayload {
-    email: string;
-    password: string;
-    username: string;
-    role: string;
-    mobileNumber: string;
-    message: string;
+  email: string;
+  password: string;
+  username: string;
+  role: string;
+  mobileNumber: string;
+  message: string;
 }
 
 interface IConfirmRegistrationProps {
-    isOpen:  boolean;
-    onClose: () => void;
-    onConfirm: (() => Promise<void>) | (() => void);
-    data: IRegistrationPayload;
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: (() => Promise<void>) | (() => void);
+  data: IRegistrationPayload;
 }
-export function ConfirmRegistration({ isOpen, onClose, data, onConfirm }: IConfirmRegistrationProps) {
+export function ConfirmRegistration({
+  isOpen,
+  onClose,
+  data,
+  onConfirm,
+}: IConfirmRegistrationProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async () => {
@@ -32,53 +53,62 @@ export function ConfirmRegistration({ isOpen, onClose, data, onConfirm }: IConfi
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} size={"lg"} isCentered>
+      <Modal isOpen={isOpen} onClose={onClose} size={'lg'} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Account Preview</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <TableContainer>
-              <Table size='sm'>
+              <Table size="sm">
                 <Tbody>
                   <Tr>
-                    <Td fontWeight={"bold"}>ROLE</Td>
+                    <Td fontWeight={'bold'}>ROLE</Td>
                     <Td>{data.role}</Td>
                   </Tr>
                   <Tr>
-                    <Td fontWeight={"bold"}>EMAIL</Td>
+                    <Td fontWeight={'bold'}>EMAIL</Td>
                     <Td>{data.email}</Td>
                   </Tr>
                   <Tr>
-                    <Td fontWeight={"bold"}>PHONE NO.</Td>
-                    <Td>{data.mobileNumber.substring(0, 5) + "*"
-                       .repeat(data.mobileNumber.length - 4) + data.mobileNumber
-                       .substring(data.mobileNumber.length - 2)}</Td>
+                    <Td fontWeight={'bold'}>PHONE NO.</Td>
+                    <Td>
+                      {data.mobileNumber.substring(0, 5) +
+                        '*'.repeat(data.mobileNumber.length - 4) +
+                        data.mobileNumber.substring(
+                          data.mobileNumber.length - 2
+                        )}
+                    </Td>
                   </Tr>
                   <Tr>
-                    <Td fontWeight={"bold"}>PASSWORD</Td>
-                    <Td>{data.password.substring(0, 2) + "*"
-                      .repeat(data.password.length - 4) + data.password
-                      .substring(data.password.length - 2)}</Td>
+                    <Td fontWeight={'bold'}>PASSWORD</Td>
+                    <Td>
+                      {data.password.substring(0, 2) +
+                        '*'.repeat(data.password.length - 4) +
+                        data.password.substring(data.password.length - 2)}
+                    </Td>
                   </Tr>
                 </Tbody>
               </Table>
             </TableContainer>
-           
-           <Text mt={"10"} p={"2"}>
-            {data.message}
-           </Text>
+
+            <Text mt={'10'} p={'2'}>
+              {data.message}
+            </Text>
           </ModalBody>
 
           <ModalFooter>
-            <Button 
+            <Button
               onClick={() => onSubmit()}
-              textTransform={"uppercase"} 
-              colorScheme={"facebook"} 
+              textTransform={'uppercase'}
+              colorScheme={'facebook'}
               isLoading={isLoading}
-              loadingText={"Creating Account..."}
+              loadingText={'Creating Account...'}
               size="lg"
-              w={"full"} >Confirm</Button>
+              w={'full'}
+            >
+              Confirm
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -86,24 +116,31 @@ export function ConfirmRegistration({ isOpen, onClose, data, onConfirm }: IConfi
   );
 }
 
+export function SessionExpired({
+  isOpen,
+  onClose,
+  data,
+  onConfirm,
+}: IConfirmRegistrationProps) {
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size={'sm'} isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Session Expired</ModalHeader>
+        <ModalBody>{data.message}</ModalBody>
 
-export function SessionExpired({ isOpen, onClose, data, onConfirm }: IConfirmRegistrationProps) {
- return <Modal isOpen={isOpen} onClose={onClose} size={"sm"} isCentered>
-    <ModalOverlay />
-    <ModalContent>
-      <ModalHeader>Session Expired</ModalHeader>
-      <ModalBody>
-        {data.message}
-      </ModalBody>
-
-      <ModalFooter>
-      <Button 
-          onClick={() => onConfirm()}
-          textTransform={"uppercase"} 
-          colorScheme={"facebook"} 
-          size="lg"
-          w={"full"} >Confirm</Button>
-      </ModalFooter>
-    </ModalContent>
-  </Modal>
+        <ModalFooter>
+          <Button
+            onClick={() => onConfirm()}
+            textTransform={'uppercase'}
+            colorScheme={'facebook'}
+            size="lg"
+            w={'full'}
+          >
+            Confirm
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
 }

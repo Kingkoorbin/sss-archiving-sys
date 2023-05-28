@@ -1,7 +1,5 @@
 function CreateAdminProfile() {
-  return (
-    <div>CreateAdminProfile</div>
-  )
+  return <div>CreateAdminProfile</div>;
 }
 
-export default CreateAdminProfile
+export default CreateAdminProfile;

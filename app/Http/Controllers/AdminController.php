@@ -51,7 +51,7 @@ class AdminController extends Controller
             ], 401);
         }
 
-        $clients = Client::all();
+        $clients = Client::orderBy('id', 'desc')->get();
         return response()->json([
             'status' => 'success',
             'message' => 'Clients retrieved successfully',
