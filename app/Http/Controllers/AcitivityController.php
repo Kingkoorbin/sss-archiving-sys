@@ -19,7 +19,8 @@ class AcitivityController extends Controller
         $perPage = $request->input('limit', 10); // Number of items per page, default is 10
         $currentPage = $request->input('page', 1); // Current page, default is 1
 
-        $activities = Activity::paginate($perPage, ['*'], 'page', $currentPage);
+        $activities = Activity::orderBy('created_at', 'desc')
+            ->paginate($perPage, ['*'], 'page', $currentPage);
 
         return response()->json($activities);
     }
