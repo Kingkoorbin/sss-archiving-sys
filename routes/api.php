@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SpaceController;
 use App\Http\Controllers\ContributionRequestController;
 use App\Http\Controllers\AcitivityController;
+use App\Http\Controllers\ContributionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,11 +43,16 @@ Route::controller(ClientController::class)->group(function () {
     Route::delete('/client/v1/{id}/workhistory', 'deleteWorkHistoryById');
 });
 
-// Contributions
+// Contributions Requests
 Route::controller(ContributionRequestController::class)->group(function () {
     Route::get('/contribution/v1', 'getAll');
     Route::post('/contribution/v1', 'createRequest');
     Route::put('/contribution/v1/{sssNo}', 'updateStatusByNumber');
+});
+
+// Contributions (Records)
+Route::controller(ContributionController::class)->group(function () {
+    Route::get('/record/v1', 'getAll');
 });
 
 // Activities
