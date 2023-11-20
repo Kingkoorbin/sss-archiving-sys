@@ -1,0 +1,6 @@
+
+
+1. Create an ENDPOINT for saving the records
+    - it should be formatted / mapped to the properties exact in table
+    - the data should be dynamic and coming from microservice (hooks)
+    - display all in pagination
