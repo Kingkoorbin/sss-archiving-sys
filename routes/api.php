@@ -36,6 +36,7 @@ Route::controller(AuthController::class)->group(function () {
 // Client
 Route::controller(ClientController::class)->group(function () {
     Route::post('/client/v1/{id}', 'createClient');
+    Route::delete('/client/v1/{id}', 'deleteClientById');
     Route::post('/client/v1/{id}/workhistory', 'createWorkHistory');
     Route::get('/client/v1/{id}/information', 'getClient');
     Route::get('/client/v1', 'getAll');
@@ -53,6 +54,8 @@ Route::controller(ContributionRequestController::class)->group(function () {
 // Contributions (Records)
 Route::controller(ContributionController::class)->group(function () {
     Route::get('/record/v1', 'getAll');
+    Route::post('/record/v1', 'saveContributions');
+    Route::put('/record/v1/{id}/sbr', 'updateSbrValues');
 });
 
 // Activities

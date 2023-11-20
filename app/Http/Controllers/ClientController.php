@@ -168,6 +168,45 @@ class ClientController extends Controller
         }
     }
 
+    public function deleteClientById($id) {
+        try {
+            $allowedRoles = ["ADMIN"];
+            $user = auth()->user();
+
+            if(!in_array($user->role, $allowedRoles)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Role not authorized',
+                ], 401);
+            }
+
+            $client = Client::where('school_id', $id)->first();
+
+            if (!$client) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Employee Not found.',
+                ], 404);
+            }
+
+            // Delete the Employee
+            $client->delete();
+
+            $userId = $user->id;
+            event(new UserActivity('Employee deleted.', $userId));
+                        
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Employee deleted successfully.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function getClient(Request $request, $id)
     {
         $user = auth()->user();

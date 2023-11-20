@@ -18,4 +18,5 @@ class Contributions extends Model
         'ec',
         'total',
     ];
+
 }
