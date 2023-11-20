@@ -11,18 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('requests', function (Blueprint $table) {
+        Schema::create('contribution_requests', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('editor')->nullable();
+
             $table->string('sss_no');
             $table->string('name');
             $table->date('date_of_employment');
             $table->date('date_of_resignation');
-            $table->string('contribution');
             $table->string('requester');
             $table->string('email');
-            $table->string('contact');
-            $table->string('date_needed');
+            $table->string('phone_number');
+            $table->date('date_needed');
+            $table->string('status');
             $table->timestamps();
+
+            $table->foreign('editor')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -31,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('requests');
+        Schema::dropIfExists('contribution_requests');
     }
 };

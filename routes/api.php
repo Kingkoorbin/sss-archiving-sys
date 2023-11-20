@@ -9,6 +9,8 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SpaceController;
+use App\Http\Controllers\ContributionRequestController;
+use App\Http\Controllers\AcitivityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +41,19 @@ Route::controller(ClientController::class)->group(function () {
     Route::put('/client/v1/{id}', 'updateClient');
     Route::delete('/client/v1/{id}/workhistory', 'deleteWorkHistoryById');
 });
+
+// Contributions
+Route::controller(ContributionRequestController::class)->group(function () {
+    Route::get('/contribution/v1', 'getAll');
+    Route::post('/contribution/v1', 'createRequest');
+    Route::put('/contribution/v1/{sssNo}', 'updateStatusByNumber');
+});
+
+// Activities
+Route::controller(AcitivityController::class)->group(function () {
+    Route::get('/activities/v1', 'getAll');
+});
+
 
 // // Tenant
 // Route::post('/t/me', 
