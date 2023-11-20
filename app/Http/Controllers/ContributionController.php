@@ -17,21 +17,12 @@ class ContributionController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api');
+        $this->middleware('auth:api')
+            ->only(['updateSbrValues']);
     }
 
     public function getAll(Request $request)
     {
-        $allowedRoles = ["ADMIN"];
-        $user = auth()->user();
-    
-        if (!in_array($user->role, $allowedRoles)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Role not authorized',
-            ], 401);
-        }
-        
         $name = $request->query('name');
         $sssNo = $request->query('sssNo');
         $from = $request->query('from');
@@ -53,15 +44,15 @@ class ContributionController extends Controller
     }
     
     public function saveContributions(Request $request) {
-        $allowedRoles = ["ADMIN"];
-        $user = auth()->user();
+        // $allowedRoles = ["ADMIN"];
+        // $user = auth()->user();
 
-        if(!in_array($user->role, $allowedRoles)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Role not authorized',
-            ], 401);
-        }
+        // if(!in_array($user->role, $allowedRoles)) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Role not authorized',
+        //     ], 401);
+        // }
 
         $validator = ContributionValidator::validateSaveContributions($request);
 
@@ -83,8 +74,8 @@ class ContributionController extends Controller
 
         Contributions::insert($contributionsData);
 
-        $userId = $user->id;
-        event(new UserActivity('Contribution added.', $userId));
+        // $userId = $user->id;
+        // event(new UserActivity('Contribution added.', $userId));
         
         return response()->json($contributionsData, 201);
     }

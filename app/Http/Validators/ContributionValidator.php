@@ -21,10 +21,10 @@ class ContributionValidator {
         $validator = Validator::make($request->all(), [
             'contributions' => 'required|array',
             'contributions.*.name' => 'required|string',
-            'contributions.*.total' => 'required|numeric',
-            'contributions.*.ss' => 'required|numeric',
-            'contributions.*.ec' => 'required|numeric',
-            'contributions.*.sss_no' => 'required|numeric',
+            'contributions.*.total' => 'required|string',
+            'contributions.*.ss' => 'required|string',
+            'contributions.*.ec' => 'required|string',
+            'contributions.*.sss_no' => 'required|string',
         ]);
 
         return $validator;
