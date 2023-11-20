@@ -7,6 +7,12 @@ Open a terminal or command prompt, navigate to the project directory, and run th
     $ npm install
 ```
 
+## Seeds using PHP
+Run seeding to initialize admin account
+```
+    $ php artisan run:seeds
+```
+
 #### Step 2: Start the Application <br/>
 Once the dependencies are installed, run the following command to start the application:
 ```
@@ -29,22 +35,36 @@ Once the dependencies are installed, run the following command to start the appl
 
 #### Create table
 ```
-    public function up(): void
+    class CreateExampleTable extends Migration
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone_number', 20)->nullable();
-            $table->timestamp('verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
-        });
-    }
-    public function down(): void
-    {
-        Schema::dropIfExists('users');
+        public function up()
+        {
+            Schema::create('example', function (Blueprint $table) {
+                $table->id();
+                $table->integer('integer_field');
+                $table->bigInteger('big_integer_field');
+                $table->string('string_field');
+                $table->text('text_field');
+                $table->boolean('boolean_field')->default(true);
+                $table->date('date_field');
+                $table->dateTime('date_time_field');
+                $table->time('time_field');
+                $table->float('float_field', 8, 2);
+                $table->decimal('decimal_field', 10, 2);
+                $table->enum('enum_field', ['value1', 'value2', 'value3']);
+                $table->json('json_field');
+                $table->jsonb('jsonb_field');
+                $table->binary('binary_field');
+                $table->uuid('uuid_field');
+                $table->ipAddress('ip_address_field');
+                $table->timestamps();
+            });
+        }
+
+        public function down()
+        {
+            Schema::dropIfExists('example');
+        }
     }
 ```
 

@@ -9,16 +9,12 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('tenants', function (Blueprint $table) {
+        Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('company_name')->unique();;
-            $table->string('description');
-            $table->string('address');
-            $table->json('subscription_plan');
-            $table->boolean('verified')->nullable();
+            $table->string('action_name');
             $table->timestamps();
 
             // Relationships
@@ -26,11 +22,8 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('tenants');
+        Schema::dropIfExists('activities');
     }
 };

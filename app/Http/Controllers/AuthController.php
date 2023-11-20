@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 // Custom Imports
 use App\Http\Validators\AuthValidator;
+use App\Events\UserActivity;
 
 // Laravel Imports
 use Illuminate\Http\Request;
@@ -12,16 +13,23 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Event;
 
 // Model Imports
 use App\Models\User;
 
 class AuthController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api')->only('register');
+    }
+
     public function login(Request $request)
     {
         $validator = AuthValidator::validateLogin($request);
-    
+
         if ($validator->fails()) {
             $errors = $validator->errors();
             return response()->json([
@@ -31,21 +39,20 @@ class AuthController extends Controller
         }
 
         // Extract email and password only from client
-        $credentials = $request->only('email', 'password');
-
+        $credentials = $request->only('username', 'password');
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = JWTAuth::customClaims(['payload' => $user])->fromUser($user);
 
+            $userId = $user->id;
+            event(new UserActivity('Sign in', $user->id));
+
             return response()->json([
-                'status' => 'ok',
-                'message' => 'Login successful',
-                'data' => [
-                    'role' => $user->role,
-                    'access_token' => $token,
-                ],
+                'role' => $user->role,
+                'access_token' => $token,
             ]);
         }
+
 
         return response()->json([
             'status' => 'error',
@@ -53,11 +60,20 @@ class AuthController extends Controller
         ], 401);
 
     }
-    
+
     public function register(Request $request)
     {
+        $allowedRoles = ["ADMIN"];
+
+        if(!in_array(auth()->user()->role, $allowedRoles)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Role not authorized',
+            ], 401);
+        }
+
         $validator = AuthValidator::validateRegistration($request);
-    
+
         if ($validator->fails()) {
             $errors = $validator->errors();
             return response()->json([
@@ -65,23 +81,18 @@ class AuthController extends Controller
                 'message' => $errors->all(),
             ], 400);
         }
-    
+
         $user = User::create([
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'phone_number' => $request->phone_number,
+            'username' => $request->username,
             'role' => $request->role,
+            'password' => Hash::make($request->password),
         ]);
-    
+
         $token = JWTAuth::customClaims(['payload' => $user])->fromUser($user);
 
         return response()->json([
-            'status' => 'ok',
-            'message' => 'User registered successfully',
-               'data' => [
-                    'role' => $user->role,
-                    'access_token' => $token,
-                ],
+            'role' => $user->role,
+            'access_token' => $token,
         ], 201); // Created status code
     }
 }

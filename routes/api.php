@@ -24,70 +24,73 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
 // Authentication
 Route::controller(AuthController::class)->group(function () {
-    Route::post('/login', 'login');
-    Route::post('/register', 'register');
-}); 
+    Route::post('/auth/v1/login', 'login');
+    Route::post('/auth/v1/register', 'register');
+});
 
 // Client
 Route::controller(ClientController::class)->group(function () {
-    Route::get('/c/me', 'getClient');
-    Route::post('/c/me', 'createClient');
-}); 
+    Route::post('/client/v1/{id}', 'createClient');
+    Route::post('/client/v1/{id}/workhistory', 'createWorkHistory');
+    Route::get('/client/v1/{id}/information', 'getClient');
+    Route::get('/client/v1', 'getAll');
+    Route::put('/client/v1/{id}', 'updateClient');
+    Route::delete('/client/v1/{id}/workhistory', 'deleteWorkHistoryById');
+});
 
-// Tenant
-Route::post('/t/me', 
-    [TenantController::class, 'createTenant']
-);
+// // Tenant
+// Route::post('/t/me', 
+//     [TenantController::class, 'createTenant']
+// );
 
-Route::get('/t/me', 
-    [TenantController::class, 'me']
-);
+// Route::get('/t/me', 
+//     [TenantController::class, 'me']
+// );
 
-// Space
-Route::post('/space', 
-    [SpaceController::class, 'create']
-);
-Route::get('/space', 
-    [SpaceController::class, 'getAll']
-);
+// // Space
+// Route::post('/space', 
+//     [SpaceController::class, 'create']
+// );
+// Route::get('/space', 
+//     [SpaceController::class, 'getAll']
+// );
 
-// Admin
-Route::get('/a/accounts/tenants', 
-    [AdminController::class, 'getAllTenants']
-);
+// // Admin
+// Route::get('/a/accounts/tenants', 
+//     [AdminController::class, 'getAllTenants']
+// );
 
-Route::get('/a/accounts/clients', 
-    [AdminController::class, 'getAllClients']
-);
+// Route::get('/a/accounts/clients', 
+//     [AdminController::class, 'getAllClients']
+// );
 
-Route::put('/a/accounts/tenants/verify/{id}', 
-    [AdminController::class, 'verifyTenant']
-);
+// Route::put('/a/accounts/tenants/verify/{id}', 
+//     [AdminController::class, 'verifyTenant']
+// );
 
 
 
-// Stripe Subscription
-Route::get('/stripe/subscription/{id}', 
-    [SubscriptionController::class, 'getSubscription']
-);
-Route::get('/stripe/subscription/{product_id}/{price_id}/payment-link', 
-    [SubscriptionController::class, 'generatePaymentLink']
-);
-Route::get('/stripe/subscription/{paymentLinkId}/payment-link/status', 
-    [SubscriptionController::class, 'checkPaymentLinkStatus']
-);
-Route::post('/stripe/subscribe/{id}', 
-    [SubscriptionController::class, 'createSubscription']
-);
-Route::get('/stripe/payment/{payment_intent_id}/status', 
-    [SubscriptionController::class, 'checkPaymentStatus']
-);
-Route::post('/stripe/payment/one-time', 
-    [SubscriptionController::class, 'createOneTimePayment']
-);
-Route::post('/stripe/payment/checkout-session', 
-    [SubscriptionController::class, 'createCheckoutSession']
-);
+// // Stripe Subscription
+// Route::get('/stripe/subscription/{id}', 
+//     [SubscriptionController::class, 'getSubscription']
+// );
+// Route::get('/stripe/subscription/{product_id}/{price_id}/payment-link', 
+//     [SubscriptionController::class, 'generatePaymentLink']
+// );
+// Route::get('/stripe/subscription/{paymentLinkId}/payment-link/status', 
+//     [SubscriptionController::class, 'checkPaymentLinkStatus']
+// );
+// Route::post('/stripe/subscribe/{id}', 
+//     [SubscriptionController::class, 'createSubscription']
+// );
+// Route::get('/stripe/payment/{payment_intent_id}/status', 
+//     [SubscriptionController::class, 'checkPaymentStatus']
+// );
+// Route::post('/stripe/payment/one-time', 
+//     [SubscriptionController::class, 'createOneTimePayment']
+// );
+// Route::post('/stripe/payment/checkout-session', 
+//     [SubscriptionController::class, 'createCheckoutSession']
+// );
