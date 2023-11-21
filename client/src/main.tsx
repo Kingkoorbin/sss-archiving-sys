@@ -6,6 +6,10 @@ import { ConfigProvider } from "antd";
 import Login from "./pages/login/login.page";
 import AdminDashboard from "./pages/dashboard/admin-dashboard.page";
 import StaffDashboard from "./pages/dashboard/staff-dashboard.page";
+import AdminAccountManagement from "./pages/dashboard/admin-account-mgmt.page";
+import AdminRequests from "./pages/dashboard/admin-requests.page";
+import AdminContributionRecord from "./pages/dashboard/admin-contribution-record.page";
+import AdminActivityLogs from "./pages/dashboard/admin-activity-logs.page";
 // import AdminDashboard from './pages/dashboard/dasbhoard.page';
 // import UsersActivity from './pages/dashboard/activity.page';
 // import Users from './pages/dashboard/users.page';
@@ -22,29 +26,26 @@ const router = createBrowserRouter([
         element: <AdminDashboard />,
     },
     {
+        path: "/dashboard/a/account-management",
+        element: <AdminAccountManagement />,
+    },
+    {
+        path: "/dashboard/a/requests",
+        element: <AdminRequests />,
+    },
+    {
+        path: "/dashboard/a/contributions",
+        element: <AdminContributionRecord />,
+    },
+    {
+        path: "/dashboard/a/activities",
+        element: <AdminActivityLogs />,
+    },
+
+    {
         path: "/dashboard/s",
         element: <StaffDashboard />,
     },
-    // {
-    //   path: '/a/dashboard',
-    //   element: <AdminDashboard />,
-    // },
-    // {
-    //   path: '/a/activities',
-    //   element: <UsersActivity />,
-    // },
-    // {
-    //   path: '/a/users',
-    //   element: <Users />,
-    // },
-    // {
-    //   path: '/a/requests',
-    //   element: <Requests />,
-    // },
-    // {
-    //   path: '/a/users/record',
-    //   element: <PreviewRecords />,
-    // },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

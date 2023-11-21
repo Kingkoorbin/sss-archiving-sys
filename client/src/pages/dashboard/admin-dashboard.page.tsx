@@ -1,9 +1,16 @@
-import React from 'react'
+import { useEffect } from 'react'
+import NavigationBarAdmin from "../../components/nav-admin.component";
 
 function AdminDashboard() {
-  return (
-    <div>AdminDashboard</div>
-  )
+
+  useEffect(() => {
+    document.title = "Dashboard | SSS Archiving System";
+    return () => {}
+  }, [])
+  
+  return <>
+      <NavigationBarAdmin />
+  </>
 }
 
 export default AdminDashboard
