@@ -1,6 +1,8 @@
 export interface IApiResponse<T = any> {
-    message: any;
+    status: any;
     code: any;
+    role: any;
+    access_token: any;
     [key: string]: T;
 }
 

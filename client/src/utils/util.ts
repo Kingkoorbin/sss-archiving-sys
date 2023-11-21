@@ -10,3 +10,19 @@ export const capitalizeName = (name: string): string => {
 
     return capitalizedWords.join(" ");
 };
+
+export const isEmpty = (value: any) => {
+    if (value === undefined || value === null) {
+        return true;
+    }
+
+    if (typeof value === 'string' || Array.isArray(value)) {
+        return value.length === 0;
+    }
+
+    if (typeof value === 'object') {
+        return Object.keys(value).length === 0;
+    }
+
+    return false;
+};

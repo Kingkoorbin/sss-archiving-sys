@@ -48,6 +48,8 @@ class AuthController extends Controller
             event(new UserActivity('Sign in', $user->id));
 
             return response()->json([
+                'status' => 'success',
+                'code' => '00',
                 'role' => $user->role,
                 'access_token' => $token,
             ]);
@@ -56,6 +58,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'error',
+            'code' => '9001',
             'message' => 'Email and/or Password is Incorrect.',
         ], 401);
 
