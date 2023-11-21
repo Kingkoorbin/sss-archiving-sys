@@ -1,7 +1,9 @@
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Login from "./pages/login/login.page";
 import { ConfigProvider } from "antd";
+
+// Pages
+import Login from "./pages/login/login.page";
 // import AdminDashboard from './pages/dashboard/dasbhoard.page';
 // import UsersActivity from './pages/dashboard/activity.page';
 // import Users from './pages/dashboard/users.page';
@@ -37,8 +39,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     // <React.StrictMode>
-    <ConfigProvider theme={{ token: { colorPrimary: "#E00BC5" } }}>
+    <ConfigProvider theme={{ token: { colorPrimary: "#ED0779" } }}>
         <RouterProvider router={router} />
-    </ConfigProvider>
+    </ConfigProvider>,
     // </React.StrictMode>
 );

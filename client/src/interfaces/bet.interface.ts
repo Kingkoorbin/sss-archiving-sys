@@ -3,6 +3,5 @@ export interface IDailyResult {
     wins: number;
     time: string;
     type: string;
-    schedule: string; 
+    schedule: string;
 }
-  
