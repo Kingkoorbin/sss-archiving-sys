@@ -4,6 +4,8 @@ import { ConfigProvider } from "antd";
 
 // Pages
 import Login from "./pages/login/login.page";
+import AdminDashboard from "./pages/dashboard/admin-dashboard.page";
+import StaffDashboard from "./pages/dashboard/staff-dashboard.page";
 // import AdminDashboard from './pages/dashboard/dasbhoard.page';
 // import UsersActivity from './pages/dashboard/activity.page';
 // import Users from './pages/dashboard/users.page';
@@ -14,6 +16,14 @@ const router = createBrowserRouter([
     {
         path: "/",
         element: <Login />,
+    },
+    {
+        path: "/dashboard/a",
+        element: <AdminDashboard />,
+    },
+    {
+        path: "/dashboard/s",
+        element: <StaffDashboard />,
     },
     // {
     //   path: '/a/dashboard',

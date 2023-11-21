@@ -1,9 +1,8 @@
-export interface IApiResponse<T = any> {
+export interface IApiResponse<> {
     status: any;
     code: any;
-    role: any;
+    role: "ADMIN" | "STAFF";
     access_token: any;
-    [key: string]: T;
 }
 
 export interface ISavedLogin {

@@ -3,4 +3,8 @@ export const messages = {
         message: "Somewthing went wrong. Please try again.",
         code: "500",
     },
+    "503": {
+        message: "Service Unavailable. Please try again later.",
+        code: "500",
+    },
 };

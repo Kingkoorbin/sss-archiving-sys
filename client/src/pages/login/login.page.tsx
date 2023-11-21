@@ -4,15 +4,12 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 // Custom imports
 import HttpClient from "../../utils/http-client.util";
-import {
-    ILoginEncryptedPayload,
-    ILoginPayload,
-} from "../../interfaces/login.interface";
+import { ILoginPayload } from "../../interfaces/login.interface";
 import { useEffect, useState } from "react";
 import useLocalStorage from "../../hooks/useLocalstorage.hook";
-import { IApiResponse, ISavedLogin } from "../../interfaces/api.interface";
+import { IApiResponse } from "../../interfaces/api.interface";
 import { messages } from "../../const/messages.const";
-import { BtnNotYou, BtnSignIn } from "../../components/btn-signin.component";
+import { BtnSignIn } from "../../components/btn-signin.component";
 import LoginFormFields from "../../components/form-signin.component";
 import { API } from "../../const/api.const";
 import { isEmpty } from "../../utils/util";
@@ -43,14 +40,15 @@ function Login() {
 
             return;
         }
-        setState((prev) => ({
-            ...prev,
-            isLoginFailed: false,
-            isLoggingIn: true,
-        }));
 
         try {
-            const loginResponse = await HttpClient.post<any, ILoginPayload>(
+            setState((prev) => ({
+                ...prev,
+                isLoginFailed: false,
+                isLoggingIn: true,
+            }));
+
+            const loginResponse = await HttpClient.post<IApiResponse, ILoginPayload>(
                 API.login,
                 {
                     password: data.password,
@@ -67,11 +65,18 @@ function Login() {
                             isLoginFailed: false,
                         }));
                         setAuthResponse({
-                            code: loginResponse.data.code,
-                            access_token: loginResponse.data.access_token,
-                            role: loginResponse.data.role,
-                            status: loginResponse.data.status
-                        })
+                            code: loginResponse.data?.code,
+                            access_token: loginResponse.data?.access_token,
+                            role: loginResponse.data?.role as any,
+                            status: loginResponse.data?.status,
+                        });
+
+                        if(loginResponse.data?.role === "ADMIN") {
+                            return navigate("/dashboard/a");
+                        }
+                        else if(loginResponse.data?.role === "STAFF") {
+                            return navigate("/dashboard/s");
+                        }
                     }
                     break;
 
@@ -106,9 +111,13 @@ function Login() {
             }
         } catch (error: any) {
             removeAuthResponse();
+            setState((prev) => ({
+                ...prev,
+                isLoggingIn: false,
+            }));
             messageApi.error({
                 type: "error",
-                content: messages["500"].message,
+                content: messages["503"].message,
                 style: {
                     marginTop: "90vh",
                 },
