@@ -74,7 +74,6 @@ class AuthController extends Controller
                 'message' => 'Role not authorized',
             ], 401);
         }
-
         $validator = AuthValidator::validateRegistration($request);
 
         if ($validator->fails()) {
@@ -92,6 +91,9 @@ class AuthController extends Controller
         ]);
 
         $token = JWTAuth::customClaims(['payload' => $user])->fromUser($user);
+
+        $userId = $user->id;
+        event(new UserActivity('Registered an account.', auth()->user()->id));
 
         return response()->json([
             'role' => $user->role,

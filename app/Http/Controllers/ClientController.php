@@ -240,14 +240,23 @@ class ClientController extends Controller
         $allowedRoles = ["ADMIN"];
         $user = auth()->user();
 
-        if(!in_array($user->role, $allowedRoles)) {
+        if (!in_array($user->role, $allowedRoles)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Role not authorized',
             ], 401);
         }
 
-        $clients = Client::with('workHistory')->get();
+        $type = $request->query('role');
+
+        if ($type && strtoupper($type) === 'STAFF') {
+            // Fetch STAFF from the users table
+            $staff = User::orderBy('created_at', 'desc')->where('role', '=', 'STAFF')->get();
+            return response()->json($staff);
+        }
+
+        // Fetch clients with their workHistory
+        $clients = Client::orderBy('created_at', 'desc')->with('workHistory')->get();
 
         return response()->json($clients);
     }

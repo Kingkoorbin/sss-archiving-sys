@@ -20,6 +20,7 @@ class AcitivityController extends Controller
         $currentPage = $request->input('page', 1); // Current page, default is 1
 
         $activities = Activity::orderBy('created_at', 'desc')
+            ->with('user')
             ->paginate($perPage, ['*'], 'page', $currentPage);
 
         return response()->json($activities);
