@@ -10,11 +10,6 @@ import AdminAccountManagement from "./pages/dashboard/admin-account-mgmt.page";
 import AdminRequests from "./pages/dashboard/admin-requests.page";
 import AdminContributionRecord from "./pages/dashboard/admin-contribution-record.page";
 import AdminActivityLogs from "./pages/dashboard/admin-activity-logs.page";
-// import AdminDashboard from './pages/dashboard/dasbhoard.page';
-// import UsersActivity from './pages/dashboard/activity.page';
-// import Users from './pages/dashboard/users.page';
-// import Requests from './pages/dashboard/requests.page';
-// import PreviewRecords from './pages/dashboard/records.page';
 
 const router = createBrowserRouter([
     {

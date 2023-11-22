@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Divider, Flex, Modal, Table, Tabs, message } from "antd";
+import { Button, Flex, Modal, Table, Tabs, message } from "antd";
 import { useNavigate } from "react-router-dom";
 
 // Custom Imports
@@ -8,7 +8,6 @@ import RegistrationFormFields from "../../components/form-registration.component
 import { SubmitHandler, useForm } from "react-hook-form";
 import { IRegistrationPayload } from "../../interfaces/login.interface";
 import { isEmpty } from "../../utils/util";
-import { delay } from "../../utils/common.util";
 import { API } from "../../const/api.const";
 import HttpClient from "../../utils/http-client.util";
 import { IApiResponse } from "../../interfaces/api.interface";
