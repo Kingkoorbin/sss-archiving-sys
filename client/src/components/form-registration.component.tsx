@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, Input } from "antd";
 import { Control, Controller } from "react-hook-form";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
 
 interface RegistrationFormFieldsProps {
     control: Control<any>;
@@ -29,6 +30,7 @@ const RegistrationFormFields: React.FC<RegistrationFormFieldsProps> = ({
                             size="middle"
                             placeholder="Enter"
                             status={isRegistrationFailed || isUsernameAlreadyExist ? "error" : ""}
+                            prefix={<UserOutlined />}
                             {...field}
                         />
                     </Form.Item>
@@ -50,6 +52,7 @@ const RegistrationFormFields: React.FC<RegistrationFormFieldsProps> = ({
                                     ? "error"
                                     : ""
                             }
+                            prefix={<LockOutlined />}
                             {...field}
                         />
                     </Form.Item>
@@ -70,6 +73,7 @@ const RegistrationFormFields: React.FC<RegistrationFormFieldsProps> = ({
                                 ? "error"
                                 : ""
                         }
+                        prefix={<LockOutlined />}
                         {...field}
                     />
                 )}

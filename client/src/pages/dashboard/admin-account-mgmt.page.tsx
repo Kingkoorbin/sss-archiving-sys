@@ -13,15 +13,17 @@ import { API } from "../../const/api.const";
 import HttpClient from "../../utils/http-client.util";
 import { IApiResponse } from "../../interfaces/api.interface";
 import useLocalStorage from "../../hooks/useLocalstorage.hook";
-import { IUser } from "../../interfaces/client.interface";
+import { IEmployeeRegistrationPayload, IUser } from "../../interfaces/client.interface";
 import { ColumnsType } from "antd/es/table";
-import { formatDateTime, formatStandardDateTime } from "../../utils/date.util";
+import {  formatStandardDateTime } from "../../utils/date.util";
+import RegistrationEmployeeFormFields from "../../components/form-registration-employee.component";
 
 interface IState {
     isFetchingStaffs: boolean;
     isFetchingEmployees: boolean;
     isAuthModalOpen: boolean;
     isRegistrationModealOpen: boolean;
+    isEmployeeRegistrationOpen: boolean;
     isPasswordNotMatched: boolean;
     isPasswordMinMaxErr: boolean;
     isUsernameAlreadyExist: boolean;
@@ -60,11 +62,19 @@ function AdminAccountManagement() {
     );
     const [messageApi, contextHolder] = message.useMessage();
     const navigate = useNavigate();
-    const {
-        handleSubmit,
-        control,
-        formState: { isSubmitting: isCreatingAccount },
+    
+    const { 
+        handleSubmit: handleSubmitStaffFormData, 
+        control: staffController, 
+        formState: { isSubmitting: isCreatingAccount } 
     } = useForm<IRegistrationPayload>();
+
+    const { 
+        handleSubmit: handleSubmitEmployeeFormData, 
+        control: employeeController,
+        formState: { isSubmitting: isCreatingEmployee } 
+    } = useForm<IEmployeeRegistrationPayload>();
+
     const [state, setState] = useState<IState>({
         isFetchingStaffs: false,
         isFetchingEmployees: false,
@@ -73,6 +83,7 @@ function AdminAccountManagement() {
         isPasswordNotMatched: false,
         isUsernameAlreadyExist: false,
         isPasswordMinMaxErr: false,
+        isEmployeeRegistrationOpen: false,
         users: [],
     });
 
@@ -85,11 +96,18 @@ function AdminAccountManagement() {
         navigate("/", { replace: true });
     };
 
-    const handleOpeRegistration = () => {
-        setState((prev) => ({
-            ...prev,
-            isRegistrationModealOpen: true,
-        }));
+    const handleOpeRegistration = (type: "EMPLOYEE" | "STAFF") => {
+        if(type === "STAFF") {
+            setState((prev) => ({
+                ...prev,
+                isRegistrationModealOpen: true,
+            }));
+        } else {
+            setState((prev) => ({
+                ...prev,
+                isEmployeeRegistrationOpen: true,
+            }));
+        }
     };
 
     const handleRegistration: SubmitHandler<IRegistrationPayload> = async (
@@ -199,10 +217,47 @@ function AdminAccountManagement() {
         await getAllStaffs();
     };
 
-    const handleCancelRegistration = () => {
+    const handleEmployeeRegistration: SubmitHandler<IEmployeeRegistrationPayload> = async (data) =>  {
+        const employeeRegistrationPayload = await HttpClient.setAuthToken(
+            getAuthResponse?.access_token,
+        ).post<IApiResponse, IEmployeeRegistrationPayload>(`${API.employeeEnrollment}/${data.id}`, data);
+        if (
+            employeeRegistrationPayload?.message === "Authentication required."
+        ) {
+            setState((prev) => ({
+                ...prev,
+                isRegistrationModealOpen: false,
+                isAuthModalOpen: true,
+            }));
+
+            return;
+        }
+
+        messageApi.success({
+            type: "success",
+            content: "Registration success!",
+            style: {
+                marginTop: "90vh",
+            },
+        });
+
+        setState((prev) => ({
+            ...prev,
+            isEmployeeRegistrationOpen: false,
+        }));
+    }
+
+    const handleDismissStaffRegistration = () => {
         setState((prev) => ({
             ...prev,
             isRegistrationModealOpen: false,
+        }));
+    };
+
+    const handleDismissEmployeeRegistration = () => {
+        setState((prev) => ({
+            ...prev,
+            isEmployeeRegistrationOpen: false,
         }));
     };
 
@@ -215,6 +270,15 @@ function AdminAccountManagement() {
         const getAllStafsResponse = await HttpClient
             .setAuthToken(getAuthResponse?.access_token)
             .get<IUser[], { role: string }>(API.users, { role: "STAFF" });
+
+        if(getAllStafsResponse.message === "Authentication required.") {
+            setState((prev) => ({
+                ...prev,
+                isAuthModalOpen: true
+            }));
+
+            return;
+        }
 
         if(!Array.isArray(getAllStafsResponse.data)) {
             return;
@@ -250,12 +314,12 @@ function AdminAccountManagement() {
                     tabBarExtraContent={
                        <Flex gap={5}>
                         <Button
-                            onClick={() => handleOpeRegistration()}
+                            onClick={() => handleOpeRegistration("STAFF")}
                             shape="round">
                             Staff Registration
                         </Button>
                         <Button
-                            onClick={() => {}}
+                            onClick={() => handleOpeRegistration("EMPLOYEE")}
                             shape="round">
                             Employee Registration
                         </Button>
@@ -288,8 +352,39 @@ function AdminAccountManagement() {
             </div>
 
             <Modal
+                title="Employee Registration"
+                open={state.isEmployeeRegistrationOpen}
+                cancelButtonProps={{
+                    style: { display: "none" },
+                }}
+                okButtonProps={{
+                    style: { display: "none" },
+                }}
+                width={600}
+                onCancel={handleDismissEmployeeRegistration}
+            >
+                <form onSubmit={handleSubmitEmployeeFormData(handleEmployeeRegistration)}>
+                    <RegistrationEmployeeFormFields
+                        control={employeeController}
+                        isRegistrationFailed={false}
+                    />
+             
+             <Button
+                        type="primary"
+                        size="middle"
+                        loading={isCreatingEmployee}
+                        htmlType="submit"
+                        shape="round"
+                        style={{ marginTop: 20 }}
+                        block
+                    >
+                        Submit
+                    </Button>
+                </form>
+            </Modal>
+
+            <Modal
                 title="Staff Registration"
-                closable={false}
                 open={state.isRegistrationModealOpen}
                 cancelButtonProps={{
                     style: { display: "none" },
@@ -298,11 +393,11 @@ function AdminAccountManagement() {
                     style: { display: "none" },
                 }}
                 width={400}
-                onCancel={handleCancelRegistration}
+                onCancel={handleDismissStaffRegistration}
             >
-                <form onSubmit={handleSubmit(handleRegistration)}>
+                <form onSubmit={handleSubmitStaffFormData(handleRegistration)}>
                     <RegistrationFormFields
-                        control={control}
+                        control={staffController}
                         isUsernameAlreadyExist={state.isUsernameAlreadyExist}
                         isPasswordNotMatched={state.isPasswordNotMatched}
                         isRegistrationFailed={false}

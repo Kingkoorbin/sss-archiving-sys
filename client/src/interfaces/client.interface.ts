@@ -30,3 +30,16 @@ export interface IUser {
     created_at: string;
     updated_at: string;
 }
+
+export interface IEmployeeRegistrationPayload {
+    first_name: string;
+    middle_name: string;
+    last_name: string;
+    present_address: string;
+    permanent_address: string;
+    department: string;
+    birthdate: string; // Assuming date format is "YYYY-MM-DD"
+    id: string;
+    gender: "MALE" | "FEMALE" | "OTHER";
+    phone_number: string;
+}
