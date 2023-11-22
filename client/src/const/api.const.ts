@@ -6,12 +6,13 @@ export const API_BASE_URL =
 export const API = {
     // Authentication related
     login: `${API_BASE_URL}/api/auth/v1/login`,
+    register: `${API_BASE_URL}/api/auth/v1/register`,
     ecryptLogin: `${API_BASE_URL}/api/auth/v1/login/ecrypt`,
     ecryptedLogin: `${API_BASE_URL}/api/auth/v1/login/encrypted`,
     verifyToken: `${API_BASE_URL}/api/auth/v1/token/verify`,
 
     // User related
-    users: `${API_BASE_URL}/api/clients/v1/profiles`,
+    users: `${API_BASE_URL}/api/client/v1`,
 
     // Transactions related
     transactions: `${API_BASE_URL}/api/transaction/v1/all`,
@@ -23,7 +24,7 @@ export const API = {
     updateUserStatus: `${API_BASE_URL}/api/employee/v1/profile-verification`,
 
     // Others
-    activities: `${API_BASE_URL}/api/activity/v1/activities`,
+    activities: `${API_BASE_URL}/api/activities/v1`,
 
     // Bet
     dailyResults: `${API_BASE_URL}/api/bet/v1/daily-result`,

@@ -3,6 +3,13 @@ export interface ILoginPayload {
     password: string;
 }
 
+export interface IRegistrationPayload {
+    username: string;
+    password: string;
+    confirm?: string;
+    role: "STAFF" | "USER"
+}
+
 export interface ILoginEncryptedPayload {
     content: string;
 }

@@ -15,8 +15,7 @@ import { API } from "../../const/api.const";
 import { isEmpty } from "../../utils/util";
 
 function Login() {
-    const { setValue: setAuthResponse, removeValue: removeAuthResponse } =
-        useLocalStorage<IApiResponse | null>("auth_response", null);
+    const { setValue: setAuthResponse, removeValue: removeAuthResponse } = useLocalStorage<IApiResponse | null>("auth_response", null);
 
     const navigate = useNavigate();
     const [state, setState] = useState({
@@ -72,10 +71,10 @@ function Login() {
                         });
 
                         if(loginResponse.data?.role === "ADMIN") {
-                            return navigate("/dashboard/a");
+                            return navigate("/dashboard/a/requests");
                         }
                         else if(loginResponse.data?.role === "STAFF") {
-                            return navigate("/dashboard/s");
+                            return navigate("/dashboard/s/requests");
                         }
                     }
                     break;
@@ -129,9 +128,9 @@ function Login() {
         setState((prev) => ({ ...prev, isSavedLogin: !state.isSavedLogin }));
     };
 
-    const handleClearLocalStorage = () => {
-        removeAuthResponse();
-    };
+    // const handleClearLocalStorage = () => {
+    //     removeAuthResponse();
+    // };
 
     useEffect(() => {
         document.title = "Login | SSS Archiving System";

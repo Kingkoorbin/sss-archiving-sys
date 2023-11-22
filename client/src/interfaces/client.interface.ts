@@ -23,11 +23,10 @@ export interface IRole {
 }
 
 export interface IUser {
-    _id: string;
+    id: number;
     username: string;
-    email: string;
-    createdAt: string;
-    updatedAt: string;
-    profile: IProfile;
-    role: IRole[];
+    verified_at: string | null;
+    role: string;
+    created_at: string;
+    updated_at: string;
 }

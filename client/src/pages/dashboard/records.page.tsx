@@ -213,10 +213,10 @@ function PreviewRecords() {
                     "item-details": (
                         <Button
                             type="dashed"
-                            shape="default"
                             icon={<EyeOutlined />}
                             size={"small"}
                             style={{ fontSize: "12px" }}
+                            shape="round"
                         >
                             VIEW MORE DETAILS
                         </Button>

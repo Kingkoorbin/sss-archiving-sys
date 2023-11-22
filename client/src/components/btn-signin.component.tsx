@@ -20,6 +20,7 @@ export const BtnSignIn = ({ isLoading, title }: IBtnSignIn) => {
             loading={isLoading}
             style={{ marginTop: 20 }}
             htmlType="submit"
+            shape="round"
             block
         >
             {title ? title : "Sign in"}
@@ -34,6 +35,7 @@ export const BtnNotYou = ({ event, title }: IBtnNotYou) => {
             size="small"
             style={{ marginTop: 5 }}
             htmlType="button"
+            shape="round"
             block
             onClick={() => event()}
         >
