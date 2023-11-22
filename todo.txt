@@ -1,6 +1,13 @@
 
 
-1. Create an ENDPOINT for saving the records
+(DONE) Create an ENDPOINT for saving the records
     - it should be formatted / mapped to the properties exact in table
     - the data should be dynamic and coming from microservice (hooks)
     - display all in pagination
+
+1. Add Employee Table
+2. If emloyee row is selected it should show the profile
+    - can edit
+    - can delete
+    - can add workhistory
+    - can delete work history
