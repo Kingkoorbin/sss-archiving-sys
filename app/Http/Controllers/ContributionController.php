@@ -31,7 +31,7 @@ class ContributionController extends Controller
         if ($sssNo) {
             $contributions = Contributions::where('sss_no', $sssNo)->get();
             return response()->json($contributions);
-        } 
+        }
         else if ($name) {
             $contributions = Contributions::where('name', 'ILIKE', "%$name%")->get();
             return response()->json($contributions);
@@ -42,18 +42,8 @@ class ContributionController extends Controller
         }
         return response()->json(Contributions::all());
     }
-    
+
     public function saveContributions(Request $request) {
-        // $allowedRoles = ["ADMIN"];
-        // $user = auth()->user();
-
-        // if(!in_array($user->role, $allowedRoles)) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'Role not authorized',
-        //     ], 401);
-        // }
-
         $validator = ContributionValidator::validateSaveContributions($request);
 
         if ($validator->fails()) {
@@ -74,9 +64,6 @@ class ContributionController extends Controller
 
         Contributions::insert($contributionsData);
 
-        // $userId = $user->id;
-        // event(new UserActivity('Contribution added.', $userId));
-        
         return response()->json($contributionsData, 201);
     }
 

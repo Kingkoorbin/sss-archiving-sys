@@ -248,17 +248,29 @@ class ClientController extends Controller
         }
 
         $type = $request->query('role');
+        $department = $request->query('department');
 
         if ($type && strtoupper($type) === 'STAFF') {
             // Fetch STAFF from the users table
-            $staff = User::orderBy('created_at', 'desc')->where('role', '=', 'STAFF')->get();
+            $staff = User::orderBy('created_at', 'desc')
+                ->where('role', '=', 'STAFF')
+                ->get();
             return response()->json($staff);
         }
 
-        // Fetch clients with their workHistory
-        $clients = Client::orderBy('created_at', 'desc')->with('workHistory')->get();
+        else if ($department && strtoupper($type) === 'EMPLOYEE') {
+            // Fetch STAFF from the users table
+            $employees = Client::orderBy('created_at', 'desc')
+                ->where('department', 'ILIKE', "%$department%")
+                ->with('workHistory')->get();
 
-        return response()->json($clients);
+            return response()->json($employees);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Incomplete query parameters.',
+        ], 404);
     }
 
     public function updateClient(Request $request, $id)
