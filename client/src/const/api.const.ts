@@ -1,34 +1,35 @@
 export const API_BASE_URL =
-    import.meta.env.VITE_ENV === "development"
-        ? import.meta.env.VITE_API_BASE_URL_LOCAL
-        : import.meta.env.VITE_API_BASE_URL;
+  import.meta.env.VITE_ENV === 'development'
+    ? import.meta.env.VITE_API_BASE_URL_LOCAL
+    : import.meta.env.VITE_API_BASE_URL;
 
 export const API = {
-    // Authentication related
-    login: `${API_BASE_URL}/api/auth/v1/login`,
-    register: `${API_BASE_URL}/api/auth/v1/register`,
-    ecryptLogin: `${API_BASE_URL}/api/auth/v1/login/ecrypt`,
-    ecryptedLogin: `${API_BASE_URL}/api/auth/v1/login/encrypted`,
-    verifyToken: `${API_BASE_URL}/api/auth/v1/token/verify`,
+  // Authentication related
+  login: `${API_BASE_URL}/api/auth/v1/login`,
+  register: `${API_BASE_URL}/api/auth/v1/register`,
+  ecryptLogin: `${API_BASE_URL}/api/auth/v1/login/ecrypt`,
+  ecryptedLogin: `${API_BASE_URL}/api/auth/v1/login/encrypted`,
+  verifyToken: `${API_BASE_URL}/api/auth/v1/token/verify`,
 
-    // User related
-    users: `${API_BASE_URL}/api/client/v1`,
-    employeeEnrollment: `${API_BASE_URL}/api/client/v1`,
+  // User related
+  users: `${API_BASE_URL}/api/client/v1`,
+  employees: `${API_BASE_URL}/api/client/v1`,
+  employeeEnrollment: `${API_BASE_URL}/api/client/v1`,
 
-    // Transactions related
-    transactions: `${API_BASE_URL}/api/transaction/v1/all`,
-    transactionData: `${API_BASE_URL}/api/transaction/v1/data`,
-    myTransactionData: `${API_BASE_URL}/api/me/transaction/v1/data`,
-    userTransactions: `${API_BASE_URL}/api/transaction/v1/client`,
+  // Transactions related
+  transactions: `${API_BASE_URL}/api/transaction/v1/all`,
+  transactionData: `${API_BASE_URL}/api/transaction/v1/data`,
+  myTransactionData: `${API_BASE_URL}/api/me/transaction/v1/data`,
+  userTransactions: `${API_BASE_URL}/api/transaction/v1/client`,
 
-    // Employee related
-    updateUserStatus: `${API_BASE_URL}/api/employee/v1/profile-verification`,
+  // Employee related
+  updateUserStatus: `${API_BASE_URL}/api/employee/v1/profile-verification`,
 
-    // Others
-    activities: `${API_BASE_URL}/api/activities/v1`,
+  // Others
+  activities: `${API_BASE_URL}/api/activities/v1`,
 
-    // Bet
-    dailyResults: `${API_BASE_URL}/api/bet/v1/daily-result`,
+  // Bet
+  dailyResults: `${API_BASE_URL}/api/bet/v1/daily-result`,
 };
 
 export const API_GET_PROFILES = `${API_BASE_URL}/api/clients/v1/profiles`;

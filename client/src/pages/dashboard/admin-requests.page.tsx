@@ -1,16 +1,17 @@
-import { useEffect } from "react";
-import NavigationBarAdmin from "../../components/nav-admin.component";
+import { useEffect } from 'react';
+import NavigationBarAdmin from '../../components/nav-admin.component';
 
 function AdminRequests() {
+  useEffect(() => {
+    document.title = 'Requests | SSS Archiving System';
+    return () => {};
+  }, []);
 
-    useEffect(() => {
-        document.title = "Requests | SSS Archiving System";
-        return () => {}
-    }, [])
-
-    return <>
-        <NavigationBarAdmin />
+  return (
+    <>
+      <NavigationBarAdmin />
     </>
+  );
 }
 
-export default AdminRequests
+export default AdminRequests;

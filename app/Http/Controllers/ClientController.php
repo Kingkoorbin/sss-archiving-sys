@@ -258,7 +258,7 @@ class ClientController extends Controller
             return response()->json($staff);
         }
 
-        else if ($department && strtoupper($type) === 'EMPLOYEE') {
+        else if ($type && strtoupper($type) === 'EMPLOYEE') {
             // Fetch STAFF from the users table
             $employees = Client::orderBy('created_at', 'desc')
                 ->where('department', 'ILIKE', "%$department%")

@@ -1,28 +1,28 @@
 export const capitalizeName = (name: string): string => {
-    const words: string[] = name.split(" ");
+  const words: string[] = name.split(' ');
 
-    const capitalizedWords: string[] = words.map((word) => {
-        if (word.length > 0) {
-            return word[0].toUpperCase() + word.slice(1).toLowerCase();
-        }
-        return "";
-    });
+  const capitalizedWords: string[] = words.map((word) => {
+    if (word.length > 0) {
+      return word[0].toUpperCase() + word.slice(1).toLowerCase();
+    }
+    return '';
+  });
 
-    return capitalizedWords.join(" ");
+  return capitalizedWords.join(' ');
 };
 
 export const isEmpty = (value: any) => {
-    if (value === undefined || value === null) {
-        return true;
-    }
+  if (value === undefined || value === null) {
+    return true;
+  }
 
-    if (typeof value === 'string' || Array.isArray(value)) {
-        return value.length === 0;
-    }
+  if (typeof value === 'string' || Array.isArray(value)) {
+    return value.length === 0;
+  }
 
-    if (typeof value === 'object') {
-        return Object.keys(value).length === 0;
-    }
+  if (typeof value === 'object') {
+    return Object.keys(value).length === 0;
+  }
 
-    return false;
+  return false;
 };

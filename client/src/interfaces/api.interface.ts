@@ -1,11 +1,11 @@
 export interface IApiResponse<> {
-    status: any;
-    code: any;
-    role: "ADMIN" | "STAFF";
-    access_token: any;
+  status: any;
+  code: any;
+  role: 'ADMIN' | 'STAFF';
+  access_token: any;
 }
 
 export interface ISavedLogin {
-    owner: string;
-    token: string;
+  owner: string;
+  token: string;
 }
