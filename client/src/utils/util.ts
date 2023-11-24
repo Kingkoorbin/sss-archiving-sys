@@ -12,7 +12,7 @@ export const capitalizeName = (name: string): string => {
 };
 
 export const isEmpty = (value: any) => {
-  if (value === undefined || value === null) {
+  if (value === undefined || value === null || value === '') {
     return true;
   }
 

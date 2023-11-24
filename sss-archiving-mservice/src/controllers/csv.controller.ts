@@ -5,6 +5,7 @@ import { validateGeneratePdfBody } from '../_core/validators/csv.validator';
 import { statuses } from '../_core/const/api.statuses';
 import axios from 'axios';
 import { getEnv } from '../_core/config/env.config';
+import dayjs from 'dayjs';
 
 export const uploadCsv = async (req: Request, res: Response) => {
     try {
@@ -65,7 +66,7 @@ export const generatePdf = async (req: Request, res: Response) => {
 
         // Set response headers for PDF
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'inline; filename=employee_contributions.pdf');
+        res.setHeader('Content-Disposition', `inline; filename=SSS-ARCHIVING-SYS-${dayjs(new Date()).format()}.pdf`);
 
         // Pipe the PDF content to the response
         doc.pipe(res);

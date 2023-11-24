@@ -27,9 +27,14 @@ export const API = {
 
   // Others
   activities: `${API_BASE_URL}/api/activities/v1`,
-
-  // Bet
-  dailyResults: `${API_BASE_URL}/api/bet/v1/daily-result`,
+  contributions: `${API_BASE_URL}/api/record/v1`,
+  contributionRequests: `${API_BASE_URL}/api/contribution/v1`,
+  uploadCsv: `${
+    import.meta.env.VITE_API_MICROSERVICE_BASE_URL
+  }/api/upload/v1/csv`,
+  generatePdf: `${
+    import.meta.env.VITE_API_MICROSERVICE_BASE_URL
+  }/api/generate/v1/pdf`,
 };
 
 export const API_GET_PROFILES = `${API_BASE_URL}/api/clients/v1/profiles`;

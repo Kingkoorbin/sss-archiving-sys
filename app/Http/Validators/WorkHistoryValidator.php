@@ -10,8 +10,8 @@ class WorkHistoryValidator {
     {
 
         $validator = Validator::make($request->all(), [
-            'company_name' => 'required|string|min:8|max:75',
-            'position' => 'required|string|min:8|max:75',
+            'company_name' => 'required|string|min:2|max:75',
+            'position' => 'required|string|min:6|max:75',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
             'responsibilities' => 'required|string|min:8|max:255',

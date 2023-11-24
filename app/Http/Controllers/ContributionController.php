@@ -18,7 +18,7 @@ class ContributionController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api')
-            ->only(['updateSbrValues']);
+            ->only(['updateSbrValues', 'getAll']);
     }
 
     public function getAll(Request $request)
@@ -28,19 +28,23 @@ class ContributionController extends Controller
         $from = $request->query('from');
         $to = $request->query('to');
 
+        $query = Contributions::query();
+
         if ($sssNo) {
-            $contributions = Contributions::where('sss_no', $sssNo)->get();
-            return response()->json($contributions);
+            $query->where('sss_no', $sssNo);
         }
-        else if ($name) {
-            $contributions = Contributions::where('name', 'ILIKE', "%$name%")->get();
-            return response()->json($contributions);
+        
+        if ($name) {
+            $query->where('name', 'ILIKE', "%$name%");
         }
-        else if($from && $to) {
-            $contributions = Contributions::whereBetween('sbr_date', [$from, $to])->get();
-            return response()->json($contributions);
+        
+        if ($from && $to) {
+            $query->whereBetween('sbr_date', [$from, $to]);
         }
-        return response()->json(Contributions::all());
+        
+        $contributions = $query->get();
+        
+        return response()->json($contributions);
     }
 
     public function saveContributions(Request $request) {

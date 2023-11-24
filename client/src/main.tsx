@@ -10,11 +10,17 @@ import AdminAccountManagement from './pages/dashboard/admin-account-mgmt.page';
 import AdminRequests from './pages/dashboard/admin-requests.page';
 import AdminContributionRecord from './pages/dashboard/admin-contribution-record.page';
 import AdminActivityLogs from './pages/dashboard/admin-activity-logs.page';
+import AdminAccountEdit from './pages/dashboard/admin-account-edit.page';
+import RequestPage from './pages/dashboard/request.page';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Login />,
+  },
+  {
+    path: '/request',
+    element: <RequestPage />,
   },
   {
     path: '/dashboard/a',
@@ -23,6 +29,10 @@ const router = createBrowserRouter([
   {
     path: '/dashboard/a/account-management',
     element: <AdminAccountManagement />,
+  },
+  {
+    path: '/dashboard/a/account-management/:id/edit',
+    element: <AdminAccountEdit />,
   },
   {
     path: '/dashboard/a/requests',
@@ -36,7 +46,6 @@ const router = createBrowserRouter([
     path: '/dashboard/a/activities',
     element: <AdminActivityLogs />,
   },
-
   {
     path: '/dashboard/s',
     element: <StaffDashboard />,

@@ -56,6 +56,16 @@ export interface IWorkHistory {
   updated_at: string; // Assuming date-time format
 }
 
+export type IExperiencePayload = Pick<
+  IWorkHistory,
+  | 'client_id'
+  | 'company_name'
+  | 'position'
+  | 'start_date'
+  | 'end_date'
+  | 'responsibilities'
+>;
+
 export interface IEmployeeProfile {
   id: number;
   school_id: string;
@@ -72,4 +82,50 @@ export interface IEmployeeProfile {
   created_at: string; // Assuming date-time format
   updated_at: string; // Assuming date-time format
   work_history: IWorkHistory[];
+}
+
+export interface ISearchPayload {
+  role: string;
+  searchKeyword?: string;
+}
+
+export interface IContribution {
+  id: number;
+  name: string;
+  sbr_date: string | null;
+  sbr_no: string | null;
+  sss_no: string;
+  ss: string;
+  ec: string;
+  total: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface IGeneratePdfPayload {
+  from?: string;
+  to?: string;
+  sssNo?: string;
+  name?: string;
+}
+
+export interface ISBRPayload {
+  sbr_date: string;
+  sbr_no: string;
+}
+
+export interface IContributionRequest {
+  id: number;
+  editor: null | string;
+  sss_no: string;
+  name: string;
+  date_of_employment: string;
+  date_of_resignation: string;
+  requester: string;
+  email: string;
+  phone_number: string;
+  date_needed: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED'; // Adjust status values accordingly
+  created_at: string;
+  updated_at: string;
 }

@@ -19,7 +19,7 @@ const RegistrationEmployeeFormFields: React.FC<
   return (
     <>
       <Flex gap={5} justify="space-between">
-        <div>
+        <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
             First name
           </p>
@@ -36,7 +36,7 @@ const RegistrationEmployeeFormFields: React.FC<
             )}
           />
         </div>
-        <div>
+        <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
             Middle name
           </p>
@@ -53,7 +53,7 @@ const RegistrationEmployeeFormFields: React.FC<
             )}
           />
         </div>
-        <div>
+        <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
             Last name
           </p>

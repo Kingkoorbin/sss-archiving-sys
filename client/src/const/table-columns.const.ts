@@ -34,51 +34,95 @@ export const employeeColumns: ColumnsType<DataType> = [
   {
     title: 'Department',
     dataIndex: 'department',
-    width: 150,
+    width: 200,
   },
   {
     title: 'First name',
     dataIndex: 'first_name',
-    width: 140,
+    width: 100,
   },
   {
     title: 'Middle name',
     dataIndex: 'middle_name',
-    width: 140,
+    width: 100,
   },
   {
     title: 'Last name',
     dataIndex: 'last_name',
-    width: 140,
-  },
-  {
-    title: 'Gender',
-    dataIndex: 'gender',
-    width: 60,
-  },
-  {
-    title: 'Birthdate',
-    dataIndex: 'birthdate',
     width: 100,
   },
+
+  // {
+  //   title: 'Birthdate',
+  //   dataIndex: 'birthdate',
+  //   width: 100,
+  // },
   {
     title: 'Present address',
     dataIndex: 'present_address',
-    width: 150,
+    width: 170,
   },
   {
     title: 'Permanent address',
     dataIndex: 'permanent_address',
-    width: 150,
+    width: 170,
   },
   {
     title: 'Phone',
     dataIndex: 'phone_number',
-    width: 60,
+    width: 40,
   },
   {
-    title: 'Created',
-    dataIndex: 'created_at',
-    width: 160,
+    title: '',
+    dataIndex: 'edit',
+    width: 40,
+  },
+  // {
+  //   title: 'Created',
+  //   dataIndex: 'created_at',
+  //   width: 160,
+  // },
+];
+
+export const contributionColumns: ColumnsType<DataType> = [
+  {
+    title: 'SSS No',
+    dataIndex: 'sss_no',
+    width: 50,
+  },
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    width: 150,
+  },
+  {
+    title: 'SBR No',
+    dataIndex: 'sbr_no',
+    width: 100,
+  },
+  {
+    title: 'SBR Date',
+    dataIndex: 'sbr_date',
+    width: 100,
+  },
+  {
+    title: 'SS',
+    dataIndex: 'ss',
+    width: 100,
+  },
+  {
+    title: 'EC',
+    dataIndex: 'ec',
+    width: 100,
+  },
+  {
+    title: 'Total',
+    dataIndex: 'total',
+    width: 100,
+  },
+  {
+    title: '',
+    dataIndex: 'edit',
+    width: 40,
   },
 ];

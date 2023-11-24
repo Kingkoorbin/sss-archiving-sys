@@ -7,6 +7,7 @@ import {
   Table,
   Tabs,
   Timeline,
+  Tooltip,
   message,
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -24,15 +25,18 @@ import useLocalStorage from '../../hooks/useLocalstorage.hook';
 import {
   IEmployeeProfile,
   IEmployeeRegistrationPayload,
+  ISearchPayload,
   IUser,
+  IWorkHistory,
 } from '../../interfaces/client.interface';
 import {
   formatStandardDate,
   formatStandardDateTime,
 } from '../../utils/date.util';
 import RegistrationEmployeeFormFields from '../../components/form-registration-employee.component';
-import Search from 'antd/es/input/Search';
 import { employeeColumns, staffColumns } from '../../const/table-columns.const';
+import { EditOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
+import SearchFormFields from '../../components/form-search-employee.component';
 
 interface IState {
   isFetchingStaffs: boolean;
@@ -40,9 +44,11 @@ interface IState {
   isAuthModalOpen: boolean;
   isRegistrationModealOpen: boolean;
   isEmployeeRegistrationOpen: boolean;
+  isWorkHistoryModalOpen: boolean;
   isPasswordNotMatched: boolean;
   isPasswordMinMaxErr: boolean;
   isUsernameAlreadyExist: boolean;
+  stateWorkHistoryPreview?: IWorkHistory;
   employees: IEmployeeProfile[];
   users: IUser[];
 }
@@ -67,18 +73,57 @@ function AdminAccountManagement() {
     formState: { isSubmitting: isCreatingEmployee },
   } = useForm<IEmployeeRegistrationPayload>();
 
+  const {
+    handleSubmit: handleSubmitSearchFormData,
+    control: searchController,
+    formState: { isSubmitting: isSearchingEmployee },
+  } = useForm<ISearchPayload>();
+
   const [state, setState] = useState<IState>({
     isFetchingStaffs: false,
     isFetchingEmployees: false,
     isAuthModalOpen: false,
     isRegistrationModealOpen: false,
+    isWorkHistoryModalOpen: false,
     isPasswordNotMatched: false,
     isUsernameAlreadyExist: false,
     isPasswordMinMaxErr: false,
     isEmployeeRegistrationOpen: false,
+    stateWorkHistoryPreview: {
+      client_id: 999,
+      company_name: '',
+      created_at: '',
+      end_date: '',
+      id: 999,
+      position: '',
+      responsibilities: '',
+      start_date: '',
+      updated_at: '',
+    },
     employees: [],
     users: [],
   });
+
+  const handleSearch: SubmitHandler<ISearchPayload> = async (data) => {
+    const isInvalidSearchkey =
+      /[0-9]/.test(data.searchKeyword!) && /[a-zA-Z]/.test(data.searchKeyword!);
+
+    if (isInvalidSearchkey) {
+      return toastError(
+        'Search keyword must be a School ID or Department name.'
+      );
+    }
+
+    // Check if the searchKeyword contains a number
+    const isNumeric = /\d/.test(data.searchKeyword!);
+    if (isNumeric) {
+      // If it contains a number, search by schoolId
+      await getAllEmployees({ schoolId: data.searchKeyword?.trim() });
+    } else {
+      // If it doesn't contain a number, search by department
+      await getAllEmployees({ searchKeyword: data.searchKeyword?.trim() });
+    }
+  };
 
   const handleOk = () => {
     setState((prev) => ({
@@ -233,7 +278,7 @@ function AdminAccountManagement() {
   > = async (data) => {
     const fields = [
       data.first_name,
-      data.middle_name,
+      // data.middle_name,
       data.last_name,
       data.birthdate,
       data.department,
@@ -246,7 +291,9 @@ function AdminAccountManagement() {
     if (fields.some((field) => isEmpty(field))) {
       return toastError('All fields are required.');
     } else if (
-      !fields.slice(0, 3).every((name) => name.length >= 2 && name.length <= 75)
+      ![data.first_name, data.last_name].every(
+        (name) => name.length >= 2 && name.length <= 75
+      )
     ) {
       return toastError('Please use your real name.');
     } else if (
@@ -254,6 +301,10 @@ function AdminAccountManagement() {
       data.phone_number.length !== 13
     ) {
       return toastError('Invalid Phone number format');
+    }
+
+    if (isEmpty(data.middle_name)) {
+      data.middle_name = 'N/A';
     }
 
     const employeeRegistrationPayload = await HttpClient.setAuthToken(
@@ -357,18 +408,38 @@ function AdminAccountManagement() {
     }));
   };
 
-  const getAllEmployees = async () => {
+  const getAllEmployees = async (data?: {
+    searchKeyword?: string;
+    schoolId?: string;
+  }) => {
     setState((prev) => ({
       ...prev,
       isFetchingEmployees: true,
     }));
 
-    const getAllEmployeesResponse = await HttpClient.setAuthToken(
-      getAuthResponse?.access_token
-    ).get<IEmployeeProfile[], { role: string }>(API.employees, {
-      role: 'EMPLOYEE',
-    });
+    let getAllEmployeesResponse: any = null;
 
+    if (!isEmpty(data?.schoolId)) {
+      const findBySchoolId = await HttpClient.setAuthToken(
+        getAuthResponse?.access_token
+      ).get<IEmployeeProfile[], any>(
+        `${API.employees}/${data?.schoolId}/information`,
+        {}
+      );
+      if (findBySchoolId.message === 'Employee Not found.') {
+        getAllEmployeesResponse = [];
+      } else {
+        findBySchoolId.data = [findBySchoolId.data as any];
+        getAllEmployeesResponse = findBySchoolId;
+      }
+    } else {
+      getAllEmployeesResponse = await HttpClient.setAuthToken(
+        getAuthResponse?.access_token
+      ).get<IEmployeeProfile[], { role: string }>(API.employees, {
+        role: 'EMPLOYEE',
+        ...(data?.searchKeyword ? { department: data?.searchKeyword } : {}),
+      });
+    }
     if (getAllEmployeesResponse.message === 'Authentication required.') {
       setState((prev) => ({
         ...prev,
@@ -379,16 +450,37 @@ function AdminAccountManagement() {
     }
 
     if (!Array.isArray(getAllEmployeesResponse.data)) {
-      return;
+      setState((prev) => ({
+        ...prev,
+        isFetchingEmployees: false,
+      }));
+      return toastError(
+        'Oops! No employees found for the provided search keyword.'
+      );
     }
 
     setState((prev) => ({
       ...prev,
       isFetchingEmployees: false,
-      employees: getAllEmployeesResponse.data?.map((el) => ({
+      employees: getAllEmployeesResponse.data?.map((el: IEmployeeProfile) => ({
         ...el,
+        middle_name: el.middle_name === 'N/A' ? '' : el.middle_name,
         birthdate: formatStandardDate(el.birthdate),
         created_at: formatStandardDateTime(el.created_at),
+        edit: (
+          <Tooltip title="Edit">
+            <Button
+              shape="circle"
+              icon={<EditOutlined />}
+              onClick={() =>
+                navigate(
+                  `/dashboard/a/account-management/${el.school_id}/edit`,
+                  { state: el }
+                )
+              }
+            />
+          </Tooltip>
+        ),
         key: el.id,
       })) as any,
     }));
@@ -442,10 +534,10 @@ function AdminAccountManagement() {
               label: `Employee`,
               children: (
                 <>
-                  <Search
-                    placeholder="Search by School ID or department"
-                    style={{ marginBottom: 20 }}
-                    loading={false}
+                  <SearchFormFields
+                    onSearch={handleSubmitSearchFormData(handleSearch)}
+                    control={searchController}
+                    isSearching={isSearchingEmployee}
                   />
                   <Table
                     columns={employeeColumns}
@@ -456,75 +548,224 @@ function AdminAccountManagement() {
                       expandedRowRender: (record: any) => {
                         return (
                           <div style={{ padding: 20 }}>
-                            <p
-                              style={{
-                                padding: 0,
-                                margin: 0,
-                                fontSize: 18,
-                                fontWeight: 'normal',
-                                color: '#111',
-                                marginBottom: 20,
-                              }}
-                            >
-                              Work History of {record.first_name},{' '}
-                              {record.last_name}
-                            </p>
-                            <Divider />
-                            <Timeline
-                              mode="left"
-                              items={record?.work_history?.map((v: any) => ({
-                                children: (
-                                  <div>
+                            <Flex>
+                              <div
+                                style={{
+                                  flex: 1,
+                                  margin: 50,
+                                  padding: 50,
+                                  background: 'white',
+                                  borderRadius: 20,
+                                }}
+                              >
+                                <p
+                                  style={{
+                                    fontSize: 24,
+                                    fontWeight: 'bold',
+                                    color: '#111',
+                                  }}
+                                >
+                                  Summary
+                                </p>
+                                <p
+                                  style={{
+                                    padding: 0,
+                                    margin: 0,
+                                    fontSize: 14,
+                                    color: '#111',
+                                  }}
+                                >
+                                  Full name
+                                </p>
+                                <p
+                                  style={{
+                                    padding: 0,
+                                    margin: 0,
+                                    fontSize: 24,
+                                    fontWeight: 'normal',
+                                    color: '#444',
+                                  }}
+                                >
+                                  {record.last_name}, {record.first_name}{' '}
+                                  {record.middle_name}
+                                </p>
+
+                                <p
+                                  style={{
+                                    padding: 0,
+                                    margin: 0,
+                                    marginTop: 20,
+                                    fontSize: 14,
+                                    color: '#111',
+                                  }}
+                                >
+                                  Gender
+                                </p>
+                                <p
+                                  style={{
+                                    padding: 0,
+                                    margin: 0,
+                                    fontSize: 24,
+                                    fontWeight: 'normal',
+                                    color: '#444',
+                                  }}
+                                >
+                                  {record.gender === 'FEMALE' ? (
+                                    <WomanOutlined style={{ color: 'pink' }} />
+                                  ) : (
+                                    <></>
+                                  )}
+                                  {record.gender === 'MALE' ? (
+                                    <ManOutlined style={{ color: 'blue' }} />
+                                  ) : (
+                                    <></>
+                                  )}{' '}
+                                  {record.gender}
+                                </p>
+
+                                <p
+                                  style={{
+                                    padding: 0,
+                                    margin: 0,
+                                    marginTop: 20,
+                                    fontSize: 14,
+                                    color: '#111',
+                                  }}
+                                >
+                                  Birthdate
+                                </p>
+                                <p
+                                  style={{
+                                    padding: 0,
+                                    margin: 0,
+                                    fontSize: 24,
+                                    fontWeight: 'normal',
+                                    color: '#444',
+                                  }}
+                                >
+                                  {record.birthdate}
+                                </p>
+                                <Divider />
+
+                                <p
+                                  style={{
+                                    padding: 0,
+                                    margin: 0,
+                                    marginTop: 100,
+                                    fontSize: 12,
+                                    color: '#111',
+                                  }}
+                                >
+                                  Date Created
+                                </p>
+                                <p
+                                  style={{
+                                    padding: 0,
+                                    margin: 0,
+                                    fontSize: 16,
+                                    fontWeight: 'normal',
+                                    color: '#444',
+                                  }}
+                                >
+                                  {record.created_at}
+                                </p>
+                              </div>
+                              <div
+                                style={{
+                                  flex: 2,
+                                  margin: 50,
+                                  padding: 50,
+                                  background: 'white',
+                                  borderRadius: 20,
+                                }}
+                              >
+                                {record?.work_history?.length ? (
+                                  <>
                                     <p
                                       style={{
                                         padding: 0,
                                         margin: 0,
-                                        fontSize: 16,
+                                        fontSize: 24,
                                         fontWeight: 'bold',
                                         color: '#111',
+                                        marginBottom: 20,
                                       }}
                                     >
-                                      {v.company_name}
+                                      Experience
                                     </p>
-                                    <p
-                                      style={{
-                                        padding: 0,
-                                        margin: 0,
-                                        fontSize: 12,
-                                        fontWeight: 'normal',
-                                        color: '#444',
-                                        fontStyle: 'italic',
-                                      }}
-                                    >
-                                      {v.position}
-                                    </p>
-                                    <p
-                                      style={{
-                                        padding: 0,
-                                        margin: 0,
-                                        fontSize: 14,
-                                        fontWeight: 'normal',
-                                        color: '#111',
-                                      }}
-                                    >
-                                      {v.responsibilities}
-                                    </p>
+                                    <Divider />
+                                    <Timeline
+                                      mode="left"
+                                      items={record?.work_history?.map(
+                                        (v: any) => ({
+                                          children: (
+                                            <div
+                                              style={{ cursor: 'pointer' }}
+                                              onClick={() => {
+                                                setState((prev) => ({
+                                                  ...prev,
+                                                  isWorkHistoryModalOpen: true,
+                                                  stateWorkHistoryPreview: v,
+                                                }));
+                                              }}
+                                            >
+                                              <p
+                                                style={{
+                                                  padding: 0,
+                                                  margin: 0,
+                                                  fontSize: 16,
+                                                  fontWeight: 'bold',
+                                                  color: '#111',
+                                                }}
+                                              >
+                                                {v.company_name}
+                                              </p>
+                                              <p
+                                                style={{
+                                                  padding: 0,
+                                                  margin: 0,
+                                                  fontSize: 12,
+                                                  fontWeight: 'normal',
+                                                  color: '#444',
+                                                  fontStyle: 'italic',
+                                                }}
+                                              >
+                                                {v.position}
+                                              </p>
+                                              <p
+                                                style={{
+                                                  padding: 0,
+                                                  margin: 0,
+                                                  fontSize: 14,
+                                                  fontWeight: 'normal',
+                                                  color: '#111',
+                                                }}
+                                              >
+                                                {v.responsibilities}
+                                              </p>
 
-                                    <p
-                                      style={{
-                                        padding: 0,
-                                        margin: 0,
-                                        fontSize: 12,
-                                        marginTop: 20,
-                                        color: '#111',
-                                      }}
-                                    >
-                                      {v.start_date} to {v.end_date}
-                                    </p>
-                                  </div>
-                                ),
-                              }))}
-                            />
+                                              <p
+                                                style={{
+                                                  padding: 0,
+                                                  margin: 0,
+                                                  fontSize: 12,
+                                                  marginTop: 20,
+                                                  color: '#111',
+                                                }}
+                                              >
+                                                {v.start_date} to {v.end_date}
+                                              </p>
+                                            </div>
+                                          ),
+                                        })
+                                      )}
+                                    />
+                                  </>
+                                ) : (
+                                  <div> </div>
+                                )}
+                              </div>
+                            </Flex>
                           </div>
                         );
                       },
@@ -603,6 +844,71 @@ function AdminAccountManagement() {
             Submit
           </Button>
         </form>
+      </Modal>
+
+      <Modal
+        open={state.isWorkHistoryModalOpen}
+        onOk={() =>
+          setState((prev) => ({
+            ...prev,
+            isWorkHistoryModalOpen: !state.isWorkHistoryModalOpen,
+          }))
+        }
+        cancelButtonProps={{ style: { display: 'none' } }}
+        onCancel={() =>
+          setState((prev) => ({
+            ...prev,
+            isWorkHistoryModalOpen: !state.isWorkHistoryModalOpen,
+          }))
+        }
+      >
+        <p
+          style={{
+            padding: 0,
+            margin: 0,
+            fontSize: 18,
+            fontWeight: 'bold',
+            color: '#111',
+          }}
+        >
+          {state.stateWorkHistoryPreview?.company_name}
+        </p>
+        <p
+          style={{
+            padding: 0,
+            margin: 0,
+            fontSize: 14,
+            fontWeight: 'normal',
+            color: '#444',
+            fontStyle: 'italic',
+          }}
+        >
+          {state.stateWorkHistoryPreview?.position}
+        </p>
+        <p
+          style={{
+            padding: 0,
+            margin: 0,
+            fontSize: 16,
+            fontWeight: 'normal',
+            color: '#111',
+          }}
+        >
+          {state.stateWorkHistoryPreview?.responsibilities}
+        </p>
+
+        <p
+          style={{
+            padding: 0,
+            margin: 0,
+            fontSize: 14,
+            marginTop: 20,
+            color: '#111',
+          }}
+        >
+          {state.stateWorkHistoryPreview?.start_date} to{' '}
+          {state.stateWorkHistoryPreview?.end_date}
+        </p>
       </Modal>
 
       <Modal
