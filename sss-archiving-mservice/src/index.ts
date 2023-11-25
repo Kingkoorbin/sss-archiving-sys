@@ -36,7 +36,7 @@ async function runApp() {
   app.use('/api', csvRoute);
 
   // Connect to MongoDB
-  connectDB();
+  // connectDB();
 
   // Start the HTTPS server
   app.listen(Number(env?.PORT) || 5000, () => {
