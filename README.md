@@ -1,6 +1,15 @@
 ## Running the Application
 Please ensure that you have Laravel, PHP, and Node.js installed and properly set up in your environment before proceeding with the following steps.
 
+#### Quick steps to run the Application <br/>
+
+```
+    $ npm run install:packages
+    $ php artisan run:seeds
+    $ npm run start:app
+```
+
+
 #### Step 1: Install Dependencies<br/>
 Open a terminal or command prompt, navigate to the project directory, and run the following command to install the required dependencies:
 ```
