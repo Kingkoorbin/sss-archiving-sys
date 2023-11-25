@@ -74,7 +74,7 @@ function Login() {
             if (loginResponse.data?.role === 'ADMIN') {
               return navigate('/dashboard/a/requests');
             } else if (loginResponse.data?.role === 'STAFF') {
-              return navigate('/dashboard/s/requests');
+              // return navigate('/dashboard/s/requests');
             }
           }
           break;
