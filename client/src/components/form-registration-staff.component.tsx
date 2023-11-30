@@ -76,7 +76,7 @@ const RegistrationFormFields: React.FC<RegistrationFormFieldsProps> = ({
         }}
         render={({ field }) => (
           <>
-            <Form.Item extra="Password requires 1 special, 1 uppercase, 1 number, and a minimum of 6 characters.">
+            <Form.Item extra="Password requires 1 special, 1 uppercase, 1 number, and a minimum of 8 characters.">
               <Input.Password
                 size="large"
                 placeholder="Enter"
