@@ -21,7 +21,21 @@ class Client extends Model
         'birthdate',
         'active',
         'department',
-
+        'personnel_category',
+        'suffix',
+        'civil_status',
+        'blood_type',
+        'email',
+        'tin',
+        'sss_no',
+        'philhealth_no',
+        'pagibig_no',
+        'rvm_retirement_no',
+        'bpi_atm_account_no',
+        'date_hired',
+        'date_resigned',
+        'main_employer',
+        'address',
         // Relationships
         // 'user_id',
     ];

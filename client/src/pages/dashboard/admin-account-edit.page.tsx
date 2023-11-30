@@ -294,10 +294,10 @@ function AdminAccountEdit() {
               </Button>
             </Flex>
             <form onSubmit={handleSubmitEmployeeFormData(handleSaveEdit)}>
-              <RegistrationEmployeeFormFields
+              {/* <RegistrationEmployeeFormFields
                 control={employeeController}
                 isRegistrationFailed={false}
-              />
+              /> */}
               <Button
                 type="primary"
                 size="middle"

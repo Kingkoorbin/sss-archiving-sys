@@ -42,6 +42,23 @@ export interface IEmployeeRegistrationPayload {
   id: string;
   gender: 'MALE' | 'FEMALE' | 'OTHER';
   phone_number: string;
+
+  suffix: string;
+  blood_type: string;
+  civil_status: string;
+  school_id: string;
+  email: string;
+  sss_no: string;
+  philhealth_no: string;
+  pagibig_no: string;
+  bpi_atm_account_no: string;
+  tin: string;
+  rvm_retirement_no: string;
+  date_hired: string;
+  date_resigned: string;
+  personnel_category: string;
+  main_employer: string;
+  address: string;
 }
 
 export interface IWorkHistory {

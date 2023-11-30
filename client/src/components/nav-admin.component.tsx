@@ -5,6 +5,7 @@ import {
   SettingOutlined,
   TeamOutlined,
   FieldTimeOutlined,
+  UserAddOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
@@ -40,17 +41,69 @@ const AdminNavbar: React.FC = () => {
       onClick: () => navigate('/dashboard/a/requests', { replace: true }),
     },
     {
-      label: 'SSS Contributionss',
+      label: 'SSS Contributions',
       key: 'item-soa',
       icon: <CalendarOutlined />,
       style: {
-        marginRight: 'auto',
         color:
           location.pathname === '/dashboard/a/contributions' ? '#111' : '#999',
       },
       onClick: () => navigate('/dashboard/a/contributions', { replace: true }),
     },
-
+    {
+      label: 'Employeee Management',
+      key: 'item-employee-mgmt',
+      icon: <UserAddOutlined />,
+      style: {
+        color: location.pathname === '/dashboard/a/employee' ? '#111' : '#999',
+      },
+      children: [
+        {
+          type: 'group',
+          children: [
+            {
+              label: 'Employees',
+              key: 'item-employee-mgmt:1',
+              onClick: () =>
+                navigate('/dashboard/a/employee', { replace: true }),
+            },
+            {
+              label: 'Add Employee',
+              key: 'item-employee-mgmt:2',
+              onClick: () =>
+                navigate('/dashboard/a/account-management/employee/create'),
+            },
+          ],
+        },
+      ],
+    },
+    {
+      label: 'Staff Management',
+      key: 'item-staff-mgmt',
+      icon: <UserAddOutlined />,
+      style: {
+        marginRight: 'auto',
+        color: location.pathname === '/dashboard/a/staff' ? '#111' : '#999',
+      },
+      children: [
+        {
+          type: 'group',
+          children: [
+            {
+              label: 'Staffs',
+              key: 'item-staff-mgmt:1',
+              onClick: () => navigate('/dashboard/a/staff', { replace: true }),
+            },
+            {
+              label: 'Add Staffs',
+              key: 'item-staff-mgmt:2',
+              onClick: () =>
+                navigate('/dashboard/a/account-management/staff/create'),
+            },
+          ],
+        },
+      ],
+    },
     {
       label: 'Account Management',
       icon: <TeamOutlined />,
@@ -89,6 +142,7 @@ const AdminNavbar: React.FC = () => {
             {
               label: 'Change Password',
               key: 'setting:3',
+              disabled: true,
             },
           ],
         },
@@ -99,6 +153,7 @@ const AdminNavbar: React.FC = () => {
             {
               label: 'Maintenance Mode',
               key: 'setting:1',
+              disabled: true,
             },
             {
               label: 'Sign out',

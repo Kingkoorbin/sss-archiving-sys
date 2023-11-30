@@ -71,6 +71,19 @@ class ClientController extends Controller
                 'phone_number' => $request->phone_number,
                 'gender' => $request->gender,
                 'birthdate' => $request->birthdate,
+                'address' => $request->address,
+                'main_employer' => $request->main_employer,
+                'date_hired' => $request->date_hired,
+                'bpi_atm_account_no' => $request->bpi_atm_account_no,
+                'rvm_retirement_no' => $request->rvm_retirement_no,
+                'pagibig_no' => $request->pagibig_no,
+                'philhealth_no' => $request->philhealth_no,
+                'sss_no' => $request->sss_no,
+                'tin' => $request->tin,
+                'email' => $request->email,
+                'blood_type' => $request->blood_type,
+                'civil_status' => $request->civil_status,
+                'personnel_category' => $request->personnel_category,
             ]);
 
             $client->save();

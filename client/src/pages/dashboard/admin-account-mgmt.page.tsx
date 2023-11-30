@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Custom Imports
 import NavigationBarAdmin from '../../components/nav-admin.component';
-import RegistrationFormFields from '../../components/form-registration.component';
+import RegistrationFormFields from '../../components/form-registration-staff.component';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { IRegistrationPayload } from '../../interfaces/login.interface';
 import { isEmpty } from '../../utils/util';
@@ -66,12 +66,6 @@ function AdminAccountManagement() {
     control: staffController,
     formState: { isSubmitting: isCreatingAccount },
   } = useForm<IRegistrationPayload>();
-
-  const {
-    handleSubmit: handleSubmitEmployeeFormData,
-    control: employeeController,
-    formState: { isSubmitting: isCreatingEmployee },
-  } = useForm<IEmployeeRegistrationPayload>();
 
   const {
     handleSubmit: handleSubmitSearchFormData,
@@ -473,10 +467,9 @@ function AdminAccountManagement() {
               shape="circle"
               icon={<EditOutlined />}
               onClick={() =>
-                navigate(
-                  `/dashboard/a/account-management/${el.school_id}/edit`,
-                  { state: el }
-                )
+                navigate(`/dashboard/a/account-management/employee/edit`, {
+                  state: el,
+                })
               }
             />
           </Tooltip>
@@ -509,7 +502,9 @@ function AdminAccountManagement() {
                 Staff Registration
               </Button>
               <Button
-                onClick={() => handleOpeRegistration('EMPLOYEE')}
+                onClick={() =>
+                  navigate('/dashboard/a/account-management/employee/create')
+                }
                 shape="round"
               >
                 Employee Registration
@@ -789,29 +784,9 @@ function AdminAccountManagement() {
         okButtonProps={{
           style: { display: 'none' },
         }}
-        width={600}
+        width={1450}
         onCancel={handleDismissEmployeeRegistration}
-      >
-        <form
-          onSubmit={handleSubmitEmployeeFormData(handleEmployeeRegistration)}
-        >
-          <RegistrationEmployeeFormFields
-            control={employeeController}
-            isRegistrationFailed={false}
-          />
-          <Button
-            type="primary"
-            size="middle"
-            loading={isCreatingEmployee}
-            htmlType="submit"
-            shape="round"
-            style={{ marginTop: 20 }}
-            block
-          >
-            Submit
-          </Button>
-        </form>
-      </Modal>
+      ></Modal>
 
       <Modal
         title="Staff Registration"
@@ -825,7 +800,7 @@ function AdminAccountManagement() {
         width={400}
         onCancel={handleDismissStaffRegistration}
       >
-        <form onSubmit={handleSubmitStaffFormData(handleRegistration)}>
+        {/* <form onSubmit={handleSubmitStaffFormData(handleRegistration)}>
           <RegistrationFormFields
             control={staffController}
             isUsernameAlreadyExist={state.isUsernameAlreadyExist}
@@ -843,7 +818,7 @@ function AdminAccountManagement() {
           >
             Submit
           </Button>
-        </form>
+        </form> */}
       </Modal>
 
       <Modal

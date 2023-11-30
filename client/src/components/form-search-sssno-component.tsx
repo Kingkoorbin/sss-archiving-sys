@@ -1,6 +1,7 @@
 import React from 'react';
 import { Control, Controller } from 'react-hook-form';
-import Search from 'antd/es/input/Search';
+import { Input } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
 interface SearchFormFieldsProps {
   control: Control<any>;
@@ -10,8 +11,6 @@ interface SearchFormFieldsProps {
 
 const SearchSSSNoFormFields: React.FC<SearchFormFieldsProps> = ({
   control,
-  isSearching,
-  onSearch,
 }) => {
   return (
     <>
@@ -19,11 +18,10 @@ const SearchSSSNoFormFields: React.FC<SearchFormFieldsProps> = ({
         name="searchKeyword"
         control={control}
         render={({ field }) => (
-          <Search
+          <Input
             placeholder="Search by SSS Number"
             style={{ marginBottom: 20 }}
-            loading={isSearching}
-            onSearch={onSearch}
+            prefix={<SearchOutlined />}
             {...field}
           />
         )}

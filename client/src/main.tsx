@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
-
+import './index.css';
 // Pages
 import Login from './pages/login/login.page';
 import AdminDashboard from './pages/dashboard/admin-dashboard.page';
@@ -12,6 +12,11 @@ import AdminContributionRecord from './pages/dashboard/admin-contribution-record
 import AdminActivityLogs from './pages/dashboard/admin-activity-logs.page';
 import AdminAccountEdit from './pages/dashboard/admin-account-edit.page';
 import RequestPage from './pages/dashboard/request.page';
+import AdminEmployeeRegistration from './pages/dashboard/admin-employee-registration.page';
+import AdminEmployeeEdit from './pages/dashboard/admin-employee-edit.page';
+import AdminEmployeeList from './pages/dashboard/admin-employee-list.page';
+import AdminStaffList from './pages/dashboard/admin-staff-list.page';
+import AdminStaffRegistration from './pages/dashboard/admin-staff-registration.page';
 
 const router = createBrowserRouter([
   {
@@ -33,6 +38,26 @@ const router = createBrowserRouter([
   {
     path: '/dashboard/a/account-management/:id/edit',
     element: <AdminAccountEdit />,
+  },
+  {
+    path: '/dashboard/a/account-management/employee/create',
+    element: <AdminEmployeeRegistration />,
+  },
+  {
+    path: '/dashboard/a/account-management/staff/create',
+    element: <AdminStaffRegistration />,
+  },
+  {
+    path: '/dashboard/a/account-management/employee/edit',
+    element: <AdminEmployeeEdit />,
+  },
+  {
+    path: '/dashboard/a/employee',
+    element: <AdminEmployeeList />,
+  },
+  {
+    path: '/dashboard/a/staff',
+    element: <AdminStaffList />,
   },
   {
     path: '/dashboard/a/requests',
