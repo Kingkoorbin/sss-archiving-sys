@@ -11,17 +11,22 @@ export const staffColumns: ColumnsType<DataType> = [
   {
     title: 'User',
     dataIndex: 'username',
-    width: 150,
+    width: 100,
   },
   {
     title: 'Date Joined',
     dataIndex: 'verified_at',
-    width: 150,
+    width: 100,
   },
   {
     title: 'Role',
     dataIndex: 'role',
-    width: 150,
+    width: 100,
+  },
+  {
+    title: 'Permission',
+    dataIndex: 'permission',
+    width: '60%',
   },
 ];
 

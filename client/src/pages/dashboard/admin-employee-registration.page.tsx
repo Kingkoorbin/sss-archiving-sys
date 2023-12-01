@@ -46,8 +46,6 @@ function AdminEmployeeRegistration() {
         .substring(0, 10);
     }
 
-    console.log(data);
-
     try {
       await axios.post(
         `${API_BASE_URL}/api/client/v1/${data.school_id}`,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Modal, Table, message } from 'antd';
+import { Button, Modal, Radio, Select, Space, Table, Tooltip, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 // Custom Imports
@@ -19,6 +19,7 @@ import {
 } from '../../interfaces/client.interface';
 import { formatStandardDateTime } from '../../utils/date.util';
 import { staffColumns } from '../../const/table-columns.const';
+import { EditOutlined } from '@ant-design/icons';
 
 interface IState {
   isFetchingStaffs: boolean;
@@ -77,22 +78,6 @@ function AdminStaffList() {
     navigate('/', { replace: true });
   };
 
-  const toastSuccess = (message: string) => {
-    messageApi.success({
-      type: 'success',
-      content: message,
-      style: {
-        marginTop: '90vh',
-      },
-    });
-  };
-
-  const handleDismissStaffRegistration = () => {
-    setState((prev) => ({
-      ...prev,
-      isRegistrationModealOpen: false,
-    }));
-  };
 
   const getAllStaffs = async () => {
     setState((prev) => ({
@@ -122,6 +107,22 @@ function AdminStaffList() {
       username: el.username,
       role: el.role,
       verified_at: formatStandardDateTime(el.created_at),
+      permission: (
+        <>
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Select
+            mode="tags"
+            size={'middle'}
+            placeholder="Please select"
+            style={{ width: '100%' }}
+            options={[
+              { label: "Edit", value: "Editor" },
+              { label: "Generate PDFs", value: "Generate" },
+            ]}
+          />
+        </Space>
+      </>
+      ),
     }));
 
     setState((prev) => ({

@@ -104,19 +104,19 @@ const AdminNavbar: React.FC = () => {
         },
       ],
     },
-    {
-      label: 'Account Management',
-      icon: <TeamOutlined />,
-      key: 'item-active-users',
-      style: {
-        color:
-          location.pathname === '/dashboard/a/account-management'
-            ? '#111'
-            : '#999',
-      },
-      onClick: () =>
-        navigate('/dashboard/a/account-management', { replace: true }),
-    },
+    // {
+    //   label: 'Account Management',
+    //   icon: <TeamOutlined />,
+    //   key: 'item-active-users',
+    //   style: {
+    //     color:
+    //       location.pathname === '/dashboard/a/account-management'
+    //         ? '#111'
+    //         : '#999',
+    //   },
+    //   onClick: () =>
+    //     navigate('/dashboard/a/account-management', { replace: true }),
+    // },
     {
       label: 'Activity Logs',
       icon: <FieldTimeOutlined />,

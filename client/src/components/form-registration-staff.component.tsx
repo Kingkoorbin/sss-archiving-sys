@@ -34,15 +34,12 @@ const RegistrationFormFields: React.FC<RegistrationFormFieldsProps> = ({
         }}
         render={({ field }) => (
           <>
-            <Form.Item extra="Username requires a minimum of 6 and 100 max characters.">
-              <Input
-                size="large"
-                placeholder="Enter"
-                prefix={<UserOutlined />}
-                {...field}
-              />
-            </Form.Item>
-
+            <Input
+              size="large"
+              placeholder="Enter"
+              prefix={<UserOutlined />}
+              {...field}
+            />
             {errors.username && (
               <div style={{ color: 'red', padding: 5 }}>
                 {errors.username.message}
@@ -76,14 +73,12 @@ const RegistrationFormFields: React.FC<RegistrationFormFieldsProps> = ({
         }}
         render={({ field }) => (
           <>
-            <Form.Item extra="Password requires 1 special, 1 uppercase, 1 number, and a minimum of 8 characters.">
-              <Input.Password
-                size="large"
-                placeholder="Enter"
-                prefix={<LockOutlined />}
-                {...field}
-              />
-            </Form.Item>
+            <Input.Password
+              size="large"
+              placeholder="Enter"
+              prefix={<LockOutlined />}
+              {...field}
+            />
             {errors.password && (
               <div style={{ color: 'red', padding: 5 }}>
                 {errors.password.message}
