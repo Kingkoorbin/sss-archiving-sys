@@ -68,6 +68,7 @@ export interface IWorkHistory {
   position: string;
   start_date: string; // Assuming date format is "YYYY-MM-DD"
   end_date: string; // Assuming date format is "YYYY-MM-DD"
+  duration: string; 
   responsibilities: string;
   created_at: string; // Assuming date-time format
   updated_at: string; // Assuming date-time format
@@ -80,7 +81,8 @@ export type IExperiencePayload = Pick<
   | 'position'
   | 'start_date'
   | 'end_date'
-  | 'responsibilities'
+  | 'responsibilities' 
+  | 'duration'
 >;
 
 export interface IEmployeeProfile {

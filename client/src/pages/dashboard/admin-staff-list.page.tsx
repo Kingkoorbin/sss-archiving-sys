@@ -8,7 +8,7 @@ import RegistrationFormFields from '../../components/form-registration-staff.com
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { IRegistrationPayload } from '../../interfaces/login.interface';
 import { isEmpty } from '../../utils/util';
-import { API } from '../../const/api.const';
+import { API, API_BASE_URL } from '../../const/api.const';
 import HttpClient from '../../utils/http-client.util';
 import { IApiResponse } from '../../interfaces/api.interface';
 import useLocalStorage from '../../hooks/useLocalstorage.hook';
@@ -19,7 +19,8 @@ import {
 } from '../../interfaces/client.interface';
 import { formatStandardDateTime } from '../../utils/date.util';
 import { staffColumns } from '../../const/table-columns.const';
-import { EditOutlined } from '@ant-design/icons';
+import { CloseOutlined, EditOutlined } from '@ant-design/icons';
+import axios from 'axios';
 
 interface IState {
   isFetchingStaffs: boolean;
@@ -54,17 +55,6 @@ function AdminStaffList() {
     isUsernameAlreadyExist: false,
     isPasswordMinMaxErr: false,
     isEmployeeRegistrationOpen: false,
-    stateWorkHistoryPreview: {
-      client_id: 999,
-      company_name: '',
-      created_at: '',
-      end_date: '',
-      id: 999,
-      position: '',
-      responsibilities: '',
-      start_date: '',
-      updated_at: '',
-    },
     employees: [],
     users: [],
   });
@@ -107,21 +97,30 @@ function AdminStaffList() {
       username: el.username,
       role: el.role,
       verified_at: formatStandardDateTime(el.created_at),
+      delete: <>
+        <Tooltip title="Delete">
+          <Button
+            style={{ color: "red" }}
+            icon={<CloseOutlined />}
+            onClick={() => onDeleteUser(el.id)}
+          >Delete</Button>
+        </Tooltip>
+      </>,
       permission: (
         <>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Select
-            mode="tags"
-            size={'middle'}
-            placeholder="Please select"
-            style={{ width: '100%' }}
-            options={[
-              { label: "Edit", value: "Editor" },
-              { label: "Generate PDFs", value: "Generate" },
-            ]}
-          />
-        </Space>
-      </>
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <Select
+              mode="tags"
+              size={'middle'}
+              placeholder="Please select"
+              style={{ width: '100%' }}
+              options={[
+                { label: "Edit", value: "Editor" },
+                { label: "Generate PDFs", value: "Generate" },
+              ]}
+            />
+          </Space>
+        </>
       ),
     }));
 
@@ -132,10 +131,47 @@ function AdminStaffList() {
     }));
   };
 
+  const onDeleteUser = async (id: number) => {
+    try {
+      await axios.delete(
+        `${API_BASE_URL}/api/user/v1/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthResponse?.access_token}`,
+          },
+        }
+      );
+
+      toastSuccess("Removed successfully!")
+      await getAllStaffs();
+    } catch (error) {
+      toastError("Oops! Something went wrong, Please try again.")
+    }
+  }
+
+  const toastSuccess = (message: string) => {
+    messageApi.success({
+      type: 'success',
+      content: message,
+      style: {
+        marginTop: '90vh',
+      },
+    });
+  };
+
+  const toastError = (message: string) => {
+    messageApi.error({
+      type: 'error',
+      content: message,
+      style: {
+        marginTop: '90vh',
+      },
+    });
+  };
   useEffect(() => {
     document.title = 'Account Management | SSS Archiving System';
     getAllStaffs();
-    return () => {};
+    return () => { };
   }, []);
 
   return (

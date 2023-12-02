@@ -4,9 +4,9 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "start:local": "php artisan serve",
+        "start:server": "php artisan serve",
         "install:packages": "concurrently \"cd sss-archiving-mservice && npm install\" \"cd client && npm install\"",
-        "start:app": "concurrently \"npm run cache:clear\" \"npm run route:clear\"  \"npm run start:local\" \"cd sss-archiving-mservice && npm run start:local\" \"cd client && npm run dev\"",
+        "start:app": "concurrently \"npm run cache:clear\" \"npm run route:clear\"  \"npm run start:server\" \"cd sss-archiving-mservice && npm run start:server\" \"cd client && npm run dev\"",
         "cache:clear": "php artisan cache:clear",
         "route:clear": "php artisan route:clear",
         "clear:cache": "php artisan cache:clear && php artisan route:clear",

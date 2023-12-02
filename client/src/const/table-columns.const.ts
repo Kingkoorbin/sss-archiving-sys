@@ -23,10 +23,16 @@ export const staffColumns: ColumnsType<DataType> = [
     dataIndex: 'role',
     width: 100,
   },
+ 
   {
     title: 'Permission',
     dataIndex: 'permission',
-    width: '60%',
+    width: '50%',
+  },
+  {
+    title: '',
+    dataIndex: 'delete',
+    width: 40,
   },
 ];
 

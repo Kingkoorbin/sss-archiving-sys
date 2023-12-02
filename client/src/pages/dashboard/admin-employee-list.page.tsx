@@ -82,6 +82,7 @@ function AdminEmployeeList() {
       responsibilities: '',
       start_date: '',
       updated_at: '',
+      duration: ''
     },
     employees: [],
     users: [],

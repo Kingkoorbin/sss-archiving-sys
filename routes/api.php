@@ -33,6 +33,11 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/auth/v1/register', 'register');
 });
 
+// User
+Route::controller(UserController::class)->group(function () {
+    Route::delete('/user/v1/{id}', 'deleteUserById');
+});
+
 // Client
 Route::controller(ClientController::class)->group(function () {
     Route::post('/client/v1/{id}', 'createClient');

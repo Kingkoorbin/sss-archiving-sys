@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import RegistrationEmployeeFormFields from '../../components/form-registration-employee.component';
 import { IEmployeeProfile, IEmployeeRegistrationPayload } from '../../interfaces/client.interface';
 import { Button, Flex, Tooltip, message } from 'antd';
-import { ArrowLeftOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, ArrowRightOutlined, CheckCircleOutlined, EyeOutlined } from '@ant-design/icons';
 import Title from 'antd/es/typography/Title';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -81,9 +81,7 @@ function AdminEmployeeEdit() {
     }
   }
 
-  const handleEmployeeEdit: SubmitHandler<
-    IEmployeeRegistrationPayload
-  > = async (data) => {
+  const handleEmployeeEdit: SubmitHandler< IEmployeeRegistrationPayload > = async (data) => {
     // console.log(data)
 
     data.date_hired = new Date(data.date_hired).toISOString().substring(0, 10);
@@ -167,6 +165,14 @@ function AdminEmployeeEdit() {
                 Go back
               </Title>
             </Flex>
+            <Tooltip title="View">
+                <Button
+                  type='primary'
+                  shape="circle"
+                  icon={<EyeOutlined />}
+                  onClick={() => navigate(`/dashboard/a/employee/${locationState.school_id}`, { state: locationState })}
+                />
+              </Tooltip>
           </Flex>
 
           <form
