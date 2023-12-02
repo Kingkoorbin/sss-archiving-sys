@@ -82,7 +82,7 @@ const RegistrationEmployeeFormFields: React.FC<
             control={control}
             rules={{
               pattern: {
-                value: /^[A-Za-z]+$/,
+                value: /^[A-Za-z\s]+$/,
                 message: 'Invalid Middle name',
               },
               minLength: {
@@ -120,7 +120,7 @@ const RegistrationEmployeeFormFields: React.FC<
             rules={{
               required: 'This field is required',
               pattern: {
-                value: /^[A-Za-z]+$/,
+                value: /^[A-Za-z\s]+$/,
                 message: 'Invalid Last name',
               },
               minLength: {
@@ -158,7 +158,7 @@ const RegistrationEmployeeFormFields: React.FC<
             rules={{
               required: 'This field is required',
               pattern: {
-                value: /^[A-Za-z]+$/,
+                value: /^[A-Za-z\s]+$/,
                 message: 'Invalid Suffix',
               },
               minLength: {
@@ -440,7 +440,7 @@ const RegistrationEmployeeFormFields: React.FC<
               required: 'This field is required',
               minLength: {
                 message: 'Invalid Address',
-                value: 15,
+                value: 10,
               },
               maxLength: {
                 message: 'Invalid Address',
@@ -475,7 +475,7 @@ const RegistrationEmployeeFormFields: React.FC<
               required: 'This field is required',
               minLength: {
                 message: 'Invalid Address',
-                value: 15,
+                value: 10,
               },
               maxLength: {
                 message: 'Invalid Address',
@@ -709,7 +709,7 @@ const RegistrationEmployeeFormFields: React.FC<
             control={control}
             rules={{
               pattern: {
-                value: /^[0-9]+$/,
+                value: /^(?!-)[0-9-]+(?<!-)$/,
                 message: 'Invalid BPI Account No.',
               },
               minLength: {
@@ -745,7 +745,7 @@ const RegistrationEmployeeFormFields: React.FC<
             control={control}
             rules={{
               pattern: {
-                value: /^[0-9]+$/,
+                value: /^(?!-)[0-9-]+(?<!-)$/,
                 message: 'Invalid TIN',
               },
               minLength: {

@@ -1,23 +1,25 @@
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import RegistrationEmployeeFormFields from '../../components/form-registration-employee.component';
-import { IEmployeeRegistrationPayload } from '../../interfaces/client.interface';
+import { IEmployeeProfile, IEmployeeRegistrationPayload } from '../../interfaces/client.interface';
 import { Button, Flex, Tooltip, message } from 'antd';
 import { ArrowLeftOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import Title from 'antd/es/typography/Title';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE_URL } from '../../const/api.const';
 import { IApiResponse } from '../../interfaces/api.interface';
 import useLocalStorage from '../../hooks/useLocalstorage.hook';
-import { useState } from 'react';
+import moment from 'moment';
+import { isEmpty } from '../../utils/util';
 
 interface IState {
-  isSuccessCreatingEmployee: boolean;
+  isSuccessUpdatingEmployee: boolean;
 }
 
 function AdminEmployeeEdit() {
   const [state, setState] = useState<IState>({
-    isSuccessCreatingEmployee: false,
+    isSuccessUpdatingEmployee: false,
   });
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -26,14 +28,60 @@ function AdminEmployeeEdit() {
     null
   );
   const navigate = useNavigate();
+  const { state: locationState }: { state: IEmployeeProfile } = useLocation();
+
+
   const {
     handleSubmit: handleSubmitEmployeeFormData,
     control: employeeController,
     reset,
-    formState: { isSubmitting: isCreatingEmployee, errors: employeeErrors },
+    setValue,
+    formState: { isSubmitting: isUpdatingEmployee, errors: employeeErrors },
   } = useForm<IEmployeeRegistrationPayload>();
 
-  const handleEmployeeRegistration: SubmitHandler<
+  const getEmployeeInfo = async () => {
+    try {
+      const response: { data: IEmployeeProfile } = await axios.get(`${API_BASE_URL}/api/client/v1/${locationState.school_id}/information`, {
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      });
+      setValue("address", response.data.address)
+      setValue("birthdate", moment(response.data.birthdate, 'YYYY-MM-DD') as any)
+      setValue("blood_type", response.data.blood_type)
+      setValue("bpi_atm_account_no", response.data.bpi_atm_account_no ?? "")
+      setValue("civil_status", response.data.civil_status)
+      if (!isEmpty(response.data.date_hired)) {
+        setValue("date_hired", moment(response.data.date_hired, 'YYYY-MM-DD') as any)
+      }
+      if (!isEmpty(response.data.date_resigned)) {
+        setValue("date_resigned", moment(response.data.date_resigned, 'YYYY-MM-DD') as any)
+      }
+      setValue("department", response.data.department)
+      setValue("email", response.data.email)
+      setValue("first_name", response.data.first_name)
+      setValue("gender", response.data.gender)
+      setValue("id", response.data.id.toString())
+      setValue("last_name", response.data.last_name)
+      setValue("main_employer", response.data.main_employer)
+      setValue("middle_name", response.data.middle_name)
+      setValue("pagibig_no", response.data.pagibig_no ?? "")
+      setValue("permanent_address", response.data.permanent_address)
+      setValue("personnel_category", response.data.personnel_category)
+      setValue("philhealth_no", response.data.philhealth_no ?? "")
+      setValue("phone_number", response.data.phone_number)
+      setValue("present_address", response.data.present_address)
+      setValue("rvm_retirement_no", response.data.rvm_retirement_no ?? "")
+      setValue("school_id", response.data.school_id)
+      setValue("sss_no", response.data.sss_no ?? "")
+      setValue("suffix", response.data.suffix)
+      setValue("tin", response.data.tin ?? "")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleEmployeeEdit: SubmitHandler<
     IEmployeeRegistrationPayload
   > = async (data) => {
     // console.log(data)
@@ -45,11 +93,8 @@ function AdminEmployeeEdit() {
         .toISOString()
         .substring(0, 10);
     }
-
-    console.log(data);
-
     try {
-      await axios.post(
+      await axios.put(
         `${API_BASE_URL}/api/client/v1/${data.school_id}`,
         data,
         {
@@ -60,15 +105,15 @@ function AdminEmployeeEdit() {
       );
       setState((prev) => ({
         ...prev,
-        isSuccessCreatingEmployee: true,
+        isSuccessUpdatingEmployee: true,
       }));
       toastSuccess('Success!');
     } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        isSuccessCreatingEmployee: false,
-      }));
-      toastError('Failed!');
+      // setState((prev) => ({
+      //   ...prev,
+      //   isSuccessUpdatingEmployee: false,
+      // }));
+      // toastError('Failed!');
     }
   };
 
@@ -91,6 +136,10 @@ function AdminEmployeeEdit() {
       },
     });
   };
+  
+  useEffect(() => {
+    getEmployeeInfo();
+  }, [])
 
   return (
     <>
@@ -121,7 +170,7 @@ function AdminEmployeeEdit() {
           </Flex>
 
           <form
-            onSubmit={handleSubmitEmployeeFormData(handleEmployeeRegistration)}
+            onSubmit={handleSubmitEmployeeFormData(handleEmployeeEdit)}
           >
             <RegistrationEmployeeFormFields
               control={employeeController}
@@ -141,11 +190,11 @@ function AdminEmployeeEdit() {
               <Button
                 type="primary"
                 size="middle"
-                loading={isCreatingEmployee}
+                loading={isUpdatingEmployee}
                 htmlType="submit"
-                disabled={state.isSuccessCreatingEmployee}
+                disabled={state.isSuccessUpdatingEmployee}
                 icon={
-                  state.isSuccessCreatingEmployee ? (
+                  state.isSuccessUpdatingEmployee ? (
                     <CheckCircleOutlined />
                   ) : (
                     <></>

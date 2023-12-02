@@ -30,7 +30,7 @@ import {
   formatStandardDateTime,
 } from '../../utils/date.util';
 import { employeeColumns } from '../../const/table-columns.const';
-import { EditOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
+import { EditOutlined, EyeOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
 import SearchFormFields from '../../components/form-search-employee.component';
 
 interface IState {
@@ -185,17 +185,28 @@ function AdminEmployeeList() {
         middle_name: el.middle_name === 'N/A' ? '' : el.middle_name,
         birthdate: formatStandardDate(el.birthdate),
         created_at: formatStandardDateTime(el.created_at),
+        view: (
+          <Tooltip title="View">
+            <Button
+              type='primary'
+              icon={<EyeOutlined />}
+              onClick={() =>
+                navigate(`/dashboard/a/employee/${el.school_id}`, {
+                  state: el,
+                })
+              }> View</Button>
+          </Tooltip>
+        ),
         edit: (
           <Tooltip title="Edit">
             <Button
-              shape="circle"
               icon={<EditOutlined />}
               onClick={() =>
-                navigate(`/dashboard/a/account-management/employee/edit`, {
+                navigate(`/dashboard/a/account-management/employee/${el.school_id}/edit`, {
                   state: el,
                 })
               }
-            />
+            >Edit</Button>
           </Tooltip>
         ),
         key: el.id,

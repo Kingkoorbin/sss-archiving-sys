@@ -80,7 +80,12 @@ export const employeeColumns: ColumnsType<DataType> = [
   {
     title: '',
     dataIndex: 'edit',
-    width: 40,
+    width: 30,
+  },
+  {
+    title: '',
+    dataIndex: 'view',
+    width: 30,
   },
   // {
   //   title: 'Created',

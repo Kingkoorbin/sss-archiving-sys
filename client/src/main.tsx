@@ -17,6 +17,7 @@ import AdminEmployeeEdit from './pages/dashboard/admin-employee-edit.page';
 import AdminEmployeeList from './pages/dashboard/admin-employee-list.page';
 import AdminStaffList from './pages/dashboard/admin-staff-list.page';
 import AdminStaffRegistration from './pages/dashboard/admin-staff-registration.page';
+import AdminEmployeePreview from './pages/dashboard/admin-employee-preview.page';
 
 const router = createBrowserRouter([
   {
@@ -48,13 +49,18 @@ const router = createBrowserRouter([
     element: <AdminStaffRegistration />,
   },
   {
-    path: '/dashboard/a/account-management/employee/edit',
+    path: '/dashboard/a/account-management/employee/:id/edit',
     element: <AdminEmployeeEdit />,
   },
   {
     path: '/dashboard/a/employee',
     element: <AdminEmployeeList />,
   },
+  {
+    path: '/dashboard/a/employee/:id',
+    element: <AdminEmployeePreview />,
+  },
+  
   {
     path: '/dashboard/a/staff',
     element: <AdminStaffList />,

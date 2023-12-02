@@ -94,8 +94,23 @@ export interface IEmployeeProfile {
   phone_number: string;
   gender: 'MALE' | 'FEMALE' | 'OTHER';
   department: string;
-  birthdate: string; // Assuming date format is "YYYY-MM-DD"
+  birthdate: string; // Assuming the date format is always "YYYY-MM-DD"
   active: boolean;
+  personnel_category: string;
+  suffix: string;
+  civil_status: string;
+  blood_type: string;
+  email: string;
+  tin: string | null;
+  sss_no: string | null;
+  philhealth_no: string | null;
+  pagibig_no: string | null;
+  rvm_retirement_no: string | null;
+  bpi_atm_account_no: string | null;
+  date_hired: string; // Assuming the date format is always "YYYY-MM-DD"
+  date_resigned: string | null; // Assuming the date format is always "YYYY-MM-DD" | null
+  main_employer: string;
+  address: string;
   created_at: string; // Assuming date-time format
   updated_at: string; // Assuming date-time format
   work_history: IWorkHistory[];
