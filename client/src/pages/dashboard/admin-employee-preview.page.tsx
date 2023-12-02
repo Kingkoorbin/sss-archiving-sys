@@ -167,7 +167,7 @@ function AdminEmployeePreview() {
                                 size="middle"
                                 loading={isCreatingExperience}
                                 htmlType="submit"
-                                disabled={state.isSuccessCreatingEmployee}
+                                disabled={state.isSuccessCreatingEmployee   }
                                 icon={
                                     state.isSuccessCreatingEmployee ? (
                                         <CheckCircleOutlined />
