@@ -2,19 +2,19 @@ import { useEffect, useState } from 'react';
 import { Modal, Table } from 'antd';
 
 // Custom Imports
-import NavigationBarAdmin from '../../components/nav-admin.component';
+import NavigationBarAdmin from '../../../components/nav-admin.component';
 import { ColumnsType } from 'antd/es/table/interface';
-import { API } from '../../const/api.const';
-import HttpClient from '../../utils/http-client.util';
+import { API } from '../../../const/api.const';
+import HttpClient from '../../../utils/http-client.util';
 import {
   IActivity,
   IGetActivityPayload,
   IPaginationResponse,
-} from '../../interfaces/activity.interface';
-import useLocalStorage from '../../hooks/useLocalstorage.hook';
-import { IApiResponse } from '../../interfaces/api.interface';
+} from '../../../interfaces/activity.interface';
+import useLocalStorage from '../../../hooks/useLocalstorage.hook';
+import { IApiResponse } from '../../../interfaces/api.interface';
 import { useNavigate } from 'react-router-dom';
-import { formatDateTime } from '../../utils/date.util';
+import { formatDateTime } from '../../../utils/date.util';
 
 interface IState {
   activities: IActivity[];

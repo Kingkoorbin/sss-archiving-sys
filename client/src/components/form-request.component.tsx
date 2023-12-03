@@ -4,6 +4,7 @@ import { Control, Controller } from 'react-hook-form';
 import {
   FieldNumberOutlined,
   MailOutlined,
+  NumberOutlined,
   PhoneOutlined,
   UserOutlined,
 } from '@ant-design/icons';
@@ -49,7 +50,7 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
         )}
       </div>
 
-      <Flex gap={20}>
+      <Flex gap={20}  className="registration-employee-row1">
         <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
             Contact No.
@@ -60,28 +61,23 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
             rules={{
               required: 'This field is required',
               pattern: {
-                value: /^\+639\d{9}$/,
-                message: 'Please use the correct format e.g. +639000000000',
+                value: /^[0-9]+$/,
+                message: 'Invalid Phone number',
               },
               minLength: {
-                message: 'Invalid number length',
-                value: 13,
+                message: 'Invalid Phone number',
+                value: 10,
               },
               maxLength: {
-                message: 'Invalid number length',
-                value: 13,
+                message: 'Invalid Phone number',
+                value: 10,
               },
             }}
             render={({ field }) => (
               <Input
                 size="large"
                 placeholder="Enter"
-                style={{ width: '100%' }}
-                prefix={<PhoneOutlined />}
-                count={{
-                  max: 13,
-                  show: true,
-                }}
+                addonBefore="+63"
                 {...field}
               />
             )}
@@ -127,29 +123,32 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
           SSS Number
         </p>
         <Controller
-          name="sss_no"
-          control={control}
-          rules={{
-            required: 'This field is required',
-            minLength: {
-              message: 'Minimum length of 10',
-              value: 10,
-            },
-            maxLength: {
-              message: 'Maximum length of 25',
-              value: 25,
-            },
-          }}
-          render={({ field }) => (
-            <Input
-              size="large"
-              type="number"
-              placeholder="Enter"
-              prefix={<FieldNumberOutlined />}
-              {...field}
-            />
-          )}
-        />
+            name="sss_no"
+            control={control}
+            rules={{
+              required: 'This field is required',
+              pattern: {
+                value: /^[0-9]{2}-[0-9]+-[0-9]{1}$/,
+                message: 'Format of SSS No. 00-00000000-0',
+              },
+              minLength: {
+                message: 'Invalid SSS No.',
+                value: 9,
+              },
+              maxLength: {
+                message: 'Invalid SSS No.',
+                value: 25,
+              },
+            }}
+            render={({ field }) => (
+              <Input
+                size="large"
+                placeholder="Enter"
+                prefix={<NumberOutlined />}
+                {...field}
+              />
+            )}
+          />
         {errors.sss_no && (
           <div style={{ color: 'red', padding: 5 }}>
             {errors.sss_no.message}

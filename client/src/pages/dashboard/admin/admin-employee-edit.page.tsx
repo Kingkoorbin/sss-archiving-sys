@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import RegistrationEmployeeFormFields from '../../components/form-registration-employee.component';
-import { IEmployeeProfile, IEmployeeRegistrationPayload } from '../../interfaces/client.interface';
+import RegistrationEmployeeFormFields from '../../../components/form-registration-employee.component';
+import { IEmployeeProfile, IEmployeeRegistrationPayload } from '../../../interfaces/client.interface';
 import { Button, Flex, Tooltip, message } from 'antd';
 import { ArrowLeftOutlined, ArrowRightOutlined, CheckCircleOutlined, EyeOutlined } from '@ant-design/icons';
 import Title from 'antd/es/typography/Title';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { API_BASE_URL } from '../../const/api.const';
-import { IApiResponse } from '../../interfaces/api.interface';
-import useLocalStorage from '../../hooks/useLocalstorage.hook';
+import { API_BASE_URL } from '../../../const/api.const';
+import { IApiResponse } from '../../../interfaces/api.interface';
+import useLocalStorage from '../../../hooks/useLocalstorage.hook';
 import moment from 'moment';
-import { isEmpty } from '../../utils/util';
+import { isEmpty } from '../../../utils/util';
 
 interface IState {
   isSuccessUpdatingEmployee: boolean;

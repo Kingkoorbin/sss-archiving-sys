@@ -5,7 +5,6 @@ import { SearchOutlined } from '@ant-design/icons';
 
 interface SearchFormFieldsProps {
   control: Control<any>;
-  onSearch: any;
   isSearching: boolean;
 }
 

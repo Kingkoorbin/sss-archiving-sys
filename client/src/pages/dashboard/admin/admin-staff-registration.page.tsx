@@ -1,14 +1,14 @@
 import { Button, Flex, Tooltip, message } from 'antd';
-import RegistrationFormFields from '../../components/form-registration-staff.component';
-import { IRegistrationPayload } from '../../interfaces/login.interface';
+import RegistrationFormFields from '../../../components/form-registration-staff.component';
+import { IRegistrationPayload } from '../../../interfaces/login.interface';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Title from 'antd/es/typography/Title';
 import { ArrowLeftOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { API_BASE_URL } from '../../const/api.const';
-import useLocalStorage from '../../hooks/useLocalstorage.hook';
-import { IApiResponse } from '../../interfaces/api.interface';
+import { API_BASE_URL } from '../../../const/api.const';
+import useLocalStorage from '../../../hooks/useLocalstorage.hook';
+import { IApiResponse } from '../../../interfaces/api.interface';
 import { useState } from 'react';
 
 interface IState {

@@ -9,6 +9,7 @@ function RequestPage() {
   const {
     handleSubmit: handleSubmitRequestFormData,
     control: requestController,
+    reset,
     formState: { isSubmitting: isCreatingRequest, errors },
   } = useForm<IContributionRequest>();
   const [messageApi, contextHolder] = message.useMessage();
@@ -48,20 +49,29 @@ function RequestPage() {
             marginTop: 100,
           }}
         >
-          <div style={{ width: '40%' }}>
+          <div className='registration-employee-form-container'>
             <form onSubmit={handleSubmitRequestFormData(handleCreateRequest)}>
               <RequestFormFields control={requestController} errors={errors} />
-              <Button
-                type="primary"
-                size="middle"
-                loading={isCreatingRequest}
-                style={{ marginTop: 20 }}
-                htmlType="submit"
-                shape="round"
-                block
-              >
-                Submit
-              </Button>
+              <Flex gap={10}>
+                <Button
+                  type="default"
+                  size="middle"
+                  htmlType="reset"
+                  style={{ marginTop: 20 }}
+                  onClick={() => reset()}
+                >
+                  Reset
+                </Button>
+                <Button
+                  type="primary"
+                  size="middle"
+                  loading={isCreatingRequest}
+                  style={{ marginTop: 20 }}
+                  htmlType="submit"
+                >
+                  Submit
+                </Button>
+              </Flex>
             </form>
           </div>
         </Flex>

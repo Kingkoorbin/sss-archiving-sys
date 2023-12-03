@@ -1,15 +1,16 @@
 import React from 'react';
 import { Input } from 'antd';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldErrors } from 'react-hook-form';
+import { ILoginPayload } from '../interfaces/login.interface';
 
 interface LoginFormFieldsProps {
   control: Control<any>;
-  isLoginFailed: boolean;
+  errors: FieldErrors<ILoginPayload>;
 }
 
 const LoginFormFields: React.FC<LoginFormFieldsProps> = ({
   control,
-  isLoginFailed,
+  errors
 }) => {
   return (
     <>
@@ -19,28 +20,38 @@ const LoginFormFields: React.FC<LoginFormFieldsProps> = ({
       <Controller
         name="username"
         control={control}
+        rules={{
+          required: 'This field is required',
+        }}
         render={({ field }) => (
           <Input
             size="middle"
             placeholder="Enter"
-            status={isLoginFailed ? 'error' : ''}
             {...field}
           />
         )}
       />
+      {errors.username && (
+        <div style={{ color: 'red', padding: 5 }}>{errors.username.message}</div>
+      )}
       <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>Password</p>
       <Controller
         name="password"
         control={control}
+        rules={{
+          required: 'This field is required',
+        }}
         render={({ field }) => (
           <Input.Password
             size="middle"
             placeholder="Enter"
-            status={isLoginFailed ? 'error' : ''}
             {...field}
           />
         )}
       />
+      {errors.password && (
+        <div style={{ color: 'red', padding: 5 }}>{errors.password.message}</div>
+      )}
     </>
   );
 };

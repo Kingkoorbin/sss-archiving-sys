@@ -226,7 +226,7 @@ class ClientController extends Controller
     {
         $user = auth()->user();
 
-        $allowedRoles = ["ADMIN", "EMPLOYEE"];
+        $allowedRoles = ["ADMIN", "STAFF"];
 
         if(!in_array($user->role, $allowedRoles)) {
             return response()->json([
@@ -252,7 +252,7 @@ class ClientController extends Controller
 
     public function getAll(Request $request)
     {
-        $allowedRoles = ["ADMIN"];
+        $allowedRoles = ["ADMIN", "STAFF"];
         $user = auth()->user();
 
         if (!in_array($user->role, $allowedRoles)) {

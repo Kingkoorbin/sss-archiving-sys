@@ -20,17 +20,29 @@ class ContributionRequestController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api')->only([
-            'updateStatusByNumber',
+            'updateStatusById',
             'getAll',
         ]);;
     }
 
     public function getAll(Request $request)
     {
-        $contributionRequests = ContributionRequest::all();
-
-        return response()->json($contributionRequests);
+        try {
+            $status = $request->query('status');
+    
+            $contributionRequests = ContributionRequest::when($status, function ($query) use ($status) {
+                return $query->where('status', $status);
+            })->get();
+    
+            return response()->json($contributionRequests);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
+    
 
     public function createRequest(Request $request) {
         $validator = ContributionRequestValidator::validateCreateRequest($request);
@@ -61,7 +73,7 @@ class ContributionRequestController extends Controller
         return response()->json($request, 201);
     }
 
-    public function updateStatusByNumber(Request $request, $sssNo)
+    public function updateStatusById(Request $request)
     {
         try {
             $allowedRoles = ["ADMIN", "STAFF"];
@@ -92,7 +104,7 @@ class ContributionRequestController extends Controller
             }
 
             // Find the contribution request by sss_no
-            $contributionRequest = ContributionRequest::where('sss_no', $sssNo)->first();
+            $contributionRequest = ContributionRequest::find($request->id);
 
             if (!$contributionRequest) {
                 return response()->json([

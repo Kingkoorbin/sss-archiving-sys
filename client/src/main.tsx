@@ -2,22 +2,24 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import './index.css';
+
 // Pages
 import Login from './pages/login/login.page';
-import AdminDashboard from './pages/dashboard/admin-dashboard.page';
-import StaffDashboard from './pages/dashboard/staff-dashboard.page';
-import AdminAccountManagement from './pages/dashboard/admin-account-mgmt.page';
-import AdminRequests from './pages/dashboard/admin-requests.page';
-import AdminContributionRecord from './pages/dashboard/admin-contribution-record.page';
-import AdminActivityLogs from './pages/dashboard/admin-activity-logs.page';
-import AdminAccountEdit from './pages/dashboard/admin-account-edit.page';
+import AdminDashboard from './pages/dashboard/admin/admin-dashboard.page';
+import AdminRequests from './pages/dashboard/admin/admin-requests.page';
+import AdminContributionRecord from './pages/dashboard/admin/admin-contribution-record.page';
+import AdminActivityLogs from './pages/dashboard/admin/admin-activity-logs.page';
 import RequestPage from './pages/dashboard/request.page';
-import AdminEmployeeRegistration from './pages/dashboard/admin-employee-registration.page';
-import AdminEmployeeEdit from './pages/dashboard/admin-employee-edit.page';
-import AdminEmployeeList from './pages/dashboard/admin-employee-list.page';
-import AdminStaffList from './pages/dashboard/admin-staff-list.page';
-import AdminStaffRegistration from './pages/dashboard/admin-staff-registration.page';
-import AdminEmployeePreview from './pages/dashboard/admin-employee-preview.page';
+import AdminEmployeeRegistration from './pages/dashboard/admin/admin-employee-registration.page';
+import AdminEmployeeEdit from './pages/dashboard/admin/admin-employee-edit.page';
+import AdminEmployeeList from './pages/dashboard/admin/admin-employee-list.page';
+import AdminStaffList from './pages/dashboard/admin/admin-staff-list.page';
+import AdminStaffRegistration from './pages/dashboard/admin/admin-staff-registration.page';
+import AdminEmployeePreview from './pages/dashboard/admin/admin-employee-preview.page';
+import StaffContributionRecord from './pages/dashboard/staff/staff-contribution-record.page';
+import StaffEmployeeList from './pages/dashboard/staff/staff-employee-list.page';
+import StaffEmployeePreview from './pages/dashboard/staff/staff-employee-preview.page';
+import StaffRequests from './pages/dashboard/staff/staff-requests.page';
 
 const router = createBrowserRouter([
   {
@@ -31,14 +33,6 @@ const router = createBrowserRouter([
   {
     path: '/dashboard/a',
     element: <AdminDashboard />,
-  },
-  {
-    path: '/dashboard/a/account-management',
-    element: <AdminAccountManagement />,
-  },
-  {
-    path: '/dashboard/a/account-management/:id/edit',
-    element: <AdminAccountEdit />,
   },
   {
     path: '/dashboard/a/account-management/employee/create',
@@ -57,29 +51,40 @@ const router = createBrowserRouter([
     element: <AdminEmployeeList />,
   },
   {
+    path: '/dashboard/s/employee',
+    element: <StaffEmployeeList />,
+  },
+  {
     path: '/dashboard/a/employee/:id',
     element: <AdminEmployeePreview />,
   },
-  
+  {
+    path: '/dashboard/s/employee/:id',
+    element: <StaffEmployeePreview />,
+  },
   {
     path: '/dashboard/a/staff',
     element: <AdminStaffList />,
+  },
+  {
+    path: '/dashboard/s/contribution',
+    element: <StaffContributionRecord />,
   },
   {
     path: '/dashboard/a/requests',
     element: <AdminRequests />,
   },
   {
-    path: '/dashboard/a/contributions',
+    path: '/dashboard/s/requests',
+    element: <StaffRequests />,
+  },
+  {
+    path: '/dashboard/a/contribution',
     element: <AdminContributionRecord />,
   },
   {
     path: '/dashboard/a/activities',
     element: <AdminActivityLogs />,
-  },
-  {
-    path: '/dashboard/s',
-    element: <StaffDashboard />,
   },
 ]);
 

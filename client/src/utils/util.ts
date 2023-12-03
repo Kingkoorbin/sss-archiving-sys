@@ -1,3 +1,6 @@
+import { IPermission, IUserPermission } from "../interfaces/client.interface";
+import { TPermissionTypes } from "../interfaces/permission.interface";
+
 export const capitalizeName = (name: string): string => {
   const words: string[] = name.split(' ');
 
@@ -26,3 +29,7 @@ export const isEmpty = (value: any) => {
 
   return false;
 };
+
+export const hasPermission = (permissions: IUserPermission[], targetName: TPermissionTypes): boolean => {
+  return permissions?.some(permission => permission.permission_name.name === targetName);
+}

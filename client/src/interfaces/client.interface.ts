@@ -30,7 +30,7 @@ export interface IUser {
   created_at: string;
   updated_at: string;
 
-  user_permissions: IPermission[]
+  user_permissions: IUserPermission[]
 }
 
 export interface IEmployeeRegistrationPayload {
@@ -159,6 +159,7 @@ export interface IGeneratePdfPayload {
   to?: string;
   sssNo?: string;
   name?: string;
+  searchKeyword?: string;
 }
 
 export interface ISBRPayload {

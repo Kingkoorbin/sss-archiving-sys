@@ -21,16 +21,6 @@ const AdminNavbar: React.FC = () => {
   };
 
   const items: MenuProps['items'] = [
-    // {
-    //     label: "Dashboard",
-    //     key: "item-dashboard",
-    //     style: {
-    //         color: location.pathname === "/dashboard/a"
-    //             ? "#111"
-    //             : "#999",
-    //     },
-    //     onClick: () => navigate("/dashboard/a", { replace: true }),
-    // },
     {
       label: 'Requests',
       icon: <MailOutlined />,
@@ -46,9 +36,9 @@ const AdminNavbar: React.FC = () => {
       icon: <CalendarOutlined />,
       style: {
         color:
-          location.pathname === '/dashboard/a/contributions' ? '#111' : '#999',
+          location.pathname === '/dashboard/a/contribution' ? '#111' : '#999',
       },
-      onClick: () => navigate('/dashboard/a/contributions', { replace: true }),
+      onClick: () => navigate('/dashboard/a/contribution', { replace: true }),
     },
     {
       label: 'Employeee Management',
@@ -104,19 +94,6 @@ const AdminNavbar: React.FC = () => {
         },
       ],
     },
-    // {
-    //   label: 'Account Management',
-    //   icon: <TeamOutlined />,
-    //   key: 'item-active-users',
-    //   style: {
-    //     color:
-    //       location.pathname === '/dashboard/a/account-management'
-    //         ? '#111'
-    //         : '#999',
-    //   },
-    //   onClick: () =>
-    //     navigate('/dashboard/a/account-management', { replace: true }),
-    // },
     {
       label: 'Activity Logs',
       icon: <FieldTimeOutlined />,

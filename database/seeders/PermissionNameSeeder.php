@@ -30,6 +30,16 @@ class PermissionNameSeeder extends Seeder
                 'name' => "Generate",
                 'created_at' => now(),
                 'updated_at' => now(),
+            ],
+            [
+                'name' => "Upload",
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => "Delete",
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         ]);
     }

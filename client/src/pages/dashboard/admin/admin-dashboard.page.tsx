@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import NavigationBarAdmin from '../../components/nav-admin.component';
+import NavigationBarAdmin from '../../../components/nav-admin.component';
 
 function AdminDashboard() {
   useEffect(() => {

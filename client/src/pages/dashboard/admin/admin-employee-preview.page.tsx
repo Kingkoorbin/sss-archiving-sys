@@ -1,19 +1,18 @@
 import axios from 'axios';
-import NavigationBarAdmin from '../../components/nav-admin.component';
-import { IEmployeeProfile, IExperiencePayload, IWorkHistory } from '../../interfaces/client.interface';
+import NavigationBarAdmin from '../../../components/nav-admin.component';
+import { IEmployeeProfile, IExperiencePayload, IWorkHistory } from '../../../interfaces/client.interface';
 import { useEffect, useState } from 'react';
 import { Button, Card, Divider, Flex, Switch, Tooltip, message } from 'antd';
-import useLocalStorage from '../../hooks/useLocalstorage.hook';
-import { IApiResponse } from '../../interfaces/api.interface';
-import { API_BASE_URL } from '../../const/api.const';
+import useLocalStorage from '../../../hooks/useLocalstorage.hook';
+import { IApiResponse } from '../../../interfaces/api.interface';
+import { API_BASE_URL } from '../../../const/api.const';
 import { useLocation, useNavigate } from 'react-router-dom';
-import avatar from "../../assets/avatar.png";
+import avatar from "../../../assets/avatar.png";
 import Title from 'antd/es/typography/Title';
-import { isEmpty } from '../../utils/util';
+import { isEmpty } from '../../../utils/util';
 import { CheckCircleOutlined, CloseOutlined, EditOutlined } from '@ant-design/icons';
-import ExperienceFormFields from '../../components/form-experience.component';
+import ExperienceFormFields from '../../../components/form-experience.component';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { delay } from '../../utils/common.util';
 import moment from 'moment';
 
 interface IState {

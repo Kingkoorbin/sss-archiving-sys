@@ -595,8 +595,8 @@ const RegistrationEmployeeFormFields: React.FC<
             rules={{
               required: 'This field is required',
               pattern: {
-                value: /^(?!-)[0-9-]+(?<!-)$/,
-                message: 'Invalid SSS No.',
+                value: /^[0-9]{2}-[0-9]+-[0-9]{1}$/,
+                message: 'Format of SSS No. 00-00000000-0',
               },
               minLength: {
                 message: 'Invalid SSS No.',

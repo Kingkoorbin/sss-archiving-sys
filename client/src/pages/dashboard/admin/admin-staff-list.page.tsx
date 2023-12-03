@@ -3,24 +3,24 @@ import { Button, Modal, Radio, Select, Space, Table, Tooltip, message } from 'an
 import { useNavigate } from 'react-router-dom';
 
 // Custom Imports
-import NavigationBarAdmin from '../../components/nav-admin.component';
-import RegistrationFormFields from '../../components/form-registration-staff.component';
+import NavigationBarAdmin from '../../../components/nav-admin.component';
+import RegistrationFormFields from '../../../components/form-registration-staff.component';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { IRegistrationPayload } from '../../interfaces/login.interface';
-import { isEmpty } from '../../utils/util';
-import { API, API_BASE_URL } from '../../const/api.const';
-import HttpClient from '../../utils/http-client.util';
-import { IApiResponse } from '../../interfaces/api.interface';
-import useLocalStorage from '../../hooks/useLocalstorage.hook';
+import { IRegistrationPayload } from '../../../interfaces/login.interface';
+import { isEmpty } from '../../../utils/util';
+import { API, API_BASE_URL } from '../../../const/api.const';
+import HttpClient from '../../../utils/http-client.util';
+import { IApiResponse } from '../../../interfaces/api.interface';
+import useLocalStorage from '../../../hooks/useLocalstorage.hook';
 import {
   IEmployeeProfile,
   IPermission,
   IUser,
   IUserPermission,
   IWorkHistory,
-} from '../../interfaces/client.interface';
-import { formatStandardDate, formatStandardDateTime } from '../../utils/date.util';
-import { staffColumns } from '../../const/table-columns.const';
+} from '../../../interfaces/client.interface';
+import { formatStandardDate, formatStandardDateTime } from '../../../utils/date.util';
+import { staffColumns } from '../../../const/table-columns.const';
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
@@ -71,7 +71,6 @@ function AdminStaffList() {
 
     navigate('/', { replace: true });
   };
-
 
   const onPermissionChange = async (value: { permissionId: number, userId: number }, type: "SELECT" | "DESELECT") => {
     const config: AxiosRequestConfig = {
@@ -196,7 +195,6 @@ function AdminStaffList() {
           isAuthModalOpen: true,
         }));
       }
-
     }
   };
 

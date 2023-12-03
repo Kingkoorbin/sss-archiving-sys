@@ -37,6 +37,7 @@ Route::controller(AuthController::class)->group(function () {
 // User
 Route::controller(UserController::class)->group(function () {
     Route::post('/user/v1/permission', 'createPermissionById');
+    Route::get('/user/v1', 'getByUserId');
     Route::delete('/user/v1/permission/{id}', 'deleteUserPermissionById');
     Route::delete('/user/v1/{id}', 'deleteUserById');
 });
@@ -63,7 +64,7 @@ Route::controller(ClientController::class)->group(function () {
 Route::controller(ContributionRequestController::class)->group(function () {
     Route::get('/contribution/v1', 'getAll');
     Route::post('/contribution/v1', 'createRequest');
-    Route::put('/contribution/v1/{sssNo}', 'updateStatusByNumber');
+    Route::put('/contribution/v1', 'updateStatusById');
 });
 
 // Contributions (Records)

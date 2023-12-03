@@ -1,32 +1,31 @@
-import NavigationBarAdmin from '../../components/nav-admin.component';
+import NavigationBarAdmin from '../../../components/nav-admin.component';
 import {
   CloseOutlined,
   DownloadOutlined,
   EditOutlined,
   FilterOutlined,
   InboxOutlined,
-  SearchOutlined,
 } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { Button, Flex, Modal, Table, Tooltip, Upload, message } from 'antd';
-import { API, API_BASE_URL } from '../../const/api.const';
-import { contributionColumns } from '../../const/table-columns.const';
+import { API, API_BASE_URL } from '../../../const/api.const';
+import { contributionColumns } from '../../../const/table-columns.const';
 import {
   IContribution,
   IGeneratePdfPayload,
   ISBRPayload,
-  ISearchPayload,
-} from '../../interfaces/client.interface';
+} from '../../../interfaces/client.interface';
 import { useEffect, useState } from 'react';
-import useLocalStorage from '../../hooks/useLocalstorage.hook';
-import { IApiResponse } from '../../interfaces/api.interface';
-import HttpClient from '../../utils/http-client.util';
-import SearchSSSNoFormFields from '../../components/form-search-sssno-component';
+import useLocalStorage from '../../../hooks/useLocalstorage.hook';
+import { IApiResponse } from '../../../interfaces/api.interface';
+import HttpClient from '../../../utils/http-client.util';
+import SearchSSSNoFormFields from '../../../components/form-search-sssno-component';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import DateRangeeFormFields from '../../components/form-daterange.component';
+import DateRangeeFormFields from '../../../components/form-daterange.component';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import SbrFormFields from '../../components/form-sbr.component';
+import { useLocation, useNavigate } from 'react-router-dom';
+import SbrFormFields from '../../../components/form-sbr.component';
+import { isEmpty } from '../../../utils/util';
 
 const { Dragger } = Upload;
 
@@ -53,10 +52,12 @@ export default function AdminContributionRecord() {
 
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     handleSubmit: handleSubmitGenerateFormData,
     control: generateController,
+    setValue: setSearchValue,
     formState: { isSubmitting: isGeneratingPdf },
   } = useForm<IGeneratePdfPayload>();
 
@@ -87,6 +88,11 @@ export default function AdminContributionRecord() {
 
     if (!Array.isArray(getAllContributionsResponse.data)) {
       return;
+    }
+
+    // If there is a state coming from redirection
+    if (!isEmpty(location.state)) {
+      setSearchValue("searchKeyword", location.state?.request?.sss_no ?? "");
     }
 
     setState((prev) => ({
@@ -296,7 +302,6 @@ export default function AdminContributionRecord() {
           <form onSubmit={handleSubmitGenerateFormData(handleApplyFilter)}>
             <Flex gap={5}>
               <SearchSSSNoFormFields
-                onSearch={() => { }}
                 control={generateController}
                 isSearching={false}
               />
@@ -345,7 +350,6 @@ export default function AdminContributionRecord() {
                 size="middle"
                 loading={isCreatingSBR}
                 htmlType="submit"
-                shape="round"
                 style={{ marginTop: 20 }}
                 block
               >

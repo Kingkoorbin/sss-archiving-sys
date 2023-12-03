@@ -26,19 +26,10 @@ class UserController extends Controller
         $this->middleware('auth:api');
     }
 
-    public function deleteUserById($id) {
+    public function getByUserId() {
         try {
-            $allowedRoles = ["ADMIN"];
-            $user = auth()->user();
-
-            if(!in_array($user->role, $allowedRoles)) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Role not authorized',
-                ], 401);
-            }
-
-            $user = User::where('id', $id)->first();
+            // Get the authenticated user
+            $user = Auth::user();
 
             if (!$user) {
                 return response()->json([
@@ -47,9 +38,45 @@ class UserController extends Controller
                 ], 404);
             }
 
-            // Delete the Employee
+            // Load the user_permissions relationship
+            $user = User::with('userPermissions.permissionName:id,name,created_at,updated_at')->find($user->id);
+
+            return response()->json($user);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function deleteUserById($id) {
+        try {
+            $allowedRoles = ["ADMIN"];
+    
+            $currentUser = auth()->user();
+    
+            // Check if the role is authorized to delete a user
+            if (!in_array($currentUser->role, $allowedRoles)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Role not authorized',
+                ], 401);
+            }
+
+            // Retrieve the user by ID
+            $user = User::where('id', $id)->first();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User not found.',
+                ], 404);
+            }
+    
+            // Delete the user
             $user->delete();
-                        
+    
             return response()->json([
                 'status' => 'success',
                 'message' => 'User deleted successfully.',
@@ -61,6 +88,7 @@ class UserController extends Controller
             ], 500);
         }
     }
+    
 
     public function createPermissionById(Request $request) {
         try {
