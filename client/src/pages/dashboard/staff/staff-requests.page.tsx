@@ -124,6 +124,8 @@ function StaffRequests() {
                   <div>
                     <div style={{ color: '#111', fontSize: 12 }}>SSS No.</div>
                     <div style={{ color: '#111', fontSize: 32 }}>{el.sss_no}</div>
+                    <div style={{ color: '#111', fontSize: 12 }}>Request my entire record</div>
+                    <div style={{ color: '#111', fontSize: 32 }}> {el.all ? 'YES' : 'NO'}</div>
                   </div>
 
                   <Select

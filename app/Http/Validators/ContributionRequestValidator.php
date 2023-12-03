@@ -18,6 +18,7 @@ class ContributionRequestValidator {
             'email' => 'required|email',
             'phone_number' => 'required|string',
             'date_needed' => 'required|date',
+            'all' => 'nullable',
             'status' => 'required|string|in:PENDING,PROCESSING,REJECTED,DONE',
         ]);
 

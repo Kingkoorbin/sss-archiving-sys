@@ -171,6 +171,7 @@ export interface IContributionRequest {
   id: number;
   editor: null | string;
   sss_no: string;
+  all: boolean;
   name: string;
   date_of_employment: string;
   date_of_resignation: string;

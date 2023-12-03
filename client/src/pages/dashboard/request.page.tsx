@@ -17,6 +17,7 @@ function RequestPage() {
   const handleCreateRequest: SubmitHandler<IContributionRequest> = async (
     data
   ) => {
+
     data.status = 'PENDING';
     await HttpClient.post<IContributionRequest, any>(
       `${API.contributionRequests}`,

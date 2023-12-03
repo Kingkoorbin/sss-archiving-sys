@@ -1,5 +1,5 @@
 import React from 'react';
-import { DatePicker, Flex, Input } from 'antd';
+import { Checkbox, DatePicker, Flex, Input } from 'antd';
 import { Control, Controller } from 'react-hook-form';
 import {
   FieldNumberOutlined,
@@ -50,7 +50,7 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
         )}
       </div>
 
-      <Flex gap={20}  className="registration-employee-row1">
+      <Flex gap={20} className="registration-employee-row1">
         <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
             Contact No.
@@ -123,32 +123,32 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
           SSS Number
         </p>
         <Controller
-            name="sss_no"
-            control={control}
-            rules={{
-              required: 'This field is required',
-              pattern: {
-                value: /^[0-9]{2}-[0-9]+-[0-9]{1}$/,
-                message: 'Format of SSS No. 00-00000000-0',
-              },
-              minLength: {
-                message: 'Invalid SSS No.',
-                value: 9,
-              },
-              maxLength: {
-                message: 'Invalid SSS No.',
-                value: 25,
-              },
-            }}
-            render={({ field }) => (
-              <Input
-                size="large"
-                placeholder="Enter"
-                prefix={<NumberOutlined />}
-                {...field}
-              />
-            )}
-          />
+          name="sss_no"
+          control={control}
+          rules={{
+            required: 'This field is required',
+            pattern: {
+              value: /^[0-9]{2}-[0-9]+-[0-9]{1}$/,
+              message: 'Format of SSS No. 00-00000000-0',
+            },
+            minLength: {
+              message: 'Invalid SSS No.',
+              value: 9,
+            },
+            maxLength: {
+              message: 'Invalid SSS No.',
+              value: 25,
+            },
+          }}
+          render={({ field }) => (
+            <Input
+              size="large"
+              placeholder="Enter"
+              prefix={<NumberOutlined />}
+              {...field}
+            />
+          )}
+        />
         {errors.sss_no && (
           <div style={{ color: 'red', padding: 5 }}>
             {errors.sss_no.message}
@@ -193,6 +193,18 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
           )}
         </div>
       </Flex>
+
+      <div style={{ marginTop: 20 }}>
+        <Controller
+          name="all"
+          control={control}
+          render={({ field }) => (
+            <Checkbox checked={field.value} onChange={(e) => field.onChange(e.target.checked)}>
+              Request my entire record
+            </Checkbox>
+          )}
+        />
+      </div>
       <div>
         <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>Requester</p>
         <Controller

@@ -65,6 +65,7 @@ class ContributionRequestController extends Controller
             'email' => $request->email,
             'phone_number' => $request->phone_number,
             'date_needed' => $request->date_needed,
+            'all' => $request->all,
             'status' => $request->status,
         ]);
 
