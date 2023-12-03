@@ -11,17 +11,17 @@ export const staffColumns: ColumnsType<DataType> = [
   {
     title: 'User',
     dataIndex: 'username',
-    width: 100,
+    width: "20%",
   },
   {
-    title: 'Date Joined',
+    title: 'Date created',
     dataIndex: 'verified_at',
-    width: 100,
+    width: "10%",
   },
   {
     title: 'Role',
     dataIndex: 'role',
-    width: 100,
+    width: "10%",
   },
  
   {
@@ -31,8 +31,8 @@ export const staffColumns: ColumnsType<DataType> = [
   },
   {
     title: '',
-    dataIndex: 'delete',
-    width: 40,
+    dataIndex: 'actions',
+    width: "10%",
   },
 ];
 
@@ -62,12 +62,6 @@ export const employeeColumns: ColumnsType<DataType> = [
     dataIndex: 'last_name',
     width: 100,
   },
-
-  // {
-  //   title: 'Birthdate',
-  //   dataIndex: 'birthdate',
-  //   width: 100,
-  // },
   {
     title: 'Present address',
     dataIndex: 'present_address',
@@ -85,60 +79,50 @@ export const employeeColumns: ColumnsType<DataType> = [
   },
   {
     title: '',
-    dataIndex: 'edit',
-    width: 30,
+    dataIndex: 'actions',
+    width: "10%",
   },
-  {
-    title: '',
-    dataIndex: 'view',
-    width: 30,
-  },
-  // {
-  //   title: 'Created',
-  //   dataIndex: 'created_at',
-  //   width: 160,
-  // },
 ];
 
 export const contributionColumns: ColumnsType<DataType> = [
   {
     title: 'SSS No',
     dataIndex: 'sss_no',
-    width: 50,
+    width: "10%",
   },
   {
     title: 'Name',
     dataIndex: 'name',
-    width: 150,
+    width: "30%",
   },
   {
     title: 'SBR No',
     dataIndex: 'sbr_no',
-    width: 100,
+    width: "10%",
   },
   {
     title: 'SBR Date',
     dataIndex: 'sbr_date',
-    width: 100,
+    width: "10%",
   },
   {
     title: 'SS',
     dataIndex: 'ss',
-    width: 100,
+    width: "10%",
   },
   {
     title: 'EC',
     dataIndex: 'ec',
-    width: 100,
+    width: "10%",
   },
   {
     title: 'Total',
     dataIndex: 'total',
-    width: 100,
+    width: "10%",
   },
   {
     title: '',
-    dataIndex: 'edit',
-    width: 40,
+    dataIndex: 'actions',
+    width: "10%",
   },
 ];

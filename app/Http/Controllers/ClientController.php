@@ -269,6 +269,7 @@ class ClientController extends Controller
             // Fetch STAFF from the users table
             $staff = User::orderBy('created_at', 'desc')
                 ->where('role', '=', 'STAFF')
+                ->with('userPermissions.permissionName:id,name,created_at,updated_at')
                 ->get();
             return response()->json($staff);
         }

@@ -21,7 +21,7 @@ class ContributionRequestController extends Controller
     {
         $this->middleware('auth:api')->only([
             'updateStatusByNumber',
-            'getAll'
+            'getAll',
         ]);;
     }
 

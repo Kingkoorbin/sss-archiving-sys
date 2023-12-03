@@ -29,6 +29,8 @@ export interface IUser {
   role: string;
   created_at: string;
   updated_at: string;
+
+  user_permissions: IPermission[]
 }
 
 export interface IEmployeeRegistrationPayload {
@@ -116,6 +118,22 @@ export interface IEmployeeProfile {
   created_at: string; // Assuming date-time format
   updated_at: string; // Assuming date-time format
   work_history: IWorkHistory[];
+}
+
+export interface IPermission {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface IUserPermission {
+  id: number;
+  user_id: number;
+  permission_name_id: number;
+  created_at: string;
+  updated_at: string;
+  permission_name: IPermission
 }
 
 export interface ISearchPayload {

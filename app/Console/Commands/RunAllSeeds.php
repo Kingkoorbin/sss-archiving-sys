@@ -17,10 +17,8 @@ class RunAllSeeds extends Command
 
         $this->info('Running seeders...');
         Artisan::call('db:seed', ['--class' => 'AdminUserSeeder']);
-        Artisan::call('db:seed', ['--class' => 'AdminClientSeeder']);
-        Artisan::call('db:seed', ['--class' => 'AdminWorkHistorytSeeder']);
+        Artisan::call('db:seed', ['--class' => 'PermissionNameSeeder']);
 
-        // Add more seeders if needed
 
         $this->info('Seeding completed.');
     }

@@ -12,6 +12,7 @@ use App\Http\Controllers\SpaceController;
 use App\Http\Controllers\ContributionRequestController;
 use App\Http\Controllers\AcitivityController;
 use App\Http\Controllers\ContributionController;
+use App\Http\Controllers\PermissionNameController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +36,16 @@ Route::controller(AuthController::class)->group(function () {
 
 // User
 Route::controller(UserController::class)->group(function () {
+    Route::post('/user/v1/permission', 'createPermissionById');
+    Route::delete('/user/v1/permission/{id}', 'deleteUserPermissionById');
     Route::delete('/user/v1/{id}', 'deleteUserById');
+});
+
+// Permission Names
+Route::controller(PermissionNameController::class)->group(function () {
+    Route::get('/permission/v1', 'getAll');
+    Route::post('/permission/v1', 'create');
+    Route::delete('/permission/v1/{id}', 'delete');
 });
 
 // Client
@@ -61,6 +71,7 @@ Route::controller(ContributionController::class)->group(function () {
     Route::get('/record/v1', 'getAll');
     Route::post('/record/v1', 'saveContributions');
     Route::put('/record/v1/{id}/sbr', 'updateSbrValues');
+    Route::delete('/record/v1/{sssNo}', 'deleteContributionById');
 });
 
 // Activities

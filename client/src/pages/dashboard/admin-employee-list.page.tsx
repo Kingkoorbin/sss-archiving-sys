@@ -186,7 +186,18 @@ function AdminEmployeeList() {
         middle_name: el.middle_name === 'N/A' ? '' : el.middle_name,
         birthdate: formatStandardDate(el.birthdate),
         created_at: formatStandardDateTime(el.created_at),
-        view: (
+        actions: <Flex gap={10}>
+          <Tooltip title="Edit">
+            <Button
+              type='dashed'
+              icon={<EditOutlined />}
+              onClick={() =>
+                navigate(`/dashboard/a/account-management/employee/${el.school_id}/edit`, {
+                  state: el,
+                })
+              }
+            >Edit</Button>
+          </Tooltip>
           <Tooltip title="View">
             <Button
               type='primary'
@@ -197,19 +208,7 @@ function AdminEmployeeList() {
                 })
               }> View</Button>
           </Tooltip>
-        ),
-        edit: (
-          <Tooltip title="Edit">
-            <Button
-              icon={<EditOutlined />}
-              onClick={() =>
-                navigate(`/dashboard/a/account-management/employee/${el.school_id}/edit`, {
-                  state: el,
-                })
-              }
-            >Edit</Button>
-          </Tooltip>
-        ),
+        </Flex>,
         key: el.id,
       })) as any,
     }));
@@ -218,7 +217,7 @@ function AdminEmployeeList() {
   useEffect(() => {
     document.title = 'Account Management | SSS Archiving System';
     getAllEmployees();
-    return () => {};
+    return () => { };
   }, []);
 
   return (

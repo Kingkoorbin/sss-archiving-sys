@@ -17,8 +17,11 @@ class ContributionController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api')
-            ->only(['updateSbrValues', 'getAll']);
+        $this->middleware('auth:api')->only([
+            'updateSbrValues', 
+            'getAll',
+            'deleteContributionById'
+        ]);
     }
 
     public function getAll(Request $request)
@@ -104,6 +107,36 @@ class ContributionController extends Controller
         event(new UserActivity('SBR value updated.', $userId));
 
         return response()->json($contribution);
+    }
+
+    public function deleteContributionById($id)
+    {
+       try {
+            $allowedRoles = ["ADMIN", "STAFF"];
+            $user = auth()->user();
+
+            if(!in_array($user->role, $allowedRoles)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Role not authorized',
+                ], 401);
+            }
+
+            $contribution = Contributions::find($id);
+
+            if (!$contribution) {
+                return response()->json(['message' => 'Record not found.'], 404);
+            }
+
+            $contribution->delete();
+
+            return response()->json(['message' => 'Record deleted successfully.']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
 }

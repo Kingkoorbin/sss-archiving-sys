@@ -1,5 +1,6 @@
 import NavigationBarAdmin from '../../components/nav-admin.component';
 import {
+  CloseOutlined,
   DownloadOutlined,
   EditOutlined,
   FilterOutlined,
@@ -8,7 +9,7 @@ import {
 } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { Button, Flex, Modal, Table, Tooltip, Upload, message } from 'antd';
-import { API } from '../../const/api.const';
+import { API, API_BASE_URL } from '../../const/api.const';
 import { contributionColumns } from '../../const/table-columns.const';
 import {
   IContribution,
@@ -94,10 +95,10 @@ export default function AdminContributionRecord() {
       contributions: getAllContributionsResponse.data?.map((el) => ({
         ...el,
         key: el.id,
-        edit: (
+        actions: <Flex gap={10}>
           <Tooltip title="Edit">
             <Button
-              shape="circle"
+              type='dashed'
               icon={<EditOutlined />}
               onClick={() =>
                 setState((prev) => ({
@@ -106,9 +107,16 @@ export default function AdminContributionRecord() {
                   isSBRModalOpen: !prev.isSBRModalOpen,
                 }))
               }
-            />
+            >Edit</Button>
           </Tooltip>
-        ),
+          <Tooltip title="Delete">
+            <Button
+              style={{ color: "red" }}
+              icon={<CloseOutlined />}
+              onClick={() => onDeleteContribution(el.id)}
+            >Delete</Button>
+          </Tooltip>
+        </Flex>,
       })) as any,
     }));
   };
@@ -139,6 +147,7 @@ export default function AdminContributionRecord() {
       isSBRModalOpen: false,
     }));
   };
+
   const handleApplyFilter: SubmitHandler<
     IGeneratePdfPayload & { searchKeyword?: string; duration?: any }
   > = async (data) => {
@@ -234,16 +243,6 @@ export default function AdminContributionRecord() {
     },
   };
 
-  const toastSuccess = (message: string) => {
-    messageApi.success({
-      type: 'success',
-      content: message,
-      style: {
-        marginTop: '90vh',
-      },
-    });
-  };
-
   const handleRequireLogin = () => {
     setState((prev) => ({
       ...prev,
@@ -253,15 +252,23 @@ export default function AdminContributionRecord() {
     navigate('/', { replace: true });
   };
 
-  const toastError = (message: string) => {
-    messageApi.error({
-      type: 'error',
-      content: message,
-      style: {
-        marginTop: '90vh',
-      },
-    });
-  };
+  const onDeleteContribution = async (id: number) => {
+    try {
+      await axios.delete(
+        `${API_BASE_URL}/api/record/v1/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthResponse?.access_token}`,
+          },
+        }
+      );
+
+      toastSuccess("Removed successfully!")
+      await getContributions();
+    } catch (error) {
+      toastError("Oops! Something went wrong, Please try again.")
+    }
+  }
 
   useEffect(() => {
     getContributions();
@@ -289,7 +296,7 @@ export default function AdminContributionRecord() {
           <form onSubmit={handleSubmitGenerateFormData(handleApplyFilter)}>
             <Flex gap={5}>
               <SearchSSSNoFormFields
-                onSearch={() => {}}
+                onSearch={() => { }}
                 control={generateController}
                 isSearching={false}
               />
@@ -373,4 +380,24 @@ export default function AdminContributionRecord() {
       </div>
     </>
   );
+
+  function toastSuccess(message: string) {
+    messageApi.success({
+      type: 'success',
+      content: message,
+      style: {
+        marginTop: '90vh',
+      },
+    });
+  };
+
+  function toastError(message: string) {
+    messageApi.error({
+      type: 'error',
+      content: message,
+      style: {
+        marginTop: '90vh',
+      },
+    });
+  };
 }

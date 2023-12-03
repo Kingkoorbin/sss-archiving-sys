@@ -14,13 +14,15 @@ import { IApiResponse } from '../../interfaces/api.interface';
 import useLocalStorage from '../../hooks/useLocalstorage.hook';
 import {
   IEmployeeProfile,
+  IPermission,
   IUser,
+  IUserPermission,
   IWorkHistory,
 } from '../../interfaces/client.interface';
-import { formatStandardDateTime } from '../../utils/date.util';
+import { formatStandardDate, formatStandardDateTime } from '../../utils/date.util';
 import { staffColumns } from '../../const/table-columns.const';
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 interface IState {
   isFetchingStaffs: boolean;
@@ -35,6 +37,7 @@ interface IState {
   stateWorkHistoryPreview?: IWorkHistory;
   employees: IEmployeeProfile[];
   users: IUser[];
+  permissions: any[]
 }
 
 function AdminStaffList() {
@@ -57,6 +60,7 @@ function AdminStaffList() {
     isEmployeeRegistrationOpen: false,
     employees: [],
     users: [],
+    permissions: []
   });
 
   const handleOk = () => {
@@ -69,66 +73,131 @@ function AdminStaffList() {
   };
 
 
+  const onPermissionChange = async (value: { permissionId: number, userId: number }, type: "SELECT" | "DESELECT") => {
+    const config: AxiosRequestConfig = {
+      headers: {
+        Authorization: `Bearer ${getAuthResponse?.access_token}`,
+      },
+    }
+    try {
+      if (type === "DESELECT") {
+        console.log("DESELECT!!")
+        await axios.delete(`${API_BASE_URL}/api/user/v1/permission/${value.permissionId}`, config)
+      } else if (type === "SELECT"){
+        console.log("SELECT!!")
+        await axios.post(`${API_BASE_URL}/api/user/v1/permission`, {
+          user_id: value.userId,
+          permission_name_id: value.permissionId
+        }, config)
+      }
+
+      toastSuccess("Permission updated successfully!")
+    } catch (error: any) {
+      if (error?.response?.status == 401) {
+        setState((prev) => ({
+          ...prev,
+          isAuthModalOpen: true,
+        }));
+      }
+      toastError("Oops! Something went wrong, Please try again.")
+    }
+  }
+
   const getAllStaffs = async () => {
+    const config: AxiosRequestConfig = {
+      headers: {
+        Authorization: `Bearer ${getAuthResponse?.access_token}`,
+      },
+    }
+
     setState((prev) => ({
       ...prev,
       isFetchingStaffs: true,
     }));
 
-    const getAllStafsResponse = await HttpClient.setAuthToken(
-      getAuthResponse?.access_token
-    ).get<IUser[], { role: string }>(API.users, { role: 'STAFF' });
+    try {
+      const getAllStaffsResponse: AxiosResponse & { data: IUser[] } = await axios.get(`${API_BASE_URL}/api/client/v1`, {
+        params: {
+          role: 'STAFF'
+        },
+        ...config,
+      });
 
-    if (getAllStafsResponse.message === 'Authentication required.') {
+      if (!Array.isArray(getAllStaffsResponse.data)) {
+        return;
+      }
+
+      const getAllPermissionsResponse: { data: IPermission[] } = await axios.get(`${API_BASE_URL}/api/permission/v1`, config);
+      const permissions = getAllPermissionsResponse.data.map((el: IPermission) => {
+        return {
+          label: el.name,
+          value: el.name
+        }
+      })
+
+      const mappedStaffs = getAllStaffsResponse?.data.map((el: IUser) => {
+        const currentPermissions = el.user_permissions.map((el: any) => {
+          return {
+            id: el.id,
+            label: el.permission_name.name,
+            value: el.permission_name.name
+          }
+        })
+
+        return {
+          key: el.id,
+          username: el.username,
+          role: el.role,
+          verified_at: formatStandardDate(el.created_at),
+          actions: <>
+            <Tooltip title="Delete">
+              <Button
+                style={{ color: "red" }}
+                icon={<CloseOutlined />}
+                onClick={() => onDeleteUser(el.id)}
+              >Delete</Button>
+            </Tooltip>
+          </>,
+          permission: (
+            <>
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <Select
+                  mode="tags"
+                  size={'middle'}
+                  placeholder="Please select"
+                  style={{ width: '100%' }}
+                  options={permissions}
+                  defaultValue={currentPermissions}
+                  onSelect={(v) => {
+                    const foundPermission: any = getAllPermissionsResponse.data.find((permission: any) => permission.name === v);
+                    onPermissionChange({ permissionId: foundPermission.id, userId: el.id }, "SELECT")
+                  }}
+                  onDeselect={(v) => {
+                    const foundPermission: any = currentPermissions.find((permission: any) => permission.label === v);
+                    onPermissionChange({ permissionId: foundPermission.id, userId: el.id }, "DESELECT")
+                  }}
+                />
+              </Space>
+            </>
+          ),
+        }
+      });
+
       setState((prev) => ({
         ...prev,
-        isAuthModalOpen: true,
+        isFetchingStaffs: false,
+        users: mappedStaffs as any,
       }));
 
-      return;
+    } catch (error: any) {
+      if (error?.response?.status == 401) {
+        setState((prev) => ({
+          ...prev,
+          isAuthModalOpen: true,
+        }));
+      }
+
     }
-
-    if (!Array.isArray(getAllStafsResponse.data)) {
-      return;
-    }
-
-    const mappedStaffs = getAllStafsResponse?.data.map((el) => ({
-      key: el.id,
-      username: el.username,
-      role: el.role,
-      verified_at: formatStandardDateTime(el.created_at),
-      delete: <>
-        <Tooltip title="Delete">
-          <Button
-            style={{ color: "red" }}
-            icon={<CloseOutlined />}
-            onClick={() => onDeleteUser(el.id)}
-          >Delete</Button>
-        </Tooltip>
-      </>,
-      permission: (
-        <>
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <Select
-              mode="tags"
-              size={'middle'}
-              placeholder="Please select"
-              style={{ width: '100%' }}
-              options={[
-                { label: "Edit", value: "Editor" },
-                { label: "Generate PDFs", value: "Generate" },
-              ]}
-            />
-          </Space>
-        </>
-      ),
-    }));
-
-    setState((prev) => ({
-      ...prev,
-      isFetchingStaffs: false,
-      users: mappedStaffs as any,
-    }));
   };
 
   const onDeleteUser = async (id: number) => {
@@ -149,29 +218,9 @@ function AdminStaffList() {
     }
   }
 
-  const toastSuccess = (message: string) => {
-    messageApi.success({
-      type: 'success',
-      content: message,
-      style: {
-        marginTop: '90vh',
-      },
-    });
-  };
-
-  const toastError = (message: string) => {
-    messageApi.error({
-      type: 'error',
-      content: message,
-      style: {
-        marginTop: '90vh',
-      },
-    });
-  };
   useEffect(() => {
     document.title = 'Account Management | SSS Archiving System';
     getAllStaffs();
-    return () => { };
   }, []);
 
   return (
@@ -270,6 +319,27 @@ function AdminStaffList() {
       </Modal>
     </>
   );
+
+  function toastSuccess(message: string) {
+    messageApi.success({
+      type: 'success',
+      content: message,
+      style: {
+        marginTop: '90vh',
+      },
+    });
+  };
+
+  function toastError(message: string) {
+    messageApi.error({
+      type: 'error',
+      content: message,
+      style: {
+        marginTop: '90vh',
+      },
+    });
+  };
+
 }
 
 export default AdminStaffList;
