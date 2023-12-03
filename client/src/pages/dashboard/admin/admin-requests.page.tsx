@@ -163,7 +163,7 @@ function AdminRequests() {
                 <div style={{ color: '#111', fontSize: 18 }}>{el.email}</div>
                 <Divider dashed />
                 <div style={{ color: '#111', fontSize: 12 }}>
-                  Date of Employment - Date of Resignation
+                Start - End
                 </div>
                 <Flex gap={20} align="center">
                   <div style={{ color: '#111', fontSize: 18 }}>

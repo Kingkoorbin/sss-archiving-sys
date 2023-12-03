@@ -158,7 +158,7 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
       <Flex gap={20}>
         <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
-            Date of Employment
+            Date start
           </p>
           <Controller
             name="date_of_employment"
@@ -176,7 +176,7 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
         </div>
         <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
-            Date of Resignation
+            Date end
           </p>
           <Controller
             name="date_of_resignation"
