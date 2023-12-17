@@ -32,18 +32,16 @@ function AdminStaffRegistration() {
   );
   const [messageApi, contextHolder] = message.useMessage();
 
-  const handleRegistration: SubmitHandler<IRegistrationPayload> = async (data) => {
+  const handleRegistration: SubmitHandler<IRegistrationPayload> = async (
+    data
+  ) => {
     try {
-      data.role = "STAFF";
-      await axios.post(
-        `${API_BASE_URL}/api/auth/v1/register`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${getAuthResponse?.access_token}`,
-          },
-        }
-      );
+      data.role = 'STAFF';
+      await axios.post(`${API_BASE_URL}/api/auth/v1/register`, data, {
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      });
       setState((prev) => ({
         ...prev,
         isSuccessCreatingStaff: true,
@@ -124,11 +122,7 @@ function AdminStaffRegistration() {
               htmlType="submit"
               disabled={state.isSuccessCreatingStaff}
               icon={
-                state.isSuccessCreatingStaff ? (
-                  <CheckCircleOutlined />
-                ) : (
-                  <></>
-                )
+                state.isSuccessCreatingStaff ? <CheckCircleOutlined /> : <></>
               }
               style={{ marginTop: 20 }}
             >

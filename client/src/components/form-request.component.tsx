@@ -199,7 +199,10 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
           name="all"
           control={control}
           render={({ field }) => (
-            <Checkbox checked={field.value} onChange={(e) => field.onChange(e.target.checked)}>
+            <Checkbox
+              checked={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+            >
               Request my entire record
             </Checkbox>
           )}

@@ -10,7 +10,7 @@ interface LoginFormFieldsProps {
 
 const LoginFormFields: React.FC<LoginFormFieldsProps> = ({
   control,
-  errors
+  errors,
 }) => {
   return (
     <>
@@ -24,15 +24,13 @@ const LoginFormFields: React.FC<LoginFormFieldsProps> = ({
           required: 'This field is required',
         }}
         render={({ field }) => (
-          <Input
-            size="middle"
-            placeholder="Enter"
-            {...field}
-          />
+          <Input size="middle" placeholder="Enter" {...field} />
         )}
       />
       {errors.username && (
-        <div style={{ color: 'red', padding: 5 }}>{errors.username.message}</div>
+        <div style={{ color: 'red', padding: 5 }}>
+          {errors.username.message}
+        </div>
       )}
       <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>Password</p>
       <Controller
@@ -42,15 +40,13 @@ const LoginFormFields: React.FC<LoginFormFieldsProps> = ({
           required: 'This field is required',
         }}
         render={({ field }) => (
-          <Input.Password
-            size="middle"
-            placeholder="Enter"
-            {...field}
-          />
+          <Input.Password size="middle" placeholder="Enter" {...field} />
         )}
       />
       {errors.password && (
-        <div style={{ color: 'red', padding: 5 }}>{errors.password.message}</div>
+        <div style={{ color: 'red', padding: 5 }}>
+          {errors.password.message}
+        </div>
       )}
     </>
   );

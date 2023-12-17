@@ -7,5 +7,5 @@ export const fileFilter = (req: any, file: any, callback: any) => {
 };
 
 export const multerUploadCsv = multer({
-    storage:  multer.memoryStorage()
+  storage: multer.memoryStorage(),
 });

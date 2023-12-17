@@ -1,7 +1,7 @@
 export enum TPermissionTypes {
-    DELETE = "Delete",
-    UPLOAD = "Upload",
-    GENERATE = "Generate",
-    EDIT = "Edit",
-    VIEW = "View"
+  DELETE = 'Delete',
+  UPLOAD = 'Upload',
+  GENERATE = 'Generate',
+  EDIT = 'Edit',
+  VIEW = 'View',
 }

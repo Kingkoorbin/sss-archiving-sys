@@ -14,7 +14,7 @@ interface ExperienceFormFieldsProps {
 
 const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
   control,
-  errors
+  errors,
 }) => {
   return (
     <>
@@ -29,7 +29,7 @@ const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
             rules={{
               required: 'This field is required',
               pattern: {
-                value:/^[A-Za-z\s\-.,&]+$/,
+                value: /^[A-Za-z\s\-.,&]+$/,
                 message: 'Invalid Company name',
               },
               minLength: {
@@ -58,7 +58,9 @@ const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
           )}
         </div>
         <div style={{ width: '100%' }}>
-          <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>Position</p>
+          <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
+            Position
+          </p>
           <Controller
             name="position"
             control={control}
@@ -78,7 +80,12 @@ const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
               },
             }}
             render={({ field }) => (
-              <Input size="large" placeholder="Enter" style={{ width: '100%' }} {...field} />
+              <Input
+                size="large"
+                placeholder="Enter"
+                style={{ width: '100%' }}
+                {...field}
+              />
             )}
           />
           {errors.position && (
@@ -88,7 +95,14 @@ const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
           )}
         </div>
         <div style={{ width: '100%' }}>
-          <p style={{ padding: 0, color: 'GrayText', fontSize: 12, width: '100%' }}>
+          <p
+            style={{
+              padding: 0,
+              color: 'GrayText',
+              fontSize: 12,
+              width: '100%',
+            }}
+          >
             Duration
           </p>
           <Controller
@@ -117,7 +131,7 @@ const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
         rules={{
           required: 'This field is required',
           pattern: {
-            value:/^[A-Za-z\s\-.,&]+$/,
+            value: /^[A-Za-z\s\-.,&]+$/,
             message: 'Invalid content.',
           },
           minLength: {

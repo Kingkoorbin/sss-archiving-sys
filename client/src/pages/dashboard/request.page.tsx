@@ -17,7 +17,6 @@ function RequestPage() {
   const handleCreateRequest: SubmitHandler<IContributionRequest> = async (
     data
   ) => {
-
     data.status = 'PENDING';
     await HttpClient.post<IContributionRequest, any>(
       `${API.contributionRequests}`,
@@ -50,7 +49,7 @@ function RequestPage() {
             marginTop: 100,
           }}
         >
-          <div className='registration-employee-form-container'>
+          <div className="registration-employee-form-container">
             <form onSubmit={handleSubmitRequestFormData(handleCreateRequest)}>
               <RequestFormFields control={requestController} errors={errors} />
               <Flex gap={10}>

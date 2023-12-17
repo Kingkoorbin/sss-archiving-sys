@@ -24,7 +24,7 @@ async function runApp() {
     }),
   ); // Enable CORS for all routes
 
-  app.use(multerUploadCsv.single("csv"));
+  app.use(multerUploadCsv.single('csv'));
   app.use(express.json());
 
   // Routes

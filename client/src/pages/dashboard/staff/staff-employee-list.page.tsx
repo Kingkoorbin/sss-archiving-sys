@@ -30,7 +30,12 @@ import {
   formatStandardDateTime,
 } from '../../../utils/date.util';
 import { employeeColumns } from '../../../const/table-columns.const';
-import { EditOutlined, EyeOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  EyeOutlined,
+  ManOutlined,
+  WomanOutlined,
+} from '@ant-design/icons';
 import SearchFormFields from '../../../components/form-search-employee.component';
 
 interface IState {
@@ -82,7 +87,7 @@ function StaffEmployeeList() {
       responsibilities: '',
       start_date: '',
       updated_at: '',
-      duration: ''
+      duration: '',
     },
     employees: [],
     users: [],
@@ -186,17 +191,22 @@ function StaffEmployeeList() {
         middle_name: el.middle_name === 'N/A' ? '' : el.middle_name,
         birthdate: formatStandardDate(el.birthdate),
         created_at: formatStandardDateTime(el.created_at),
-        actions: 
-        <Tooltip title="View">
-          <Button
-            type='primary'
-            icon={<EyeOutlined />}
-            onClick={() =>
-              navigate(`/dashboard/s/employee/${el.school_id}`, {
-                state: el,
-              })
-            }> View</Button>
-        </Tooltip>,
+        actions: (
+          <Tooltip title="View">
+            <Button
+              type="primary"
+              icon={<EyeOutlined />}
+              onClick={() =>
+                navigate(`/dashboard/s/employee/${el.school_id}`, {
+                  state: el,
+                })
+              }
+            >
+              {' '}
+              View
+            </Button>
+          </Tooltip>
+        ),
         key: el.id,
       })) as any,
     }));
@@ -205,7 +215,7 @@ function StaffEmployeeList() {
   useEffect(() => {
     document.title = 'Account Management | SSS Archiving System';
     getAllEmployees();
-    return () => { };
+    return () => {};
   }, []);
 
   return (

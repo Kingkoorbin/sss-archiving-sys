@@ -1,5 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Button, Modal, Radio, Select, Space, Table, Tooltip, message } from 'antd';
+import {
+  Button,
+  Modal,
+  Radio,
+  Select,
+  Space,
+  Table,
+  Tooltip,
+  message,
+} from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 // Custom Imports
@@ -19,7 +28,10 @@ import {
   IUserPermission,
   IWorkHistory,
 } from '../../../interfaces/client.interface';
-import { formatStandardDate, formatStandardDateTime } from '../../../utils/date.util';
+import {
+  formatStandardDate,
+  formatStandardDateTime,
+} from '../../../utils/date.util';
 import { staffColumns } from '../../../const/table-columns.const';
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
@@ -37,7 +49,7 @@ interface IState {
   stateWorkHistoryPreview?: IWorkHistory;
   employees: IEmployeeProfile[];
   users: IUser[];
-  permissions: any[]
+  permissions: any[];
 }
 
 function AdminStaffList() {
@@ -60,7 +72,7 @@ function AdminStaffList() {
     isEmployeeRegistrationOpen: false,
     employees: [],
     users: [],
-    permissions: []
+    permissions: [],
   });
 
   const handleOk = () => {
@@ -72,25 +84,35 @@ function AdminStaffList() {
     navigate('/', { replace: true });
   };
 
-  const onPermissionChange = async (value: { permissionId: number, userId: number }, type: "SELECT" | "DESELECT") => {
+  const onPermissionChange = async (
+    value: { permissionId: number; userId: number },
+    type: 'SELECT' | 'DESELECT'
+  ) => {
     const config: AxiosRequestConfig = {
       headers: {
         Authorization: `Bearer ${getAuthResponse?.access_token}`,
       },
-    }
+    };
     try {
-      if (type === "DESELECT") {
-        console.log("DESELECT!!")
-        await axios.delete(`${API_BASE_URL}/api/user/v1/permission/${value.permissionId}`, config)
-      } else if (type === "SELECT"){
-        console.log("SELECT!!")
-        await axios.post(`${API_BASE_URL}/api/user/v1/permission`, {
-          user_id: value.userId,
-          permission_name_id: value.permissionId
-        }, config)
+      if (type === 'DESELECT') {
+        console.log('DESELECT!!');
+        await axios.delete(
+          `${API_BASE_URL}/api/user/v1/permission/${value.permissionId}`,
+          config
+        );
+      } else if (type === 'SELECT') {
+        console.log('SELECT!!');
+        await axios.post(
+          `${API_BASE_URL}/api/user/v1/permission`,
+          {
+            user_id: value.userId,
+            permission_name_id: value.permissionId,
+          },
+          config
+        );
       }
 
-      toastSuccess("Permission updated successfully!")
+      toastSuccess('Permission updated successfully!');
     } catch (error: any) {
       if (error?.response?.status == 401) {
         setState((prev) => ({
@@ -98,16 +120,16 @@ function AdminStaffList() {
           isAuthModalOpen: true,
         }));
       }
-      toastError("Oops! Something went wrong, Please try again.")
+      toastError('Oops! Something went wrong, Please try again.');
     }
-  }
+  };
 
   const getAllStaffs = async () => {
     const config: AxiosRequestConfig = {
       headers: {
         Authorization: `Bearer ${getAuthResponse?.access_token}`,
       },
-    }
+    };
 
     setState((prev) => ({
       ...prev,
@@ -115,48 +137,56 @@ function AdminStaffList() {
     }));
 
     try {
-      const getAllStaffsResponse: AxiosResponse & { data: IUser[] } = await axios.get(`${API_BASE_URL}/api/client/v1`, {
-        params: {
-          role: 'STAFF'
-        },
-        ...config,
-      });
+      const getAllStaffsResponse: AxiosResponse & { data: IUser[] } =
+        await axios.get(`${API_BASE_URL}/api/client/v1`, {
+          params: {
+            role: 'STAFF',
+          },
+          ...config,
+        });
 
       if (!Array.isArray(getAllStaffsResponse.data)) {
         return;
       }
 
-      const getAllPermissionsResponse: { data: IPermission[] } = await axios.get(`${API_BASE_URL}/api/permission/v1`, config);
-      const permissions = getAllPermissionsResponse.data.map((el: IPermission) => {
-        return {
-          label: el.name,
-          value: el.name
+      const getAllPermissionsResponse: { data: IPermission[] } =
+        await axios.get(`${API_BASE_URL}/api/permission/v1`, config);
+      const permissions = getAllPermissionsResponse.data.map(
+        (el: IPermission) => {
+          return {
+            label: el.name,
+            value: el.name,
+          };
         }
-      })
+      );
 
       const mappedStaffs = getAllStaffsResponse?.data.map((el: IUser) => {
         const currentPermissions = el.user_permissions.map((el: any) => {
           return {
             id: el.id,
             label: el.permission_name.name,
-            value: el.permission_name.name
-          }
-        })
+            value: el.permission_name.name,
+          };
+        });
 
         return {
           key: el.id,
           username: el.username,
           role: el.role,
           verified_at: formatStandardDate(el.created_at),
-          actions: <>
-            <Tooltip title="Delete">
-              <Button
-                style={{ color: "red" }}
-                icon={<CloseOutlined />}
-                onClick={() => onDeleteUser(el.id)}
-              >Delete</Button>
-            </Tooltip>
-          </>,
+          actions: (
+            <>
+              <Tooltip title="Delete">
+                <Button
+                  style={{ color: 'red' }}
+                  icon={<CloseOutlined />}
+                  onClick={() => onDeleteUser(el.id)}
+                >
+                  Delete
+                </Button>
+              </Tooltip>
+            </>
+          ),
           permission: (
             <>
               <Space direction="vertical" style={{ width: '100%' }}>
@@ -168,18 +198,29 @@ function AdminStaffList() {
                   options={permissions}
                   defaultValue={currentPermissions}
                   onSelect={(v) => {
-                    const foundPermission: any = getAllPermissionsResponse.data.find((permission: any) => permission.name === v);
-                    onPermissionChange({ permissionId: foundPermission.id, userId: el.id }, "SELECT")
+                    const foundPermission: any =
+                      getAllPermissionsResponse.data.find(
+                        (permission: any) => permission.name === v
+                      );
+                    onPermissionChange(
+                      { permissionId: foundPermission.id, userId: el.id },
+                      'SELECT'
+                    );
                   }}
                   onDeselect={(v) => {
-                    const foundPermission: any = currentPermissions.find((permission: any) => permission.label === v);
-                    onPermissionChange({ permissionId: foundPermission.id, userId: el.id }, "DESELECT")
+                    const foundPermission: any = currentPermissions.find(
+                      (permission: any) => permission.label === v
+                    );
+                    onPermissionChange(
+                      { permissionId: foundPermission.id, userId: el.id },
+                      'DESELECT'
+                    );
                   }}
                 />
               </Space>
             </>
           ),
-        }
+        };
       });
 
       setState((prev) => ({
@@ -187,7 +228,6 @@ function AdminStaffList() {
         isFetchingStaffs: false,
         users: mappedStaffs as any,
       }));
-
     } catch (error: any) {
       if (error?.response?.status == 401) {
         setState((prev) => ({
@@ -200,21 +240,18 @@ function AdminStaffList() {
 
   const onDeleteUser = async (id: number) => {
     try {
-      await axios.delete(
-        `${API_BASE_URL}/api/user/v1/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${getAuthResponse?.access_token}`,
-          },
-        }
-      );
+      await axios.delete(`${API_BASE_URL}/api/user/v1/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      });
 
-      toastSuccess("Removed successfully!")
+      toastSuccess('Removed successfully!');
       await getAllStaffs();
     } catch (error) {
-      toastError("Oops! Something went wrong, Please try again.")
+      toastError('Oops! Something went wrong, Please try again.');
     }
-  }
+  };
 
   useEffect(() => {
     document.title = 'Account Management | SSS Archiving System';
@@ -326,7 +363,7 @@ function AdminStaffList() {
         marginTop: '90vh',
       },
     });
-  };
+  }
 
   function toastError(message: string) {
     messageApi.error({
@@ -336,8 +373,7 @@ function AdminStaffList() {
         marginTop: '90vh',
       },
     });
-  };
-
+  }
 }
 
 export default AdminStaffList;

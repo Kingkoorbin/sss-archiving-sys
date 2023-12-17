@@ -11,19 +11,19 @@ export const staffColumns: ColumnsType<DataType> = [
   {
     title: 'User',
     dataIndex: 'username',
-    width: "20%",
+    width: '20%',
   },
   {
     title: 'Date created',
     dataIndex: 'verified_at',
-    width: "10%",
+    width: '10%',
   },
   {
     title: 'Role',
     dataIndex: 'role',
-    width: "10%",
+    width: '10%',
   },
- 
+
   {
     title: 'Permission',
     dataIndex: 'permission',
@@ -32,7 +32,7 @@ export const staffColumns: ColumnsType<DataType> = [
   {
     title: '',
     dataIndex: 'actions',
-    width: "10%",
+    width: '10%',
   },
 ];
 
@@ -80,7 +80,7 @@ export const employeeColumns: ColumnsType<DataType> = [
   {
     title: '',
     dataIndex: 'actions',
-    width: "10%",
+    width: '10%',
   },
 ];
 
@@ -88,41 +88,41 @@ export const contributionColumns: ColumnsType<DataType> = [
   {
     title: 'SSS No',
     dataIndex: 'sss_no',
-    width: "10%",
+    width: '10%',
   },
   {
     title: 'Name',
     dataIndex: 'name',
-    width: "30%",
+    width: '30%',
   },
   {
     title: 'SBR No',
     dataIndex: 'sbr_no',
-    width: "10%",
+    width: '10%',
   },
   {
     title: 'SBR Date',
     dataIndex: 'sbr_date',
-    width: "10%",
+    width: '10%',
   },
   {
     title: 'SS',
     dataIndex: 'ss',
-    width: "10%",
+    width: '10%',
   },
   {
     title: 'EC',
     dataIndex: 'ec',
-    width: "10%",
+    width: '10%',
   },
   {
     title: 'Total',
     dataIndex: 'total',
-    width: "10%",
+    width: '10%',
   },
   {
     title: '',
     dataIndex: 'actions',
-    width: "10%",
+    width: '10%',
   },
 ];

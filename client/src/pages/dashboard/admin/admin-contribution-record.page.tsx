@@ -92,7 +92,7 @@ export default function AdminContributionRecord() {
 
     // If there is a state coming from redirection
     if (!isEmpty(location.state)) {
-      setSearchValue("searchKeyword", location.state?.request?.sss_no ?? "");
+      setSearchValue('searchKeyword', location.state?.request?.sss_no ?? '');
     }
 
     setState((prev) => ({
@@ -101,28 +101,34 @@ export default function AdminContributionRecord() {
       contributions: getAllContributionsResponse.data?.map((el) => ({
         ...el,
         key: el.id,
-        actions: <Flex gap={10}>
-          <Tooltip title="Edit">
-            <Button
-              type='dashed'
-              icon={<EditOutlined />}
-              onClick={() =>
-                setState((prev) => ({
-                  ...prev,
-                  selectedContributionId: el.id,
-                  isSBRModalOpen: !prev.isSBRModalOpen,
-                }))
-              }
-            >Edit</Button>
-          </Tooltip>
-          <Tooltip title="Delete">
-            <Button
-              style={{ color: "red" }}
-              icon={<CloseOutlined />}
-              onClick={() => onDeleteContribution(el.id)}
-            >Delete</Button>
-          </Tooltip>
-        </Flex>,
+        actions: (
+          <Flex gap={10}>
+            <Tooltip title="Edit">
+              <Button
+                type="dashed"
+                icon={<EditOutlined />}
+                onClick={() =>
+                  setState((prev) => ({
+                    ...prev,
+                    selectedContributionId: el.id,
+                    isSBRModalOpen: !prev.isSBRModalOpen,
+                  }))
+                }
+              >
+                Edit
+              </Button>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <Button
+                style={{ color: 'red' }}
+                icon={<CloseOutlined />}
+                onClick={() => onDeleteContribution(el.id)}
+              >
+                Delete
+              </Button>
+            </Tooltip>
+          </Flex>
+        ),
       })) as any,
     }));
   };
@@ -260,21 +266,18 @@ export default function AdminContributionRecord() {
 
   const onDeleteContribution = async (id: number) => {
     try {
-      await axios.delete(
-        `${API_BASE_URL}/api/record/v1/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${getAuthResponse?.access_token}`,
-          },
-        }
-      );
+      await axios.delete(`${API_BASE_URL}/api/record/v1/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      });
 
-      toastSuccess("Removed successfully!")
+      toastSuccess('Removed successfully!');
       await getContributions();
     } catch (error) {
-      toastError("Oops! Something went wrong, Please try again.")
+      toastError('Oops! Something went wrong, Please try again.');
     }
-  }
+  };
 
   useEffect(() => {
     getContributions();
@@ -393,7 +396,7 @@ export default function AdminContributionRecord() {
         marginTop: '90vh',
       },
     });
-  };
+  }
 
   function toastError(message: string) {
     messageApi.error({
@@ -403,5 +406,5 @@ export default function AdminContributionRecord() {
         marginTop: '90vh',
       },
     });
-  };
+  }
 }

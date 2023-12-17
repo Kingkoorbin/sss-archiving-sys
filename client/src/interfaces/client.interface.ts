@@ -30,7 +30,7 @@ export interface IUser {
   created_at: string;
   updated_at: string;
 
-  user_permissions: IUserPermission[]
+  user_permissions: IUserPermission[];
 }
 
 export interface IEmployeeRegistrationPayload {
@@ -70,7 +70,7 @@ export interface IWorkHistory {
   position: string;
   start_date: string; // Assuming date format is "YYYY-MM-DD"
   end_date: string; // Assuming date format is "YYYY-MM-DD"
-  duration: string; 
+  duration: string;
   responsibilities: string;
   created_at: string; // Assuming date-time format
   updated_at: string; // Assuming date-time format
@@ -83,7 +83,7 @@ export type IExperiencePayload = Pick<
   | 'position'
   | 'start_date'
   | 'end_date'
-  | 'responsibilities' 
+  | 'responsibilities'
   | 'duration'
 >;
 
@@ -133,7 +133,7 @@ export interface IUserPermission {
   permission_name_id: number;
   created_at: string;
   updated_at: string;
-  permission_name: IPermission
+  permission_name: IPermission;
 }
 
 export interface ISearchPayload {
