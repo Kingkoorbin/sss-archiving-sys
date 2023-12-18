@@ -12,13 +12,13 @@ class RunAllSeeds extends Command
 
     public function handle()
     {
-        // $this->info('Running migrations...');
-        // Artisan::call('migrate');
+        $this->info('Running migrations...');
+        Artisan::call('migrate');
 
-        // $this->info('Running seeders...');
+        $this->info('Running seeders...');
 
-        // $this->info('Seeding administrator account...');
-        // Artisan::call('db:seed', ['--class' => 'AdminUserSeeder']);
+        $this->info('Seeding administrator account...');
+        Artisan::call('db:seed', ['--class' => 'AdminUserSeeder']);
 
         $this->info('Seeding user permissions...');
         Artisan::call('db:seed', ['--class' => 'PermissionNameSeeder']);
