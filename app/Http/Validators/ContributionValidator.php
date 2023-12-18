@@ -25,6 +25,7 @@ class ContributionValidator {
             'contributions.*.ss' => 'required|string',
             'contributions.*.ec' => 'required|string',
             'contributions.*.sss_no' => 'required|string',
+            'contributions.*.batchDate' => 'required|date',
         ]);
 
         return $validator;

@@ -86,6 +86,11 @@ export const employeeColumns: ColumnsType<DataType> = [
 
 export const contributionColumns: ColumnsType<DataType> = [
   {
+    title: 'Date',
+    dataIndex: 'batchDate',
+    width: '5%',
+  },
+  {
     title: 'SSS No',
     dataIndex: 'sss_no',
     width: '10%',

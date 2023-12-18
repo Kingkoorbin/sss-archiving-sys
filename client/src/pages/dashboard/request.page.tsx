@@ -2,8 +2,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import RequestFormFields from '../../components/form-request.component';
 import { IContributionRequest } from '../../interfaces/client.interface';
 import { Button, Flex, message } from 'antd';
-import HttpClient from '../../utils/http-client.util';
-import { API } from '../../const/api.const';
+import { API_BASE_URL } from '../../const/api.const';
+import axios from 'axios';
 
 function RequestPage() {
   const {
@@ -18,10 +18,7 @@ function RequestPage() {
     data
   ) => {
     data.status = 'PENDING';
-    await HttpClient.post<IContributionRequest, any>(
-      `${API.contributionRequests}`,
-      data
-    );
+    await axios.post(`${API_BASE_URL}/api/contribution/v1`, data);
 
     return toastSuccess('Submitted successfully!');
   };

@@ -301,6 +301,7 @@ function StaffRequests() {
         <Collapse
           bordered={false}
           size="middle"
+          activeKey={1}
           ghost
           expandIcon={({ isActive }) => (
             <CaretRightOutlined rotate={isActive ? 90 : 0} />

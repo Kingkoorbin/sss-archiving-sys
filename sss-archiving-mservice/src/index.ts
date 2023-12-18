@@ -28,8 +28,8 @@ async function runApp() {
   app.use(express.json());
 
   // Routes
-  app.use(maintenanceModeMiddleware);
-  app.use(requestLoggerMiddleware);
+  // app.use(maintenanceModeMiddleware);
+  // app.use(requestLoggerMiddleware);
 
   app.use('/api', authRoute);
   app.use('/api', userRoute);

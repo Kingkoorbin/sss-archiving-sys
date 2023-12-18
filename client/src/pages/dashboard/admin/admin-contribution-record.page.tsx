@@ -7,7 +7,16 @@ import {
   InboxOutlined,
 } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
-import { Button, Flex, Modal, Table, Tooltip, Upload, message } from 'antd';
+import {
+  Button,
+  DatePicker,
+  Flex,
+  Modal,
+  Table,
+  Tooltip,
+  Upload,
+  message,
+} from 'antd';
 import { API, API_BASE_URL } from '../../../const/api.const';
 import { contributionColumns } from '../../../const/table-columns.const';
 import {
@@ -26,6 +35,8 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SbrFormFields from '../../../components/form-sbr.component';
 import { isEmpty } from '../../../utils/util';
+import moment from 'moment';
+import dayjs from 'dayjs';
 
 const { Dragger } = Upload;
 
@@ -35,6 +46,7 @@ interface IState {
   isSBRModalOpen: boolean;
   contributions: IContribution[];
   selectedContributionId: number | null;
+  batchDate: string;
 }
 
 export default function AdminContributionRecord() {
@@ -48,6 +60,7 @@ export default function AdminContributionRecord() {
     isSBRModalOpen: false,
     contributions: [],
     selectedContributionId: null,
+    batchDate: '',
   });
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -98,38 +111,42 @@ export default function AdminContributionRecord() {
     setState((prev) => ({
       ...prev,
       isFetchingContributions: false,
-      contributions: getAllContributionsResponse.data?.map((el) => ({
-        ...el,
-        key: el.id,
-        actions: (
-          <Flex gap={10}>
-            <Tooltip title="Edit">
-              <Button
-                type="dashed"
-                icon={<EditOutlined />}
-                onClick={() =>
-                  setState((prev) => ({
-                    ...prev,
-                    selectedContributionId: el.id,
-                    isSBRModalOpen: !prev.isSBRModalOpen,
-                  }))
-                }
-              >
-                Edit
-              </Button>
-            </Tooltip>
-            <Tooltip title="Delete">
-              <Button
-                style={{ color: 'red' }}
-                icon={<CloseOutlined />}
-                onClick={() => onDeleteContribution(el.id)}
-              >
-                Delete
-              </Button>
-            </Tooltip>
-          </Flex>
-        ),
-      })) as any,
+      contributions: getAllContributionsResponse.data?.map((el) => {
+        console.log(el)
+        return {
+          ...el,
+          key: el.id,
+          batchDate:dayjs(el.batchDate).format("MMM YYYY"),
+          actions: (
+            <Flex gap={10}>
+              <Tooltip title="Edit">
+                <Button
+                  type="dashed"
+                  icon={<EditOutlined />}
+                  onClick={() =>
+                    setState((prev) => ({
+                      ...prev,
+                      selectedContributionId: el.id,
+                      isSBRModalOpen: !prev.isSBRModalOpen,
+                    }))
+                  }
+                >
+                  Edit
+                </Button>
+              </Tooltip>
+              <Tooltip title="Delete">
+                <Button
+                  style={{ color: 'red' }}
+                  icon={<CloseOutlined />}
+                  onClick={() => onDeleteContribution(el.id)}
+                >
+                  Delete
+                </Button>
+              </Tooltip>
+            </Flex>
+          ),
+        }
+      }) as any,
     }));
   };
 
@@ -236,7 +253,35 @@ export default function AdminContributionRecord() {
   const props: UploadProps = {
     name: 'csv',
     multiple: false,
-    action: API.uploadCsv,
+    customRequest({ file, onSuccess, onError }) {
+      if (typeof file === 'string') {
+        // Handle the case where 'file' is a string (e.g., file URL)
+        console.log('String file:', file);
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('csv', file);
+      formData.append('batchDate', state.batchDate);
+
+      try {
+        axios
+          .post(API.uploadCsv, formData)
+          .then((response) => {
+            // Handle success
+            onSuccess?.(response, file as any);
+            console.log('Upload success:', response);
+          })
+          .catch((error) => {
+            // Handle error
+            onError?.(error, file);
+            console.error('Upload error:', error);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     onChange(info) {
       const { status } = info.file;
       if (status !== 'uploading') {
@@ -279,6 +324,15 @@ export default function AdminContributionRecord() {
     }
   };
 
+  const handleChangeBatchDate = (v: any) => {
+    if (!isEmpty(v)) {
+      setState((prev) => ({
+        ...prev,
+        batchDate: new Date(v).toISOString().substring(0, 10),
+      }));
+    }
+  };
+
   useEffect(() => {
     getContributions();
   }, []);
@@ -288,18 +342,27 @@ export default function AdminContributionRecord() {
       {contextHolder}
       <NavigationBarAdmin />
       <div style={{ padding: 50 }}>
-        <Dragger {...props}>
-          <p className="ant-upload-drag-icon">
-            <InboxOutlined />
-          </p>
-          <p className="ant-upload-text">
-            Click or drag the CSV file to this area to upload
-          </p>
-          <p className="ant-upload-hint">
-            Strictly prohibited from uploading company data or other banned
-            files.
-          </p>
-        </Dragger>
+        <div style={{ position: 'relative' }}>
+          <Dragger disabled={isEmpty(state.batchDate)} {...props}>
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">
+              Click or drag the CSV file to this area to upload
+            </p>
+            <p className="ant-upload-hint">
+              Strictly prohibited from uploading company data or other banned
+              files.
+            </p>
+          </Dragger>
+          <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
+            <DatePicker
+              onChange={(v) => handleChangeBatchDate(v)}
+              picker="month"
+              size="large"
+            />
+          </div>
+        </div>
 
         <div style={{ marginTop: 20 }}>
           <form onSubmit={handleSubmitGenerateFormData(handleApplyFilter)}>

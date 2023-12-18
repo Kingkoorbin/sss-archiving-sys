@@ -300,6 +300,7 @@ function AdminRequests() {
 
         <Collapse
           bordered={false}
+          activeKey={1}
           size="middle"
           ghost
           expandIcon={({ isActive }) => (

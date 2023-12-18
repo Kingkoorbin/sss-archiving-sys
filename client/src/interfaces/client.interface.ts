@@ -152,6 +152,7 @@ export interface IContribution {
   total: string;
   created_at: string;
   updated_at: string;
+  batchDate: string;
 }
 
 export interface IGeneratePdfPayload {

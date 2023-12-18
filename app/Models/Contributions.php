@@ -17,6 +17,7 @@ class Contributions extends Model
         'ss',
         'ec',
         'total',
+        'batchDate'
     ];
 
 }

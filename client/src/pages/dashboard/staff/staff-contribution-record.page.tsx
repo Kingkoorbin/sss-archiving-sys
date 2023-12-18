@@ -10,6 +10,7 @@ import type { UploadProps } from 'antd';
 import {
   Alert,
   Button,
+  DatePicker,
   Flex,
   Modal,
   Table,
@@ -37,6 +38,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import SbrFormFields from '../../../components/form-sbr.component';
 import { hasPermission, isEmpty } from '../../../utils/util';
 import { TPermissionTypes } from '../../../interfaces/permission.interface';
+import dayjs from 'dayjs';
 
 const { Dragger } = Upload;
 
@@ -47,6 +49,7 @@ interface IState {
   isSBRModalOpen: boolean;
   contributions: IContribution[];
   selectedContributionId: number | null;
+  batchDate: string;
 }
 
 export default function StaffContributionRecord() {
@@ -61,6 +64,7 @@ export default function StaffContributionRecord() {
     isSBRModalOpen: false,
     contributions: [],
     selectedContributionId: null,
+    batchDate: ""
   });
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -145,6 +149,7 @@ export default function StaffContributionRecord() {
           (el: IContribution) => ({
             ...el,
             key: el.id,
+            batchDate: dayjs(el.batchDate).format("MMM YYYY"),
             actions: (
               <Flex gap={10}>
                 <Tooltip
@@ -322,7 +327,34 @@ export default function StaffContributionRecord() {
   const props: UploadProps = {
     name: 'csv',
     multiple: false,
-    action: API.uploadCsv,
+    customRequest({ file, onSuccess, onError }) {
+      if (typeof file === 'string') {
+        // Handle the case where 'file' is a string (e.g., file URL)
+        console.log('String file:', file);
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('csv', file);
+      formData.append('batchDate', state.batchDate);
+
+      try {
+        axios
+          .post(API.uploadCsv, formData)
+          .then((response) => {
+            // Handle success
+            onSuccess?.(response, file as any);
+            console.log('Upload success:', response);
+          })
+          .catch((error) => {
+            // Handle error
+            onError?.(error, file);
+            console.error('Upload error:', error);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
     onChange(info) {
       const { status } = info.file;
       if (status !== 'uploading') {
@@ -365,6 +397,15 @@ export default function StaffContributionRecord() {
     }
   };
 
+  const handleChangeBatchDate = (v: any) => {
+    if (!isEmpty(v)) {
+      setState((prev) => ({
+        ...prev,
+        batchDate: new Date(v).toISOString().substring(0, 10),
+      }));
+    }
+  };
+
   useEffect(() => {
     getContributions();
     onGetUserProfile();
@@ -386,26 +427,36 @@ export default function StaffContributionRecord() {
               : 'No Permission'
           }
         >
-          <Dragger
-            disabled={
-              !hasPermission(
+          <div style={{ padding: 50 }}>
+            <div style={{ position: 'relative' }}>
+              <Dragger disabled={isEmpty(state.batchDate) ||  !hasPermission(
                 state.user?.user_permissions!,
                 TPermissionTypes.GENERATE
-              )
-            }
-            {...props}
-          >
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">
-              Click or drag the CSV file to this area to upload
-            </p>
-            <p className="ant-upload-hint">
-              Strictly prohibited from uploading company data or other banned
-              files.
-            </p>
-          </Dragger>
+              )} {...props}>
+                <p className="ant-upload-drag-icon">
+                  <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">
+                  Click or drag the CSV file to this area to upload
+                </p>
+                <p className="ant-upload-hint">
+                  Strictly prohibited from uploading company data or other banned
+                  files.
+                </p>
+              </Dragger>
+              <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
+                <DatePicker
+                  onChange={(v) => handleChangeBatchDate(v)}
+                  disabled={!hasPermission(
+                    state.user?.user_permissions!,
+                    TPermissionTypes.GENERATE
+                  )}
+                  picker="month"
+                  size="large"
+                />
+              </div>
+            </div>
+            </div>
         </Tooltip>
 
         <div style={{ marginTop: 20 }}>

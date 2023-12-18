@@ -19,10 +19,10 @@ export const uploadCsv = async (req: Request, res: Response) => {
         ss: v['SS'],
         ec: v['EC'],
         total: v['Total Contributions'],
+        batchDate: req.body?.batchDate
       };
     });
 
-    console.log(mappedData);
     await axios.post(`${env.RECEIVER_HOST}/api/record/v1`, {
       contributions: mappedData,
     });
