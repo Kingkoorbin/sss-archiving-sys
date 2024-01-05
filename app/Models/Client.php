@@ -49,4 +49,9 @@ class Client extends Model
     {
         return $this->hasMany(WorkHistory::class);
     }
+
+    public function contributions()
+    {
+        return $this->hasMany(Contributions::class, 'sss_no', 'sss_no');
+    }
 }

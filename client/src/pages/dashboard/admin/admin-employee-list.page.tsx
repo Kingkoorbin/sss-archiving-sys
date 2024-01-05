@@ -15,11 +15,12 @@ import { useNavigate } from 'react-router-dom';
 import NavigationBarAdmin from '../../../components/nav-admin.component';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { isEmpty } from '../../../utils/util';
-import { API } from '../../../const/api.const';
+import { API, API_BASE_URL } from '../../../const/api.const';
 import HttpClient from '../../../utils/http-client.util';
 import { IApiResponse } from '../../../interfaces/api.interface';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
 import {
+  IContribution,
   IEmployeeProfile,
   ISearchPayload,
   IUser,
@@ -29,7 +30,7 @@ import {
   formatStandardDate,
   formatStandardDateTime,
 } from '../../../utils/date.util';
-import { employeeColumns } from '../../../const/table-columns.const';
+import { contributionColumns, employeeColumns, employeeContributionColumns } from '../../../const/table-columns.const';
 import {
   EditOutlined,
   EyeOutlined,
@@ -37,6 +38,7 @@ import {
   WomanOutlined,
 } from '@ant-design/icons';
 import SearchFormFields from '../../../components/form-search-employee.component';
+import axios from 'axios';
 
 interface IState {
   isFetchingStaffs: boolean;
@@ -131,6 +133,19 @@ function AdminEmployeeList() {
       },
     });
   };
+
+  const getEmployeeContribution = async (sssNo: string) => {
+    const response: { data: IContribution[] } = await axios.get(
+      `${API_BASE_URL}/api/record/v1?sssNo=${sssNo}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      }
+    );
+
+    console.log(response.data)
+  }
 
   const getAllEmployees = async (data?: {
     searchKeyword?: string;
@@ -233,7 +248,7 @@ function AdminEmployeeList() {
   useEffect(() => {
     document.title = 'Account Management | SSS Archiving System';
     getAllEmployees();
-    return () => {};
+    return () => { };
   }, []);
 
   return (
@@ -255,26 +270,32 @@ function AdminEmployeeList() {
           expandable={{
             expandedRowRender: (record: any) => {
               return (
-                <div style={{ padding: 20 }}>
+                <div style={{ 
+                    padding: 10, 
+                    border: "1px solid #e4e4e4",
+                    borderRadius: 20,
+                   }}>
+                  <Flex justify='center'>
+                    <p
+                      style={{
+                        fontSize: 24,
+                        fontWeight: 'bold',
+                        color: '#111',
+                      }}
+                    >
+                      Summary of {record.first_name}
+                    </p>
+                  </Flex>
                   <Flex>
                     <div
                       style={{
                         flex: 1,
-                        margin: 50,
                         padding: 50,
                         background: 'white',
                         borderRadius: 20,
                       }}
                     >
-                      <p
-                        style={{
-                          fontSize: 24,
-                          fontWeight: 'bold',
-                          color: '#111',
-                        }}
-                      >
-                        Summary
-                      </p>
+
                       <p
                         style={{
                           padding: 0,
@@ -289,7 +310,7 @@ function AdminEmployeeList() {
                         style={{
                           padding: 0,
                           margin: 0,
-                          fontSize: 24,
+                          fontSize: 17,
                           fontWeight: 'normal',
                           color: '#444',
                         }}
@@ -313,7 +334,7 @@ function AdminEmployeeList() {
                         style={{
                           padding: 0,
                           margin: 0,
-                          fontSize: 24,
+                          fontSize: 17,
                           fontWeight: 'normal',
                           color: '#444',
                         }}
@@ -346,7 +367,7 @@ function AdminEmployeeList() {
                         style={{
                           padding: 0,
                           margin: 0,
-                          fontSize: 24,
+                          fontSize: 17,
                           fontWeight: 'normal',
                           color: '#444',
                         }}
@@ -360,7 +381,7 @@ function AdminEmployeeList() {
                           padding: 0,
                           margin: 0,
                           marginTop: 100,
-                          fontSize: 12,
+                          fontSize: 8,
                           color: '#111',
                         }}
                       >
@@ -370,7 +391,7 @@ function AdminEmployeeList() {
                         style={{
                           padding: 0,
                           margin: 0,
-                          fontSize: 16,
+                          fontSize: 12,
                           fontWeight: 'normal',
                           color: '#444',
                         }}
@@ -380,96 +401,25 @@ function AdminEmployeeList() {
                     </div>
                     <div
                       style={{
-                        flex: 2,
-                        margin: 50,
-                        padding: 50,
-                        background: 'white',
+                        flex: 5,
                         borderRadius: 20,
                       }}
                     >
-                      {record?.work_history?.length ? (
-                        <>
-                          <p
-                            style={{
-                              padding: 0,
-                              margin: 0,
-                              fontSize: 24,
-                              fontWeight: 'bold',
-                              color: '#111',
-                              marginBottom: 20,
-                            }}
-                          >
-                            Experience
-                          </p>
-                          <Divider />
-                          <Timeline
-                            mode="left"
-                            items={record?.work_history?.map((v: any) => ({
-                              children: (
-                                <div
-                                  style={{ cursor: 'pointer' }}
-                                  onClick={() => {
-                                    setState((prev) => ({
-                                      ...prev,
-                                      isWorkHistoryModalOpen: true,
-                                      stateWorkHistoryPreview: v,
-                                    }));
-                                  }}
-                                >
-                                  <p
-                                    style={{
-                                      padding: 0,
-                                      margin: 0,
-                                      fontSize: 16,
-                                      fontWeight: 'bold',
-                                      color: '#111',
-                                    }}
-                                  >
-                                    {v.company_name}
-                                  </p>
-                                  <p
-                                    style={{
-                                      padding: 0,
-                                      margin: 0,
-                                      fontSize: 12,
-                                      fontWeight: 'normal',
-                                      color: '#444',
-                                      fontStyle: 'italic',
-                                    }}
-                                  >
-                                    {v.position}
-                                  </p>
-                                  <p
-                                    style={{
-                                      padding: 0,
-                                      margin: 0,
-                                      fontSize: 14,
-                                      fontWeight: 'normal',
-                                      color: '#111',
-                                    }}
-                                  >
-                                    {v.responsibilities}
-                                  </p>
-
-                                  <p
-                                    style={{
-                                      padding: 0,
-                                      margin: 0,
-                                      fontSize: 12,
-                                      marginTop: 20,
-                                      color: '#111',
-                                    }}
-                                  >
-                                    {v.start_date} to {v.end_date}
-                                  </p>
-                                </div>
-                              ),
-                            }))}
-                          />
-                        </>
-                      ) : (
-                        <div> </div>
-                      )}
+                      <Flex justify='end' style={{ marginBottom: 10 }}>
+                        <Tooltip title="Print records to PDF">
+                          <Button
+                            type="dashed"
+                            icon={<EditOutlined />}>
+                            Generate
+                          </Button>
+                        </Tooltip>
+                      </Flex>
+                      <Table
+                        columns={employeeContributionColumns}
+                        dataSource={record.contributions as any}
+                        loading={false}
+                        size="small"
+                      />
                     </div>
                   </Flex>
                 </div>

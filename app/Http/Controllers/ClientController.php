@@ -278,7 +278,9 @@ class ClientController extends Controller
             // Fetch STAFF from the users table
             $employees = Client::orderBy('created_at', 'desc')
                 ->where('department', 'ILIKE', "%$department%")
-                ->with('workHistory')->get();
+                ->with('workHistory')
+                ->with('contributions') // Use the custom contributions method
+                ->get();
 
             return response()->json($employees);
         }

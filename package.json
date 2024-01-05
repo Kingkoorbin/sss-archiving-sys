@@ -12,6 +12,7 @@
         "clear:cache": "php artisan cache:clear && php artisan route:clear",
         "create:mc": "php artisan make:controller %npm_config_name% --model=%npm_config_model%",
         "migration:run": "php artisan migrate",
+        "seed:run": "php artisan run:seeds",
         "migration:revert": "php artisan migrate:rollback",
         "migration:create": "php artisan make:migration %npm_config_name% --create=%npm_config_table%",
         "migration:reset": "php artisan migrate:reset",

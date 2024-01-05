@@ -131,3 +131,46 @@ export const contributionColumns: ColumnsType<DataType> = [
     width: '10%',
   },
 ];
+
+export const employeeContributionColumns: ColumnsType<DataType> = [
+  {
+    title: 'Date',
+    dataIndex: 'batchDate',
+    width: '10%',
+  },
+  {
+    title: 'SSS No',
+    dataIndex: 'sss_no',
+    width: '10%',
+  },
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    width: '20%',
+  },
+  {
+    title: 'SBR No',
+    dataIndex: 'sbr_no',
+    width: '10%',
+  },
+  {
+    title: 'SBR Date',
+    dataIndex: 'sbr_date',
+    width: '10%',
+  },
+  {
+    title: 'SS',
+    dataIndex: 'ss',
+    width: '10%',
+  },
+  {
+    title: 'EC',
+    dataIndex: 'ec',
+    width: '10%',
+  },
+  {
+    title: 'Total',
+    dataIndex: 'total',
+    width: '10%',
+  },
+];
