@@ -134,18 +134,39 @@ function AdminEmployeeList() {
     });
   };
 
-  const getEmployeeContribution = async (sssNo: string) => {
-    const response: { data: IContribution[] } = await axios.get(
-      `${API_BASE_URL}/api/record/v1?sssNo=${sssNo}`,
-      {
-        headers: {
-          Authorization: `Bearer ${getAuthResponse?.access_token}`,
-        },
-      }
-    );
 
-    console.log(response.data)
-  }
+  const handleGeneratePdf = async (contributions: any[]) => {
+    try {
+      if (contributions.length >= 100) {
+        return toastError(
+          'Oops! Sorry, We cannot Generate PDF with more than 100 rows'
+        );
+      }
+
+      const response = await axios.post(
+        API.generatePdf,
+        {
+          array: contributions,
+        },
+        {
+          responseType: 'blob', // Set the response type to blob
+        }
+      );
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'output.pdf';
+
+      link.click();
+
+      // Cleanup
+      window.URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+    }
+  };
 
   const getAllEmployees = async (data?: {
     searchKeyword?: string;
@@ -406,17 +427,21 @@ function AdminEmployeeList() {
                       }}
                     >
                       <Flex justify='end' style={{ marginBottom: 10 }}>
-                        <Tooltip title="Print records to PDF">
+                        <Tooltip title="Print PDF">
                           <Button
                             type="dashed"
-                            icon={<EditOutlined />}>
+                            icon={<EditOutlined />}
+                            onClick={() => handleGeneratePdf(record.contributions )}>
                             Generate
                           </Button>
                         </Tooltip>
                       </Flex>
                       <Table
                         columns={employeeContributionColumns}
-                        dataSource={record.contributions as any}
+                        dataSource={record.contributions.map((el: any) => ({    
+                            ...el,
+                          key: el.id,
+                        }))}                        
                         loading={false}
                         size="small"
                       />
