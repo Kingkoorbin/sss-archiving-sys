@@ -10,7 +10,7 @@ class ClientValidator {
     {
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string',
-            'middle_name' => 'required|string',
+            'middle_name' => 'nullable|string',
             'last_name' => 'required|string',
             'department' => 'required|string',
             'present_address' => 'required|string',
@@ -19,7 +19,7 @@ class ClientValidator {
             'gender' => 'required|string|in:MALE,FEMALE,OTHERS',
             'birthdate' => 'required|date',
             'personnel_category' => 'required|string',
-            'suffix' => 'required|string',
+            'suffix' => 'nullable|string',
             'civil_status' => 'required|string',
             'blood_type' => 'string',
             'email' => 'required|email',
@@ -42,7 +42,7 @@ class ClientValidator {
     {
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string',
-            'middle_name' => 'required|string',
+            'middle_name' => 'nullable|string',
             'last_name' => 'required|string',
             'department' => 'required|string',
             'present_address' => 'required|string',
@@ -51,7 +51,7 @@ class ClientValidator {
             'gender' => 'required|string|in:MALE,FEMALE,OTHERS',
             'birthdate' => 'required|date',
             'personnel_category' => 'required|string',
-            'suffix' => 'required|string',
+            'suffix' => 'nullable|string',
             'civil_status' => 'required|string',
             'blood_type' => 'nullable|string',
             'email' => 'required|email',

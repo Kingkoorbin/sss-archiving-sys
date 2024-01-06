@@ -150,13 +150,12 @@ const RegistrationEmployeeFormFields: React.FC<
         {/* SUFFIX */}
         <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
-            Suffix <span style={{ color: 'red' }}>*</span>
+            Suffix
           </p>
           <Controller
             name="suffix"
             control={control}
             rules={{
-              required: 'This field is required',
               pattern: {
                 value: /^[A-Za-z\s]+$/,
                 message: 'Invalid Suffix',
@@ -549,17 +548,13 @@ const RegistrationEmployeeFormFields: React.FC<
             control={control}
             rules={{
               required: 'This field is required',
-              pattern: {
-                value: /^(?!-)[0-9-]+(?<!-)$/,
-                message: 'Invalid School ID',
-              },
               minLength: {
                 message: 'Invalid School ID',
                 value: 5,
               },
               maxLength: {
                 message: 'Invalid School ID',
-                value: 20,
+                value: 50,
               },
             }}
             render={({ field }) => (
@@ -866,10 +861,7 @@ const RegistrationEmployeeFormFields: React.FC<
             name="personnel_category"
             control={control}
             rules={{
-              pattern: {
-                value: /^[A-Za-z\s]+$/,
-                message: 'Invalid Personnel Category',
-              },
+              required: 'This field is required',
               minLength: {
                 message: 'Invalid Personnel Category',
                 value: 2,
@@ -898,13 +890,12 @@ const RegistrationEmployeeFormFields: React.FC<
         {/* MAIN EMPLOYER */}
         <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
-            Main Employer <span style={{ color: 'red' }}>*</span>
+            Main Employer
           </p>
           <Controller
             name="main_employer"
             control={control}
             rules={{
-              required: 'This field is required',
               pattern: {
                 value: /^[A-Za-z\s]+$/,
                 message: 'Invalid Main Employer',
@@ -937,13 +928,12 @@ const RegistrationEmployeeFormFields: React.FC<
         {/* ADDRESS */}
         <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
-            Address <span style={{ color: 'red' }}>*</span>
+            Address
           </p>
           <Controller
             name="address"
             control={control}
             rules={{
-              required: 'This field is required',
               minLength: {
                 message: 'Invalid Address',
                 value: 2,
