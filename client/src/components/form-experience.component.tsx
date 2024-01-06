@@ -1,5 +1,5 @@
-import React from 'react';
-import { Flex, Input } from 'antd';
+import React, { useState } from 'react';
+import { Checkbox, Flex, Input } from 'antd';
 import { Control, Controller, FieldErrors } from 'react-hook-form';
 import { HomeOutlined } from '@ant-design/icons';
 import { DatePicker } from 'antd';
@@ -7,21 +7,31 @@ import { IExperiencePayload } from '../interfaces/client.interface';
 
 const { RangePicker } = DatePicker;
 
+
 interface ExperienceFormFieldsProps {
   control: Control<any>;
   errors: FieldErrors<IExperiencePayload>;
 }
 
+interface IState {
+  allowDurationEndDate: boolean;
+}
+
+
 const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
   control,
   errors,
 }) => {
+  const [state, setState] = useState<IState>({
+    allowDurationEndDate: true
+  });
+  
   return (
     <>
       <Flex gap={5}>
         <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
-            Company/Employer
+          Company/Employer <span style={{ color: 'red' }}>*</span>
           </p>
           <Controller
             name="company_name"
@@ -59,20 +69,16 @@ const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
         </div>
         <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
-            Position
+          Position <span style={{ color: 'red' }}>*</span>
           </p>
           <Controller
             name="position"
             control={control}
             rules={{
               required: 'This field is required',
-              pattern: {
-                value: /^[A-Za-z\s]+$/,
-                message: 'Invalid Job Title',
-              },
               minLength: {
                 message: 'Invalid Job Title',
-                value: 6,
+                value: 3,
               },
               maxLength: {
                 message: 'Maximum of 75 characters only.',
@@ -95,15 +101,8 @@ const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
           )}
         </div>
         <div style={{ width: '100%' }}>
-          <p
-            style={{
-              padding: 0,
-              color: 'GrayText',
-              fontSize: 12,
-              width: '100%',
-            }}
-          >
-            Duration
+          <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
+          Duration <span style={{ color: 'red' }}>*</span>
           </p>
           <Controller
             name="duration"
@@ -112,9 +111,18 @@ const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
               required: 'This field is required',
             }}
             render={({ field }) => (
-              <RangePicker style={{ width: '100%' }} size="large" {...field} />
+              <RangePicker 
+              style={{ width: '100%' }} 
+              size="large" {...field} 
+              disabled={[false, !state.allowDurationEndDate]}
+              />
             )}
           />
+          <Checkbox 
+            style={{ marginTop: "5px" , color: 'GrayText', fontSize: 12  }}
+            onChange={() => setState((prev) => ({
+              ...prev, allowDurationEndDate: !state.allowDurationEndDate 
+            }))}>Until present</Checkbox>
           {errors.duration && (
             <div style={{ color: 'red', padding: 5 }}>
               {errors.duration.message}
@@ -129,7 +137,6 @@ const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
         name="responsibilities"
         control={control}
         rules={{
-          required: 'This field is required',
           pattern: {
             value: /^[A-Za-z\s\-.,&]+$/,
             message: 'Invalid content.',

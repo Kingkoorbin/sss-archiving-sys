@@ -74,7 +74,10 @@ function AdminEmployeePreview() {
     data
   ) => {
     data.start_date = new Date(data.duration[0]).toISOString().substring(0, 10);
-    data.end_date = new Date(data.duration[1]).toISOString().substring(0, 10);
+
+    if(!isEmpty(data.end_date)) {
+      data.end_date = new Date(data.duration[1]).toISOString().substring(0, 10);
+    }
 
     try {
       await axios.post(
@@ -530,7 +533,7 @@ function AdminEmployeePreview() {
                           }}
                         >
                           {moment(el.start_date).format('YYYY, MMM DD')} -{' '}
-                          {moment(el.end_date).format('YYYY, MMM DD')}{' '}
+                          {el.end_date ? moment(el.end_date).format('YYYY, MMM DD') : "Present"}
                         </p>
                         <p>{el.responsibilities}</p>
                       </Card>

@@ -35,6 +35,7 @@ import {
   EditOutlined,
   EyeOutlined,
   ManOutlined,
+  SettingOutlined,
   WomanOutlined,
 } from '@ant-design/icons';
 import SearchFormFields from '../../../components/form-search-employee.component';
@@ -426,10 +427,28 @@ function AdminEmployeeList() {
                         borderRadius: 20,
                       }}
                     >
-                      <Flex justify='end' style={{ marginBottom: 10 }}>
+                      <Flex justify='end' gap={10} style={{ marginBottom: 10 }}>
+                        <Tooltip title="Show more options">
+                          <Button
+                            type="default"
+                            icon={<SettingOutlined />}
+                            onClick={() =>
+                              navigate(`/dashboard/a/contribution`, {
+                                state: {
+                                  request: {
+                                    sss_no: record.sss_no
+                                  },
+                                },
+                              })
+                            }
+                         >
+                           More options
+                          </Button>
+                        </Tooltip>
+
                         <Tooltip title="Print PDF">
                           <Button
-                            type="dashed"
+                            type="primary"
                             icon={<EditOutlined />}
                             onClick={() => handleGeneratePdf(record.contributions )}>
                             Generate
@@ -438,7 +457,7 @@ function AdminEmployeeList() {
                       </Flex>
                       <Table
                         columns={employeeContributionColumns}
-                        dataSource={record.contributions.map((el: any) => ({    
+                        dataSource={record?.contributions?.map((el: any) => ({    
                             ...el,
                           key: el.id,
                         }))}                        
