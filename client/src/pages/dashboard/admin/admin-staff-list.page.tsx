@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   Button,
   Modal,
+  Popconfirm,
   Radio,
   Select,
   Space,
@@ -176,15 +177,23 @@ function AdminStaffList() {
           verified_at: formatStandardDate(el.created_at),
           actions: (
             <>
-              <Tooltip title="Delete">
-                <Button
-                  style={{ color: 'red' }}
-                  icon={<CloseOutlined />}
-                  onClick={() => onDeleteUser(el.id)}
-                >
-                  Delete
-                </Button>
-              </Tooltip>
+             <Popconfirm
+                title="Do you want to delete this user?"
+                onConfirm={() => onDeleteUser(el.id)}
+                okText="Yes"
+                cancelText="No"
+                placement="bottomLeft"
+              >
+                <Tooltip title="Delete">
+                  <Button
+                    htmlType="button"
+                    style={{ color: 'red' }}
+                    icon={<CloseOutlined />}
+                  >
+                    Delete
+                  </Button>
+                </Tooltip>
+              </Popconfirm>
             </>
           ),
           permission: (

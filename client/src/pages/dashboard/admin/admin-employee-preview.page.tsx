@@ -6,7 +6,7 @@ import {
   IWorkHistory,
 } from '../../../interfaces/client.interface';
 import { useEffect, useState } from 'react';
-import { Button, Card, Divider, Flex, Switch, Tooltip, message } from 'antd';
+import { Button, Card, Divider, Flex, Popconfirm, Switch, Tooltip, message } from 'antd';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
 import { IApiResponse } from '../../../interfaces/api.interface';
 import { API_BASE_URL } from '../../../const/api.const';
@@ -751,12 +751,22 @@ function AdminEmployeePreview() {
                       <p style={{ fontSize: 24, padding: 0, margin: 0 }}>
                         {el.company_name}
                       </p>
-                      <Tooltip title="Delete">
-                        <CloseOutlined
-                          style={{ cursor: 'pointer', color: 'red' }}
-                          onClick={() => onDeleteWorkExperience(el.id)}
-                        />
-                      </Tooltip>
+
+                      <Popconfirm
+                        title="Do you want to delete this work history?"
+                        onConfirm={() => onDeleteWorkExperience(el.id)}
+                        okText="Yes"
+                        cancelText="No"
+                        placement="bottom"
+                      >
+                        <Tooltip title="Delete">
+                          <CloseOutlined
+                            style={{ cursor: 'pointer', color: 'red' }}
+                          />
+                        </Tooltip>
+                      </Popconfirm>
+
+
                     </Flex>
                     <p
                       style={{
