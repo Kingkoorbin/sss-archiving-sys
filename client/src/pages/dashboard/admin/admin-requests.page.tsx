@@ -11,7 +11,7 @@ import {
   Tooltip,
   theme,
 } from 'antd';
-import { CaretRightOutlined, EyeOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, EyeOutlined, MailOutlined } from '@ant-design/icons';
 import { IContributionRequest } from '../../../interfaces/client.interface';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
 import { IApiResponse } from '../../../interfaces/api.interface';
@@ -24,6 +24,7 @@ interface IState {
   isAuthModalOpen: boolean;
   isFetchingContributionRequests: boolean;
   contributionRequests: IContributionRequest[];
+  selectedStatus: string
 }
 
 function AdminRequests() {
@@ -44,6 +45,7 @@ function AdminRequests() {
     isAuthModalOpen: false,
     isFetchingContributionRequests: false,
     contributionRequests: [],
+    selectedStatus: "PENDING"
   });
 
   const navigate = useNavigate();
@@ -98,9 +100,12 @@ function AdminRequests() {
     setState((prev) => ({
       ...prev,
       isFetchingContributionRequests: true,
+      selectedStatus: status!
     }));
 
     try {
+      document.title = `${status ?? "Request"} | SSS Archiving System`;
+
       const getAllContributionRequestsResponse: {
         data: IContributionRequest[];
       } = await axios.get(`${API_BASE_URL}/api/contribution/v1`, config);
@@ -115,12 +120,11 @@ function AdminRequests() {
               <Flex justify="space-between">
                 <Flex gap={20}>
                   <div style={{ color: '#111', fontWeight: '600' }}>
-                    {el.requester}
+                   Requester: {el.requester}
                   </div>
                   <div style={{ color: '#111', fontWeight: '600' }}>
                     SSS No. {el.sss_no}
                   </div>
-                  <div style={{ color: '#111' }}>From. {el.name}</div>
                 </Flex>
                 <Flex gap={20}>
                   <div style={{ color: '#111' }}>
@@ -202,6 +206,17 @@ function AdminRequests() {
                 <div style={{ color: '#111', fontSize: 18 }}>
                   {formatStandardDate(el.date_needed)}
                 </div>
+               <Flex gap={10}>
+                <Tooltip title="Send Email">
+                  <Button
+                    type="dashed"
+                    icon={<MailOutlined />}
+                    style={{ marginTop: 50 }}
+                    onClick={() => {}}
+                  >
+                    Send Email
+                  </Button>
+                </Tooltip>
                 <Tooltip title="View">
                   <Button
                     type="primary"
@@ -218,7 +233,7 @@ function AdminRequests() {
                     View contributions
                   </Button>
                 </Tooltip>
-                ,
+               </Flex>,
               </div>
             ),
             style: panelStyle,
@@ -245,7 +260,7 @@ function AdminRequests() {
   };
 
   useEffect(() => {
-    document.title = 'Requests | SSS Archiving System';
+    document.title = `Requests | SSS Archiving System`;
     getContributionsRequests();
     return () => {};
   }, []);
@@ -263,7 +278,15 @@ function AdminRequests() {
           <Flex
             gap={5}
             align="center"
-            style={{ cursor: 'pointer ' }}
+            justify='center'
+            style={{ 
+              cursor: 'pointer', 
+              border: "1px dashed #ddd", 
+              borderRadius: 10, 
+              padding: 10, 
+              width: 120,
+              background: state.selectedStatus === "PENDING" ? "#ebebeb" : "white"
+            }}
             onClick={() => getContributionsRequests('PENDING')}
           >
             <Badge color={'geekblue'} />
@@ -272,7 +295,15 @@ function AdminRequests() {
           <Flex
             gap={5}
             align="center"
-            style={{ cursor: 'pointer ' }}
+            justify='center'
+            style={{ 
+              cursor: 'pointer', 
+              border: "1px dashed #ddd", 
+              borderRadius: 10, 
+              padding: 10, 
+              width: 120,
+              background: state.selectedStatus === "PROCESSING" ? "#ebebeb" : "white"
+            }}            
             onClick={() => getContributionsRequests('PROCESSING')}
           >
             <Badge color={'orange'} />
@@ -281,8 +312,16 @@ function AdminRequests() {
           <Flex
             gap={5}
             align="center"
-            style={{ cursor: 'pointer ' }}
-            onClick={() => getContributionsRequests('REJECTED')}
+            justify='center'
+            style={{ 
+              cursor: 'pointer', 
+              border: "1px dashed #ddd", 
+              borderRadius: 10, 
+              padding: 10, 
+              width: 120,
+              background: state.selectedStatus === "REJECTED" ? "#ebebeb" : "white"
+            }}
+             onClick={() => getContributionsRequests('REJECTED')}
           >
             <Badge color={'red'} />
             <div style={{ fontSize: 12 }}>Rejected</div>
@@ -290,7 +329,15 @@ function AdminRequests() {
           <Flex
             gap={5}
             align="center"
-            style={{ cursor: 'pointer ' }}
+            justify='center'
+            style={{ 
+              cursor: 'pointer', 
+              border: "1px dashed #ddd", 
+              borderRadius: 10, 
+              padding: 10, 
+              width: 120,
+              background: state.selectedStatus === "DONE" ? "#ebebeb" : "white"
+            }}           
             onClick={() => getContributionsRequests('DONE')}
           >
             <Badge color={'green'} />
