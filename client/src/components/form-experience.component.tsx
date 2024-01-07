@@ -7,7 +7,6 @@ import { IExperiencePayload } from '../interfaces/client.interface';
 
 const { RangePicker } = DatePicker;
 
-
 interface ExperienceFormFieldsProps {
   control: Control<any>;
   errors: FieldErrors<IExperiencePayload>;
@@ -17,21 +16,20 @@ interface IState {
   allowDurationEndDate: boolean;
 }
 
-
 const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
   control,
   errors,
 }) => {
   const [state, setState] = useState<IState>({
-    allowDurationEndDate: true
+    allowDurationEndDate: true,
   });
-  
+
   return (
     <>
       <Flex gap={5}>
         <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
-          Company/Employer <span style={{ color: 'red' }}>*</span>
+            Company/Employer <span style={{ color: 'red' }}>*</span>
           </p>
           <Controller
             name="company_name"
@@ -69,7 +67,7 @@ const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
         </div>
         <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
-          Position <span style={{ color: 'red' }}>*</span>
+            Position <span style={{ color: 'red' }}>*</span>
           </p>
           <Controller
             name="position"
@@ -102,7 +100,7 @@ const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
         </div>
         <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
-          Duration <span style={{ color: 'red' }}>*</span>
+            Duration <span style={{ color: 'red' }}>*</span>
           </p>
           <Controller
             name="duration"
@@ -111,18 +109,25 @@ const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
               required: 'This field is required',
             }}
             render={({ field }) => (
-              <RangePicker 
-              style={{ width: '100%' }} 
-              size="large" {...field} 
-              disabled={[false, !state.allowDurationEndDate]}
+              <RangePicker
+                style={{ width: '100%' }}
+                size="large"
+                {...field}
+                disabled={[false, !state.allowDurationEndDate]}
               />
             )}
           />
-          <Checkbox 
-            style={{ marginTop: "5px" , color: 'GrayText', fontSize: 12  }}
-            onChange={() => setState((prev) => ({
-              ...prev, allowDurationEndDate: !state.allowDurationEndDate 
-            }))}>Until present</Checkbox>
+          <Checkbox
+            style={{ marginTop: '5px', color: 'GrayText', fontSize: 12 }}
+            onChange={() =>
+              setState((prev) => ({
+                ...prev,
+                allowDurationEndDate: !state.allowDurationEndDate,
+              }))
+            }
+          >
+            Until present
+          </Checkbox>
           {errors.duration && (
             <div style={{ color: 'red', padding: 5 }}>
               {errors.duration.message}

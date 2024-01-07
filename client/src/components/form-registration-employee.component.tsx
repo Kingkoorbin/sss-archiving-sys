@@ -149,9 +149,7 @@ const RegistrationEmployeeFormFields: React.FC<
         </div>
         {/* SUFFIX */}
         <div style={{ width: '100%' }}>
-          <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
-            Suffix
-          </p>
+          <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>Suffix</p>
           <Controller
             name="suffix"
             control={control}
@@ -927,9 +925,7 @@ const RegistrationEmployeeFormFields: React.FC<
 
         {/* ADDRESS */}
         <div style={{ width: '100%' }}>
-          <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
-            Address
-          </p>
+          <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>Address</p>
           <Controller
             name="address"
             control={control}

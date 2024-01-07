@@ -42,7 +42,7 @@ class ContributionController extends Controller
         }
         
         if ($from && $to) {
-            $query->whereBetween('sbr_date', [$from, $to]);
+            $query->whereBetween('batchDate', [$from, $to]);
         }
         
         $contributions = $query->get();

@@ -12,6 +12,7 @@ import {
   DatePicker,
   Flex,
   Modal,
+  Popconfirm,
   Table,
   Tooltip,
   Upload,
@@ -35,7 +36,7 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SbrFormFields from '../../../components/form-sbr.component';
 import { isEmpty } from '../../../utils/util';
-import moment from 'moment';
+
 import dayjs from 'dayjs';
 
 const { Dragger } = Upload;
@@ -77,6 +78,7 @@ export default function AdminContributionRecord() {
   const {
     handleSubmit: handleSubmitSBRFormData,
     control: sbrController,
+    reset: sbrFormReset,
     formState: { isSubmitting: isCreatingSBR },
   } = useForm<ISBRPayload>();
 
@@ -112,40 +114,56 @@ export default function AdminContributionRecord() {
       ...prev,
       isFetchingContributions: false,
       contributions: getAllContributionsResponse.data?.map((el) => {
-        console.log(el)
         return {
           ...el,
           key: el.id,
-          batchDate:dayjs(el.batchDate).format("MMM YYYY"),
+          batchDate: dayjs(el.batchDate).format('MMM YYYY'),
           actions: (
             <Flex gap={10}>
-              <Tooltip title="Edit">
-                <Button
-                  type="dashed"
-                  icon={<EditOutlined />}
-                  onClick={() =>
-                    setState((prev) => ({
-                      ...prev,
-                      selectedContributionId: el.id,
-                      isSBRModalOpen: !prev.isSBRModalOpen,
-                    }))
-                  }
-                >
-                  Edit
-                </Button>
-              </Tooltip>
-              <Tooltip title="Delete">
-                <Button
-                  style={{ color: 'red' }}
-                  icon={<CloseOutlined />}
-                  onClick={() => onDeleteContribution(el.id)}
-                >
-                  Delete
-                </Button>
-              </Tooltip>
+              <Popconfirm
+                title="Do you want to edit this contribution?"
+                onConfirm={() =>
+                  setState((prev) => ({
+                    ...prev,
+                    selectedContributionId: el.id,
+                    isSBRModalOpen: !prev.isSBRModalOpen,
+                  }))
+                }
+                okText="Yes"
+                cancelText="No"
+                placement="bottomLeft"
+              >
+                <Tooltip title="Edit">
+                  <Button
+                    htmlType="button"
+                    type="dashed"
+                    icon={<EditOutlined />}
+                  >
+                    Edit
+                  </Button>
+                </Tooltip>
+              </Popconfirm>
+
+              <Popconfirm
+                title="Do you want to delete this contribution?"
+                onConfirm={() => onDeleteContribution(el.id)}
+                okText="Yes"
+                cancelText="No"
+                placement="left"
+              >
+                <Tooltip title="Delete">
+                  <Button
+                    htmlType="button"
+                    style={{ color: 'red' }}
+                    icon={<CloseOutlined />}
+                  >
+                    Delete
+                  </Button>
+                </Tooltip>
+              </Popconfirm>
             </Flex>
           ),
-        }
+        };
       }) as any,
     }));
   };
@@ -171,6 +189,7 @@ export default function AdminContributionRecord() {
 
     toastSuccess('Updated successfully!');
 
+    sbrFormReset();
     setState((prev) => ({
       ...prev,
       isSBRModalOpen: false,

@@ -4,6 +4,7 @@ import {
   Divider,
   Flex,
   Modal,
+  Popconfirm,
   Table,
   Timeline,
   Tooltip,
@@ -30,7 +31,11 @@ import {
   formatStandardDate,
   formatStandardDateTime,
 } from '../../../utils/date.util';
-import { contributionColumns, employeeColumns, employeeContributionColumns } from '../../../const/table-columns.const';
+import {
+  contributionColumns,
+  employeeColumns,
+  employeeContributionColumns,
+} from '../../../const/table-columns.const';
 import {
   EditOutlined,
   EyeOutlined,
@@ -135,7 +140,6 @@ function AdminEmployeeList() {
     });
   };
 
-
   const handleGeneratePdf = async (contributions: any[]) => {
     try {
       if (contributions.length >= 100) {
@@ -230,22 +234,27 @@ function AdminEmployeeList() {
         created_at: formatStandardDateTime(el.created_at),
         actions: (
           <Flex gap={10}>
-            <Tooltip title="Edit">
-              <Button
-                type="dashed"
-                icon={<EditOutlined />}
-                onClick={() =>
-                  navigate(
-                    `/dashboard/a/account-management/employee/${el.school_id}/edit`,
-                    {
-                      state: el,
-                    }
-                  )
-                }
-              >
-                Edit
-              </Button>
-            </Tooltip>
+            <Popconfirm
+              title="Do you want to update employee information?"
+              onConfirm={() =>
+                navigate(
+                  `/dashboard/a/account-management/employee/${el.school_id}/edit`,
+                  {
+                    state: el,
+                  }
+                )
+              }
+              okText="Yes"
+              cancelText="No"
+              placement="bottomLeft"
+            >
+              <Tooltip title="Edit">
+                <Button htmlType="button" type="dashed" icon={<EditOutlined />}>
+                  Edit
+                </Button>
+              </Tooltip>
+            </Popconfirm>
+
             <Tooltip title="View">
               <Button
                 type="primary"
@@ -270,7 +279,7 @@ function AdminEmployeeList() {
   useEffect(() => {
     document.title = 'Account Management | SSS Archiving System';
     getAllEmployees();
-    return () => { };
+    return () => {};
   }, []);
 
   return (
@@ -292,12 +301,14 @@ function AdminEmployeeList() {
           expandable={{
             expandedRowRender: (record: any) => {
               return (
-                <div style={{ 
-                    padding: 10, 
-                    border: "1px solid #e4e4e4",
+                <div
+                  style={{
+                    padding: 10,
+                    border: '1px solid #e4e4e4',
                     borderRadius: 20,
-                   }}>
-                  <Flex justify='center'>
+                  }}
+                >
+                  <Flex justify="center">
                     <p
                       style={{
                         fontSize: 24,
@@ -317,7 +328,6 @@ function AdminEmployeeList() {
                         borderRadius: 20,
                       }}
                     >
-
                       <p
                         style={{
                           padding: 0,
@@ -427,7 +437,7 @@ function AdminEmployeeList() {
                         borderRadius: 20,
                       }}
                     >
-                      <Flex justify='end' gap={10} style={{ marginBottom: 10 }}>
+                      <Flex justify="end" gap={10} style={{ marginBottom: 10 }}>
                         <Tooltip title="Show more options">
                           <Button
                             type="default"
@@ -436,13 +446,13 @@ function AdminEmployeeList() {
                               navigate(`/dashboard/a/contribution`, {
                                 state: {
                                   request: {
-                                    sss_no: record.sss_no
+                                    sss_no: record.sss_no,
                                   },
                                 },
                               })
                             }
-                         >
-                           More options
+                          >
+                            More options
                           </Button>
                         </Tooltip>
 
@@ -450,17 +460,20 @@ function AdminEmployeeList() {
                           <Button
                             type="primary"
                             icon={<EditOutlined />}
-                            onClick={() => handleGeneratePdf(record.contributions )}>
+                            onClick={() =>
+                              handleGeneratePdf(record.contributions)
+                            }
+                          >
                             Generate
                           </Button>
                         </Tooltip>
                       </Flex>
                       <Table
                         columns={employeeContributionColumns}
-                        dataSource={record?.contributions?.map((el: any) => ({    
-                            ...el,
+                        dataSource={record?.contributions?.map((el: any) => ({
+                          ...el,
                           key: el.id,
-                        }))}                        
+                        }))}
                         loading={false}
                         size="small"
                       />

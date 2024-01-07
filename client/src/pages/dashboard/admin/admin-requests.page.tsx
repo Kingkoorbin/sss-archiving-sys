@@ -11,7 +11,11 @@ import {
   Tooltip,
   theme,
 } from 'antd';
-import { CaretRightOutlined, EyeOutlined, MailOutlined } from '@ant-design/icons';
+import {
+  CaretRightOutlined,
+  EyeOutlined,
+  MailOutlined,
+} from '@ant-design/icons';
 import { IContributionRequest } from '../../../interfaces/client.interface';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
 import { IApiResponse } from '../../../interfaces/api.interface';
@@ -24,7 +28,7 @@ interface IState {
   isAuthModalOpen: boolean;
   isFetchingContributionRequests: boolean;
   contributionRequests: IContributionRequest[];
-  selectedStatus: string
+  selectedStatus: string;
 }
 
 function AdminRequests() {
@@ -45,7 +49,7 @@ function AdminRequests() {
     isAuthModalOpen: false,
     isFetchingContributionRequests: false,
     contributionRequests: [],
-    selectedStatus: "PENDING"
+    selectedStatus: 'PENDING',
   });
 
   const navigate = useNavigate();
@@ -100,11 +104,11 @@ function AdminRequests() {
     setState((prev) => ({
       ...prev,
       isFetchingContributionRequests: true,
-      selectedStatus: status!
+      selectedStatus: status!,
     }));
 
     try {
-      document.title = `${status ?? "Request"} | SSS Archiving System`;
+      document.title = `${status ?? 'Request'} | SSS Archiving System`;
 
       const getAllContributionRequestsResponse: {
         data: IContributionRequest[];
@@ -120,7 +124,7 @@ function AdminRequests() {
               <Flex justify="space-between">
                 <Flex gap={20}>
                   <div style={{ color: '#111', fontWeight: '600' }}>
-                   Requester: {el.requester}
+                    Requester: {el.requester}
                   </div>
                   <div style={{ color: '#111', fontWeight: '600' }}>
                     SSS No. {el.sss_no}
@@ -206,34 +210,35 @@ function AdminRequests() {
                 <div style={{ color: '#111', fontSize: 18 }}>
                   {formatStandardDate(el.date_needed)}
                 </div>
-               <Flex gap={10}>
-                <Tooltip title="Send Email">
-                  <Button
-                    type="dashed"
-                    icon={<MailOutlined />}
-                    style={{ marginTop: 50 }}
-                    onClick={() => {}}
-                  >
-                    Send Email
-                  </Button>
-                </Tooltip>
-                <Tooltip title="View">
-                  <Button
-                    type="primary"
-                    icon={<EyeOutlined />}
-                    style={{ marginTop: 50 }}
-                    onClick={() =>
-                      navigate(`/dashboard/a/contribution`, {
-                        state: {
-                          request: el,
-                        },
-                      })
-                    }
-                  >
-                    View contributions
-                  </Button>
-                </Tooltip>
-               </Flex>,
+                <Flex gap={10}>
+                  <Tooltip title="Send Email">
+                    <Button
+                      type="dashed"
+                      icon={<MailOutlined />}
+                      style={{ marginTop: 50 }}
+                      onClick={() => {}}
+                    >
+                      Send Email
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="View">
+                    <Button
+                      type="primary"
+                      icon={<EyeOutlined />}
+                      style={{ marginTop: 50 }}
+                      onClick={() =>
+                        navigate(`/dashboard/a/contribution`, {
+                          state: {
+                            request: el,
+                          },
+                        })
+                      }
+                    >
+                      View contributions
+                    </Button>
+                  </Tooltip>
+                </Flex>
+                ,
               </div>
             ),
             style: panelStyle,
@@ -278,14 +283,15 @@ function AdminRequests() {
           <Flex
             gap={5}
             align="center"
-            justify='center'
-            style={{ 
-              cursor: 'pointer', 
-              border: "1px dashed #ddd", 
-              borderRadius: 10, 
-              padding: 10, 
+            justify="center"
+            style={{
+              cursor: 'pointer',
+              border: '1px dashed #ddd',
+              borderRadius: 10,
+              padding: 10,
               width: 120,
-              background: state.selectedStatus === "PENDING" ? "#ebebeb" : "white"
+              background:
+                state.selectedStatus === 'PENDING' ? '#ebebeb' : 'white',
             }}
             onClick={() => getContributionsRequests('PENDING')}
           >
@@ -295,15 +301,16 @@ function AdminRequests() {
           <Flex
             gap={5}
             align="center"
-            justify='center'
-            style={{ 
-              cursor: 'pointer', 
-              border: "1px dashed #ddd", 
-              borderRadius: 10, 
-              padding: 10, 
+            justify="center"
+            style={{
+              cursor: 'pointer',
+              border: '1px dashed #ddd',
+              borderRadius: 10,
+              padding: 10,
               width: 120,
-              background: state.selectedStatus === "PROCESSING" ? "#ebebeb" : "white"
-            }}            
+              background:
+                state.selectedStatus === 'PROCESSING' ? '#ebebeb' : 'white',
+            }}
             onClick={() => getContributionsRequests('PROCESSING')}
           >
             <Badge color={'orange'} />
@@ -312,16 +319,17 @@ function AdminRequests() {
           <Flex
             gap={5}
             align="center"
-            justify='center'
-            style={{ 
-              cursor: 'pointer', 
-              border: "1px dashed #ddd", 
-              borderRadius: 10, 
-              padding: 10, 
+            justify="center"
+            style={{
+              cursor: 'pointer',
+              border: '1px dashed #ddd',
+              borderRadius: 10,
+              padding: 10,
               width: 120,
-              background: state.selectedStatus === "REJECTED" ? "#ebebeb" : "white"
+              background:
+                state.selectedStatus === 'REJECTED' ? '#ebebeb' : 'white',
             }}
-             onClick={() => getContributionsRequests('REJECTED')}
+            onClick={() => getContributionsRequests('REJECTED')}
           >
             <Badge color={'red'} />
             <div style={{ fontSize: 12 }}>Rejected</div>
@@ -329,15 +337,15 @@ function AdminRequests() {
           <Flex
             gap={5}
             align="center"
-            justify='center'
-            style={{ 
-              cursor: 'pointer', 
-              border: "1px dashed #ddd", 
-              borderRadius: 10, 
-              padding: 10, 
+            justify="center"
+            style={{
+              cursor: 'pointer',
+              border: '1px dashed #ddd',
+              borderRadius: 10,
+              padding: 10,
               width: 120,
-              background: state.selectedStatus === "DONE" ? "#ebebeb" : "white"
-            }}           
+              background: state.selectedStatus === 'DONE' ? '#ebebeb' : 'white',
+            }}
             onClick={() => getContributionsRequests('DONE')}
           >
             <Badge color={'green'} />

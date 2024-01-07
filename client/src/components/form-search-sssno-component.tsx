@@ -18,7 +18,7 @@ const SearchSSSNoFormFields: React.FC<SearchFormFieldsProps> = ({
         control={control}
         render={({ field }) => (
           <Input
-            placeholder="Search by SSS Number"
+            placeholder="Search by Name or SSS Number"
             style={{ marginBottom: 20 }}
             prefix={<SearchOutlined />}
             {...field}

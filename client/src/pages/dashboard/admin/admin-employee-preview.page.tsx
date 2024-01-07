@@ -182,17 +182,21 @@ function AdminEmployeePreview() {
       {contextHolder}
       <NavigationBarAdmin />
 
-      <div style={{
-        background: '#fbfbff',
-        marginLeft: "20%",
-        marginRight: "20%",
-        marginTop: "10px"
-      }}>
-        <div style={{
-          padding: 10,
-          border: "1px solid #e4e4e4",
-          borderRadius: 20,
-        }}>
+      <div
+        style={{
+          background: '#fbfbff',
+          marginLeft: '20%',
+          marginRight: '20%',
+          marginTop: '10px',
+        }}
+      >
+        <div
+          style={{
+            padding: 10,
+            border: '1px solid #e4e4e4',
+            borderRadius: 20,
+          }}
+        >
           <div
             style={{
               background: 'white',
@@ -201,7 +205,7 @@ function AdminEmployeePreview() {
               borderRadius: 20,
             }}
           >
-            <Flex justify='space-between' align="center">
+            <Flex justify="space-between" align="center">
               <Flex gap={30}>
                 <div>
                   <p
@@ -546,7 +550,7 @@ function AdminEmployeePreview() {
                   SSS No.
                 </p>
                 <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
-                  {state.employee?.sss_no ?? "N/A"}
+                  {state.employee?.sss_no ?? 'N/A'}
                 </p>
               </div>
 
@@ -564,7 +568,7 @@ function AdminEmployeePreview() {
                   Philhealth No.
                 </p>
                 <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
-                  {state.employee?.philhealth_no ?? "N/A"}
+                  {state.employee?.philhealth_no ?? 'N/A'}
                 </p>
               </div>
 
@@ -582,7 +586,7 @@ function AdminEmployeePreview() {
                   Pag-ibig No.
                 </p>
                 <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
-                  {state.employee?.pagibig_no ?? "N/A"}
+                  {state.employee?.pagibig_no ?? 'N/A'}
                 </p>
               </div>
 
@@ -600,11 +604,10 @@ function AdminEmployeePreview() {
                   TIN No.
                 </p>
                 <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
-                  {state.employee?.tin ?? "N/A"}
+                  {state.employee?.tin ?? 'N/A'}
                 </p>
               </div>
 
-              
               <div>
                 <p
                   style={{
@@ -619,7 +622,7 @@ function AdminEmployeePreview() {
                   RVM Retirement No.
                 </p>
                 <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
-                  {state.employee?.rvm_retirement_no ?? "N/A"}
+                  {state.employee?.rvm_retirement_no ?? 'N/A'}
                 </p>
               </div>
 
@@ -634,18 +637,17 @@ function AdminEmployeePreview() {
                     marginTop: 10,
                   }}
                 >
-                 BPI ATM No.
+                  BPI ATM No.
                 </p>
                 <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
-                  {state.employee?.bpi_atm_account_no ?? "N/A"}
+                  {state.employee?.bpi_atm_account_no ?? 'N/A'}
                 </p>
               </div>
             </Flex>
 
             <Divider dashed />
             <Flex gap={30} align="center">
-
-            <div>
+              <div>
                 <p
                   style={{
                     padding: 0,
@@ -677,7 +679,7 @@ function AdminEmployeePreview() {
                   Date resigned
                 </p>
                 <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
-                  {state.employee?.date_resigned ?? "N/A"}
+                  {state.employee?.date_resigned ?? 'N/A'}
                 </p>
               </div>
             </Flex>
@@ -701,9 +703,7 @@ function AdminEmployeePreview() {
             }}
           >
             <form
-              onSubmit={handleSubmitExperienceFormData(
-                onSubmitWorkExperience
-              )}
+              onSubmit={handleSubmitExperienceFormData(onSubmitWorkExperience)}
             >
               <Title>Work Experience</Title>
               <ExperienceFormFields
@@ -746,10 +746,7 @@ function AdminEmployeePreview() {
             {state.workExperience?.map((el) => {
               return (
                 <div key={el.id}>
-                  <Card
-                    bordered={false}
-                    style={{ marginTop: 20, width: 800 }}
-                  >
+                  <Card bordered={false} style={{ marginTop: 20, width: 800 }}>
                     <Flex justify="space-between" align="center">
                       <p style={{ fontSize: 24, padding: 0, margin: 0 }}>
                         {el.company_name}
@@ -780,7 +777,9 @@ function AdminEmployeePreview() {
                       }}
                     >
                       {moment(el.start_date).format('YYYY, MMM DD')} -{' '}
-                      {el.end_date ? moment(el.end_date).format('YYYY, MMM DD') : "Present"}
+                      {el.end_date
+                        ? moment(el.end_date).format('YYYY, MMM DD')
+                        : 'Present'}
                     </p>
                     <p>{el.responsibilities}</p>
                   </Card>

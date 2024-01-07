@@ -64,7 +64,7 @@ export default function StaffContributionRecord() {
     isSBRModalOpen: false,
     contributions: [],
     selectedContributionId: null,
-    batchDate: ""
+    batchDate: '',
   });
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -149,7 +149,7 @@ export default function StaffContributionRecord() {
           (el: IContribution) => ({
             ...el,
             key: el.id,
-            batchDate: dayjs(el.batchDate).format("MMM YYYY"),
+            batchDate: dayjs(el.batchDate).format('MMM YYYY'),
             actions: (
               <Flex gap={10}>
                 <Tooltip
@@ -429,10 +429,16 @@ export default function StaffContributionRecord() {
         >
           <div style={{ padding: 50 }}>
             <div style={{ position: 'relative' }}>
-              <Dragger disabled={isEmpty(state.batchDate) ||  !hasPermission(
-                state.user?.user_permissions!,
-                TPermissionTypes.GENERATE
-              )} {...props}>
+              <Dragger
+                disabled={
+                  isEmpty(state.batchDate) ||
+                  !hasPermission(
+                    state.user?.user_permissions!,
+                    TPermissionTypes.GENERATE
+                  )
+                }
+                {...props}
+              >
                 <p className="ant-upload-drag-icon">
                   <InboxOutlined />
                 </p>
@@ -440,23 +446,25 @@ export default function StaffContributionRecord() {
                   Click or drag the CSV file to this area to upload
                 </p>
                 <p className="ant-upload-hint">
-                  Strictly prohibited from uploading company data or other banned
-                  files.
+                  Strictly prohibited from uploading company data or other
+                  banned files.
                 </p>
               </Dragger>
               <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
                 <DatePicker
                   onChange={(v) => handleChangeBatchDate(v)}
-                  disabled={!hasPermission(
-                    state.user?.user_permissions!,
-                    TPermissionTypes.GENERATE
-                  )}
+                  disabled={
+                    !hasPermission(
+                      state.user?.user_permissions!,
+                      TPermissionTypes.GENERATE
+                    )
+                  }
                   picker="month"
                   size="large"
                 />
               </div>
             </div>
-            </div>
+          </div>
         </Tooltip>
 
         <div style={{ marginTop: 20 }}>
