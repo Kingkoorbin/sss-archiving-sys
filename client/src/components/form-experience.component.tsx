@@ -78,7 +78,7 @@ const ExperienceFormFields: React.FC<ExperienceFormFieldsProps> = ({
               required: 'This field is required',
               minLength: {
                 message: 'Invalid Job Title',
-                value: 3,
+                value: 6,
               },
               maxLength: {
                 message: 'Maximum of 75 characters only.',
