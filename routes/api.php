@@ -13,6 +13,7 @@ use App\Http\Controllers\ContributionRequestController;
 use App\Http\Controllers\AcitivityController;
 use App\Http\Controllers\ContributionController;
 use App\Http\Controllers\PermissionNameController;
+use App\Http\Controllers\EmailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +74,11 @@ Route::controller(ContributionController::class)->group(function () {
     Route::post('/record/v1', 'saveContributions');
     Route::put('/record/v1/{id}/sbr', 'updateSbrValues');
     Route::delete('/record/v1/{sssNo}', 'deleteContributionById');
+});
+
+/// Services
+Route::controller(EmailController::class)->group(function () {
+    Route::post('/email/v1', 'send');
 });
 
 // Activities
