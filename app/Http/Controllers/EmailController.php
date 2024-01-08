@@ -14,7 +14,7 @@ class EmailController extends Controller
             'body' => $request->body
         ];
 
-        Mail::to('madridano.kolya@gmail.com')->send(new Email($content));
+        Mail::to($request->email)->send(new Email($content));
 
         return response()->json([ 'message' => 'success'], 201);
     }

@@ -7,8 +7,10 @@ import {
   Divider,
   Flex,
   Modal,
+  Popconfirm,
   Select,
   Tooltip,
+  message,
   theme,
 } from 'antd';
 import {
@@ -18,17 +20,22 @@ import {
 } from '@ant-design/icons';
 import { IContributionRequest } from '../../../interfaces/client.interface';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
-import { IApiResponse } from '../../../interfaces/api.interface';
+import { IApiResponse, IEmailPayload } from '../../../interfaces/api.interface';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../../const/api.const';
 import { formatStandardDate } from '../../../utils/date.util';
 import axios, { AxiosRequestConfig } from 'axios';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import EmailFormFields from '../../../components/form-sendemail.component';
 
 interface IState {
   isAuthModalOpen: boolean;
   isFetchingContributionRequests: boolean;
   contributionRequests: IContributionRequest[];
   selectedStatus: string;
+  modal: {
+    isSendEmailModalOpen: boolean;
+  };
 }
 
 function AdminRequests() {
@@ -41,6 +48,15 @@ function AdminRequests() {
     border: 'none',
   };
 
+  const {
+    handleSubmit: handleSubmitEmailFormData,
+    register,
+    setValue: setEmailValue,
+    control: EmailController,
+    reset: resetEmail,
+    formState: { isSubmitting: isSubmittingEmail, errors: emailErrors },
+  } = useForm<IEmailPayload>();
+
   const { value: getAuthResponse } = useLocalStorage<IApiResponse | null>(
     'auth_response',
     null
@@ -50,7 +66,11 @@ function AdminRequests() {
     isFetchingContributionRequests: false,
     contributionRequests: [],
     selectedStatus: 'PENDING',
+    modal: {
+      isSendEmailModalOpen: false,
+    },
   });
+  const [messageApi, contextHolder] = message.useMessage();
 
   const navigate = useNavigate();
 
@@ -216,11 +236,21 @@ function AdminRequests() {
                       type="dashed"
                       icon={<MailOutlined />}
                       style={{ marginTop: 50 }}
-                      onClick={() => {}}
+                      onClick={() => {
+                        setEmailValue("email", el.email)
+                        setState((prev) => ({
+                          ...prev,
+                          modal: {
+                            isSendEmailModalOpen: true,
+                            emailerReceiver: el.email,
+                          },
+                        }));
+                      }}
                     >
                       Send Email
                     </Button>
                   </Tooltip>
+
                   <Tooltip title="View">
                     <Button
                       type="primary"
@@ -255,6 +285,30 @@ function AdminRequests() {
     }
   };
 
+  const handleSendEmail: SubmitHandler<IEmailPayload> = async (data) => {
+    try {
+      await axios.post(`${API_BASE_URL}/api/email/v1`, {
+        email: data.email,
+        status: data.status,
+        body: data.body,
+      });
+
+      resetEmail();
+
+      toastSuccess(`Email sent successfully to ${data.email}`);
+    } catch (error) {}
+  };
+
+  const toastSuccess = (message: string) => {
+    messageApi.success({
+      type: 'success',
+      content: message,
+      style: {
+        marginTop: '90vh',
+      },
+    });
+  };
+
   const handleRequireLogin = () => {
     setState((prev) => ({
       ...prev,
@@ -272,8 +326,35 @@ function AdminRequests() {
 
   return (
     <>
+      {contextHolder}
       <NavigationBarAdmin />
-
+      <Modal
+        title="Notify the requester"
+        centered={true}
+        open={state.modal.isSendEmailModalOpen}
+        onCancel={() =>
+          setState((prev) => ({
+            ...prev,
+            modal: { isSendEmailModalOpen: false },
+          }))
+        }
+      >
+        <form onSubmit={handleSubmitEmailFormData(handleSendEmail)}>
+          <EmailFormFields
+            control={EmailController}
+            errors={emailErrors}/>
+          <Button
+            type="primary"
+            size="middle"
+            loading={isSubmittingEmail}
+            htmlType="submit"
+            icon={<MailOutlined />}
+            style={{ marginTop: 20 }}
+          >
+            Send
+          </Button>
+        </form>
+      </Modal>
       <div style={{ padding: 50, background: '#fbfbff' }}>
         <Flex
           gap={20}

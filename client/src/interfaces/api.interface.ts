@@ -9,3 +9,9 @@ export interface ISavedLogin {
   owner: string;
   token: string;
 }
+
+export interface IEmailPayload {
+  email: string;
+  status: string;
+  body: string;
+}
