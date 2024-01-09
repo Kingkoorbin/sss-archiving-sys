@@ -292,9 +292,9 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
             <Checkbox
               checked={field.value}
               onChange={(e) => field.onChange(e.target.checked)}
-              style={{ fontSize: 12 }}
+              style={{ fontSize: 11 }}
             >
-              I accept the terms of SSS Archiving System.
+              I have read and understood the terms and conditions outlined in the Data Privacy Act of 2012, <br/>and I hereby agree to abide by them. I understand that my use of this system is subject to these terms.
             </Checkbox>
           )}
         />
