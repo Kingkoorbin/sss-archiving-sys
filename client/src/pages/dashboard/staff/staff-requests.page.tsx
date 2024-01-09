@@ -9,21 +9,28 @@ import {
   Modal,
   Select,
   Tooltip,
+  message,
   theme,
 } from 'antd';
-import { CaretRightOutlined, EyeOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, EyeOutlined, MailOutlined } from '@ant-design/icons';
 import { IContributionRequest } from '../../../interfaces/client.interface';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
-import { IApiResponse } from '../../../interfaces/api.interface';
+import { IApiResponse, IEmailPayload } from '../../../interfaces/api.interface';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../../const/api.const';
 import { formatStandardDate } from '../../../utils/date.util';
 import axios, { AxiosRequestConfig } from 'axios';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import EmailFormFields from '../../../components/form-sendemail.component';
 
 interface IState {
   isAuthModalOpen: boolean;
   isFetchingContributionRequests: boolean;
   contributionRequests: IContributionRequest[];
+  selectedStatus: string;
+  modal: {
+    isSendEmailModalOpen: boolean;
+  };
 }
 
 function StaffRequests() {
@@ -36,6 +43,17 @@ function StaffRequests() {
     border: 'none',
   };
 
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const {
+    handleSubmit: handleSubmitEmailFormData,
+    register,
+    setValue: setEmailValue,
+    control: EmailController,
+    reset: resetEmail,
+    formState: { isSubmitting: isSubmittingEmail, errors: emailErrors },
+  } = useForm<IEmailPayload>();
+  
   const { value: getAuthResponse } = useLocalStorage<IApiResponse | null>(
     'auth_response',
     null
@@ -44,6 +62,10 @@ function StaffRequests() {
     isAuthModalOpen: false,
     isFetchingContributionRequests: false,
     contributionRequests: [],
+    selectedStatus: 'PENDING',
+    modal: {
+      isSendEmailModalOpen: false,
+    },
   });
 
   const navigate = useNavigate();
@@ -202,22 +224,44 @@ function StaffRequests() {
                 <div style={{ color: '#111', fontSize: 18 }}>
                   {formatStandardDate(el.date_needed)}
                 </div>
-                <Tooltip title="View">
-                  <Button
-                    type="primary"
-                    icon={<EyeOutlined />}
-                    style={{ marginTop: 50 }}
-                    onClick={() =>
-                      navigate(`/dashboard/s/contribution`, {
-                        state: {
-                          request: el,
-                        },
-                      })
-                    }
-                  >
-                    View contributions
-                  </Button>
-                </Tooltip>
+                <Flex gap={10}>
+                  <Tooltip title="Send Email">
+                    <Button
+                      type="dashed"
+                      icon={<MailOutlined />}
+                      style={{ marginTop: 50 }}
+                      onClick={() => {
+                        setEmailValue('email', el.email);
+                        setState((prev) => ({
+                          ...prev,
+                          modal: {
+                            isSendEmailModalOpen: true,
+                            emailerReceiver: el.email,
+                          },
+                        }));
+                      }}
+                    >
+                      Send Email
+                    </Button>
+                  </Tooltip>
+
+                  <Tooltip title="View">
+                    <Button
+                      type="primary"
+                      icon={<EyeOutlined />}
+                      style={{ marginTop: 50 }}
+                      onClick={() =>
+                        navigate(`/dashboard/a/contribution`, {
+                          state: {
+                            request: el,
+                          },
+                        })
+                      }
+                    >
+                      View contributions
+                    </Button>
+                  </Tooltip>
+                </Flex>
                 ,
               </div>
             ),
@@ -244,6 +288,20 @@ function StaffRequests() {
     navigate('/', { replace: true });
   };
 
+  const handleSendEmail: SubmitHandler<IEmailPayload> = async (data) => {
+    try {
+      await axios.post(`${API_BASE_URL}/api/email/v1`, {
+        email: data.email,
+        status: data.status,
+        body: data.body,
+      });
+
+      resetEmail();
+
+      toastSuccess(`Email sent successfully to ${data.email}`);
+    } catch (error) {}
+  };
+
   useEffect(() => {
     document.title = 'Requests | SSS Archiving System';
     getContributionsRequests();
@@ -253,9 +311,34 @@ function StaffRequests() {
   return (
     <>
       <StaffNavbar />
-
+      <Modal
+        title="Notify the requester"
+        centered={true}
+        open={state.modal.isSendEmailModalOpen}
+        onCancel={() =>
+          setState((prev) => ({
+            ...prev,
+            modal: { isSendEmailModalOpen: false },
+          }))
+        }
+        footer={<></>}
+      >
+        <form onSubmit={handleSubmitEmailFormData(handleSendEmail)}>
+          <EmailFormFields control={EmailController} errors={emailErrors} />
+          <Button
+            type="primary"
+            size="middle"
+            loading={isSubmittingEmail}
+            htmlType="submit"
+            icon={<MailOutlined />}
+            style={{ marginTop: 20 }}
+          >
+            Send
+          </Button>
+        </form>
+      </Modal>
       <div style={{ padding: 50, background: '#fbfbff' }}>
-        <Flex
+      <Flex
           gap={20}
           style={{ marginBottom: 20, padding: 20, borderRadius: 20 }}
           justify="end"
@@ -263,7 +346,16 @@ function StaffRequests() {
           <Flex
             gap={5}
             align="center"
-            style={{ cursor: 'pointer ' }}
+            justify="center"
+            style={{
+              cursor: 'pointer',
+              border: '1px dashed #ddd',
+              borderRadius: 10,
+              padding: 10,
+              width: 120,
+              background:
+                state.selectedStatus === 'PENDING' ? '#ebebeb' : 'white',
+            }}
             onClick={() => getContributionsRequests('PENDING')}
           >
             <Badge color={'geekblue'} />
@@ -272,7 +364,16 @@ function StaffRequests() {
           <Flex
             gap={5}
             align="center"
-            style={{ cursor: 'pointer ' }}
+            justify="center"
+            style={{
+              cursor: 'pointer',
+              border: '1px dashed #ddd',
+              borderRadius: 10,
+              padding: 10,
+              width: 120,
+              background:
+                state.selectedStatus === 'PROCESSING' ? '#ebebeb' : 'white',
+            }}
             onClick={() => getContributionsRequests('PROCESSING')}
           >
             <Badge color={'orange'} />
@@ -281,7 +382,16 @@ function StaffRequests() {
           <Flex
             gap={5}
             align="center"
-            style={{ cursor: 'pointer ' }}
+            justify="center"
+            style={{
+              cursor: 'pointer',
+              border: '1px dashed #ddd',
+              borderRadius: 10,
+              padding: 10,
+              width: 120,
+              background:
+                state.selectedStatus === 'REJECTED' ? '#ebebeb' : 'white',
+            }}
             onClick={() => getContributionsRequests('REJECTED')}
           >
             <Badge color={'red'} />
@@ -290,7 +400,15 @@ function StaffRequests() {
           <Flex
             gap={5}
             align="center"
-            style={{ cursor: 'pointer ' }}
+            justify="center"
+            style={{
+              cursor: 'pointer',
+              border: '1px dashed #ddd',
+              borderRadius: 10,
+              padding: 10,
+              width: 120,
+              background: state.selectedStatus === 'DONE' ? '#ebebeb' : 'white',
+            }}
             onClick={() => getContributionsRequests('DONE')}
           >
             <Badge color={'green'} />
@@ -301,7 +419,6 @@ function StaffRequests() {
         <Collapse
           bordered={false}
           size="middle"
-          activeKey={1}
           ghost
           expandIcon={({ isActive }) => (
             <CaretRightOutlined rotate={isActive ? 90 : 0} />
@@ -327,6 +444,28 @@ function StaffRequests() {
       </Modal>
     </>
   );
+
+  function toastSuccess(message: string) {
+    messageApi.success({
+      type: 'success',
+      content: message,
+      style: {
+        marginTop: '90vh',
+      },
+    });
+  }
+
+  function toastError(message: string) {
+    messageApi.error({
+      type: 'error',
+      content: message,
+      style: {
+        marginTop: '90vh',
+      },
+    });
+  }
 }
+
+
 
 export default StaffRequests;

@@ -340,6 +340,7 @@ function AdminRequests() {
             modal: { isSendEmailModalOpen: false },
           }))
         }
+        footer={<></>}
       >
         <form onSubmit={handleSubmitEmailFormData(handleSendEmail)}>
           <EmailFormFields control={EmailController} errors={emailErrors} />
