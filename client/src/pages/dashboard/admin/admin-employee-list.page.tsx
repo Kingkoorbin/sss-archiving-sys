@@ -6,7 +6,6 @@ import {
   Modal,
   Popconfirm,
   Table,
-  Timeline,
   Tooltip,
   message,
 } from 'antd';
@@ -16,12 +15,11 @@ import { useNavigate } from 'react-router-dom';
 import NavigationBarAdmin from '../../../components/nav-admin.component';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { isEmpty } from '../../../utils/util';
-import { API, API_BASE_URL } from '../../../const/api.const';
+import { API } from '../../../const/api.const';
 import HttpClient from '../../../utils/http-client.util';
 import { IApiResponse } from '../../../interfaces/api.interface';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
 import {
-  IContribution,
   IEmployeeProfile,
   ISearchPayload,
   IUser,
@@ -32,7 +30,6 @@ import {
   formatStandardDateTime,
 } from '../../../utils/date.util';
 import {
-  contributionColumns,
   employeeColumns,
   employeeContributionColumns,
 } from '../../../const/table-columns.const';
@@ -279,7 +276,7 @@ function AdminEmployeeList() {
   useEffect(() => {
     document.title = 'Account Management | SSS Archiving System';
     getAllEmployees();
-    return () => {};
+    return () => { };
   }, []);
 
   return (
@@ -294,12 +291,12 @@ function AdminEmployeeList() {
           isSearching={isSearchingEmployee}
         />
         <Table
-          columns={employeeColumns}
+          columns={employeeColumns as any}
           dataSource={state.employees as any}
           size="middle"
           loading={state.isFetchingEmployees}
           expandable={{
-            expandedRowRender: (record: any) => {
+            expandedRowRender: (record: IEmployeeProfile) => {
               return (
                 <div
                   style={{
@@ -336,6 +333,27 @@ function AdminEmployeeList() {
                           color: '#111',
                         }}
                       >
+                        SSS Number
+                      </p>
+                      <p
+                        style={{
+                          padding: 0,
+                          margin: 0,
+                          fontSize: 17,
+                          fontWeight: 'normal',
+                          color: '#444',
+                        }}
+                      >
+                        {record.sss_no} </p>
+                      <Divider />
+                      <p
+                        style={{
+                          padding: 0,
+                          margin: 0,
+                          fontSize: 14,
+                          color: '#111',
+                        }}
+                      >
                         Full name
                       </p>
                       <p
@@ -350,7 +368,6 @@ function AdminEmployeeList() {
                         {record.last_name}, {record.first_name}{' '}
                         {record.middle_name}
                       </p>
-
                       <p
                         style={{
                           padding: 0,
@@ -383,7 +400,6 @@ function AdminEmployeeList() {
                         )}{' '}
                         {record.gender}
                       </p>
-
                       <p
                         style={{
                           padding: 0,
@@ -407,7 +423,26 @@ function AdminEmployeeList() {
                         {record.birthdate}
                       </p>
                       <Divider />
-
+                      <p
+                        style={{
+                          fontSize: 17,
+                          fontWeight: 'bold',
+                          color: '#444',
+                        }}
+                      >
+                        Work History
+                        </p>
+                        <div>
+                          {record?.work_history.map((v: IWorkHistory, index: number) => {
+                            return <div key={v.id} style={{ marginTop: index== 0 ? 0 : 30}}>
+                              <p style={{color: "#111", fontSize: 16, margin: 0, padding: 0}}>{v.company_name}</p>
+                              <p style={{color: "#111", fontSize: 12, fontWeight: "bold", margin: 0, padding: 0}}><i>{v.position}</i></p>
+                              <p style={{color: "#111", fontSize: 12, margin: 0, padding: 0}}>{v.responsibilities}</p>
+                              <p style={{color: "#111", fontSize: 10, margin: 0, padding: 0, marginTop: 10}}>{formatStandardDate(v.start_date)} - {isEmpty(v.end_date) ? "Present" : formatStandardDate(v.end_date)}</p>
+                            </div>
+                          })}
+                        </div>
+                      <Divider />
                       <p
                         style={{
                           padding: 0,
@@ -482,7 +517,6 @@ function AdminEmployeeList() {
                 </div>
               );
             },
-            rowExpandable: (record) => record.name !== 'Not Expandable',
           }}
         />
       </div>

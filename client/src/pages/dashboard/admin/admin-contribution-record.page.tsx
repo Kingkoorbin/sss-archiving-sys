@@ -118,7 +118,52 @@ export default function AdminContributionRecord() {
           ...el,
           key: el.id,
           batchDate: dayjs(el.batchDate).format('MMM YYYY'),
-          actions: (
+          sbr_date: isEmpty(el.sbr_date) ? <Popconfirm
+            title="Do you want to edit this contribution?"
+            onConfirm={() =>
+              setState((prev) => ({
+                ...prev,
+                selectedContributionId: el.id,
+                isSBRModalOpen: !prev.isSBRModalOpen,
+              }))
+            }
+            okText="Yes"
+            cancelText="No"
+            placement="bottomLeft"
+          >
+            <Tooltip title="Edit">
+              <Button
+                htmlType="button"
+                type="dashed"
+                icon={<EditOutlined />}
+              >
+                Edit
+              </Button>
+            </Tooltip>
+          </Popconfirm> : el.sbr_date,
+          sbr_no: isEmpty(el.sbr_date) ? <Popconfirm
+            title="Do you want to edit this contribution?"
+            onConfirm={() =>
+              setState((prev) => ({
+                ...prev,
+                selectedContributionId: el.id,
+                isSBRModalOpen: !prev.isSBRModalOpen,
+              }))
+            }
+            okText="Yes"
+            cancelText="No"
+            placement="bottomLeft"
+          >
+            <Tooltip title="Edit">
+              <Button
+                htmlType="button"
+                type="dashed"
+                icon={<EditOutlined />}
+              >
+                Edit
+              </Button>
+            </Tooltip>
+          </Popconfirm> : el.sbr_no, actions: (
             <Flex gap={10}>
               <Popconfirm
                 title="Do you want to edit this contribution?"

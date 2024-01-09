@@ -118,6 +118,7 @@ export interface IEmployeeProfile {
   created_at: string; // Assuming date-time format
   updated_at: string; // Assuming date-time format
   work_history: IWorkHistory[];
+  contributions: IContribution[];
 }
 
 export interface IPermission {
