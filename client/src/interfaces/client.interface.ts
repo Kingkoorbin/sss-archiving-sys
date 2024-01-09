@@ -184,4 +184,5 @@ export interface IContributionRequest {
   created_at: string;
   updated_at: string;
   same_as_fullname?: boolean;
+  accept_terms?: boolean;
 }

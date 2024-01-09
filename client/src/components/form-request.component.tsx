@@ -283,6 +283,22 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
           {errors.date_needed.message}
         </div>
       )}
+
+      <Flex justify="end" style={{ marginTop: 20 }}>
+        <Controller
+          name="accept_terms"
+          control={control}
+          render={({ field }) => (
+            <Checkbox
+              checked={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              style={{ fontSize: 12 }}
+            >
+              I accept the terms of SSS Archiving System.
+            </Checkbox>
+          )}
+        />
+      </Flex>
     </>
   );
 };

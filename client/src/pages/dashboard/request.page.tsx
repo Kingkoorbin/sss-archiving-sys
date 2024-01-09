@@ -23,7 +23,6 @@ function RequestPage() {
     data
   ) => {
     data.status = 'PENDING';
-    console.log(data);
     if (isEmpty(data.date_of_employment) && isEmpty(data.date_of_resignation)) {
       data.date_of_employment = '1999-01-01';
       data.date_of_resignation = '1999-01-01';
@@ -59,7 +58,6 @@ function RequestPage() {
             background: 'white',
             borderRadius: 20,
             width: '100%',
-            marginTop: 100,
           }}
         >
           <div className="registration-employee-form-container">
@@ -85,6 +83,7 @@ function RequestPage() {
                   loading={isCreatingRequest}
                   style={{ marginTop: 20 }}
                   htmlType="submit"
+                  disabled={!watch("accept_terms")}
                 >
                   Submit
                 </Button>
