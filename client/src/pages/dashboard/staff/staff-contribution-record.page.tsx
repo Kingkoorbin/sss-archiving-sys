@@ -434,7 +434,7 @@ export default function StaffContributionRecord() {
                   isEmpty(state.batchDate) ||
                   !hasPermission(
                     state.user?.user_permissions!,
-                    TPermissionTypes.GENERATE
+                    TPermissionTypes.UPLOAD
                   )
                 }
                 {...props}
@@ -456,7 +456,7 @@ export default function StaffContributionRecord() {
                   disabled={
                     !hasPermission(
                       state.user?.user_permissions!,
-                      TPermissionTypes.GENERATE
+                      TPermissionTypes.UPLOAD
                     )
                   }
                   picker="month"
