@@ -183,4 +183,5 @@ export interface IContributionRequest {
   status: 'PENDING' | 'APPROVED' | 'REJECTED'; // Adjust status values accordingly
   created_at: string;
   updated_at: string;
+  same_as_fullname?: boolean;
 }

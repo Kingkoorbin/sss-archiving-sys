@@ -177,7 +177,7 @@ function AdminStaffList() {
           verified_at: formatStandardDate(el.created_at),
           actions: (
             <>
-             <Popconfirm
+              <Popconfirm
                 title="Do you want to delete this user?"
                 onConfirm={() => onDeleteUser(el.id)}
                 okText="Yes"

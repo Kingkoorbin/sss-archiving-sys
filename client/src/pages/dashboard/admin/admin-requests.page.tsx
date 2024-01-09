@@ -215,17 +215,19 @@ function AdminRequests() {
                 <div style={{ color: '#111', fontSize: 12 }}>Email</div>
                 <div style={{ color: '#111', fontSize: 18 }}>{el.email}</div>
                 <Divider dashed />
-                <div style={{ color: '#111', fontSize: 12 }}>Start - End</div>
-                <Flex gap={20} align="center">
-                  <div style={{ color: '#111', fontSize: 18 }}>
-                    {formatStandardDate(el.date_of_employment)}
-                  </div>
-                  <div style={{ fontSize: 10 }}>TO</div>
-                  <div style={{ color: '#111', fontSize: 18 }}>
-                    {formatStandardDate(el.date_of_resignation)}
-                  </div>
-                </Flex>
-                <Divider dashed />
+                <div style={{ display: el.all ? 'none' : 'block' }}>
+                  <div style={{ color: '#111', fontSize: 12 }}>Start - End</div>
+                  <Flex gap={20} align="center">
+                    <div style={{ color: '#111', fontSize: 18 }}>
+                      {formatStandardDate(el.date_of_employment)}
+                    </div>
+                    <div style={{ fontSize: 10 }}>TO</div>
+                    <div style={{ color: '#111', fontSize: 18 }}>
+                      {formatStandardDate(el.date_of_resignation)}
+                    </div>
+                  </Flex>
+                  <Divider dashed />
+                </div>
                 <div style={{ color: '#111', fontSize: 12 }}>Date needed</div>
                 <div style={{ color: '#111', fontSize: 18 }}>
                   {formatStandardDate(el.date_needed)}
@@ -237,7 +239,7 @@ function AdminRequests() {
                       icon={<MailOutlined />}
                       style={{ marginTop: 50 }}
                       onClick={() => {
-                        setEmailValue("email", el.email)
+                        setEmailValue('email', el.email);
                         setState((prev) => ({
                           ...prev,
                           modal: {
@@ -340,9 +342,7 @@ function AdminRequests() {
         }
       >
         <form onSubmit={handleSubmitEmailFormData(handleSendEmail)}>
-          <EmailFormFields
-            control={EmailController}
-            errors={emailErrors}/>
+          <EmailFormFields control={EmailController} errors={emailErrors} />
           <Button
             type="primary"
             size="middle"
@@ -436,7 +436,6 @@ function AdminRequests() {
 
         <Collapse
           bordered={false}
-          activeKey={1}
           size="middle"
           ghost
           expandIcon={({ isActive }) => (

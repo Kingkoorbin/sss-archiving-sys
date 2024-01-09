@@ -4,11 +4,16 @@ import { IContributionRequest } from '../../interfaces/client.interface';
 import { Button, Flex, message } from 'antd';
 import { API_BASE_URL } from '../../const/api.const';
 import axios from 'axios';
+import { useEffect } from 'react';
+import { isEmpty } from '../../utils/util';
 
 function RequestPage() {
   const {
     handleSubmit: handleSubmitRequestFormData,
     control: requestController,
+    watch,
+    setValue,
+    getValues,
     reset,
     formState: { isSubmitting: isCreatingRequest, errors },
   } = useForm<IContributionRequest>();
@@ -18,6 +23,11 @@ function RequestPage() {
     data
   ) => {
     data.status = 'PENDING';
+    console.log(data);
+    if (isEmpty(data.date_of_employment) && isEmpty(data.date_of_resignation)) {
+      data.date_of_employment = '1999-01-01';
+      data.date_of_resignation = '1999-01-01';
+    }
     await axios.post(`${API_BASE_URL}/api/contribution/v1`, data);
 
     return toastSuccess('Submitted successfully!');
@@ -32,6 +42,12 @@ function RequestPage() {
       },
     });
   };
+
+  useEffect(() => {
+    if (watch('same_as_fullname') && getValues('name')) {
+      setValue('requester', getValues('name'));
+    }
+  }, [watch('same_as_fullname')]);
 
   return (
     <>
@@ -48,7 +64,11 @@ function RequestPage() {
         >
           <div className="registration-employee-form-container">
             <form onSubmit={handleSubmitRequestFormData(handleCreateRequest)}>
-              <RequestFormFields control={requestController} errors={errors} />
+              <RequestFormFields
+                control={requestController}
+                errors={errors}
+                watch={watch}
+              />
               <Flex gap={10}>
                 <Button
                   type="default"

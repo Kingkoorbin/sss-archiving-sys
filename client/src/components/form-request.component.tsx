@@ -1,22 +1,18 @@
 import React from 'react';
 import { Checkbox, DatePicker, Flex, Input } from 'antd';
-import { Control, Controller } from 'react-hook-form';
-import {
-  FieldNumberOutlined,
-  MailOutlined,
-  NumberOutlined,
-  PhoneOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { Control, Controller, UseFormWatch } from 'react-hook-form';
+import { MailOutlined, NumberOutlined, UserOutlined } from '@ant-design/icons';
 
 interface RequestFormFieldsProps {
   control: Control<any>;
   errors: any;
+  watch: UseFormWatch<any>;
 }
 
 const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
   control,
   errors,
+  watch,
 }) => {
   return (
     <>
@@ -155,7 +151,7 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
           </div>
         )}
       </div>
-      <Flex gap={20}>
+      <Flex gap={20} style={{ opacity: watch('all') ? 0.15 : 1 }}>
         <div style={{ width: '100%' }}>
           <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
             Date start
@@ -163,12 +159,22 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
           <Controller
             name="date_of_employment"
             control={control}
-            rules={{ required: 'This field is required' }}
+            rules={{
+              required: {
+                value: watch('all') ? false : true,
+                message: 'This field is required',
+              },
+            }}
             render={({ field }) => (
-              <DatePicker size="large" style={{ width: '100%' }} {...field} />
+              <DatePicker
+                size="large"
+                style={{ width: '100%' }}
+                {...field}
+                disabled={watch('all')}
+              />
             )}
           />
-          {errors.date_of_employment && (
+          {errors.date_of_employment && !watch('all') && (
             <div style={{ color: 'red', padding: 5 }}>
               {errors.date_of_employment.message}
             </div>
@@ -181,12 +187,22 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
           <Controller
             name="date_of_resignation"
             control={control}
-            rules={{ required: 'This field is required' }}
+            rules={{
+              required: {
+                value: watch('all') ? false : true,
+                message: 'This field is required',
+              },
+            }}
             render={({ field }) => (
-              <DatePicker size="large" style={{ width: '100%' }} {...field} />
+              <DatePicker
+                size="large"
+                style={{ width: '100%' }}
+                {...field}
+                disabled={watch('all') ? true : false}
+              />
             )}
           />
-          {errors.date_of_resignation && (
+          {errors.date_of_resignation && !watch('all') && (
             <div style={{ color: 'red', padding: 5 }}>
               {errors.date_of_resignation.message}
             </div>
@@ -233,6 +249,20 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
             />
           )}
         />
+        <div style={{ marginTop: 20 }}>
+          <Controller
+            name="same_as_fullname"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                checked={field.value}
+                onChange={(e) => field.onChange(e.target.checked)}
+              >
+                Same as Full name
+              </Checkbox>
+            )}
+          />
+        </div>
         {errors.requester && (
           <div style={{ color: 'red', padding: 5 }}>
             {errors.requester.message}

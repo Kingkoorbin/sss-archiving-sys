@@ -6,7 +6,16 @@ import {
   IWorkHistory,
 } from '../../../interfaces/client.interface';
 import { useEffect, useState } from 'react';
-import { Button, Card, Divider, Flex, Popconfirm, Switch, Tooltip, message } from 'antd';
+import {
+  Button,
+  Card,
+  Divider,
+  Flex,
+  Popconfirm,
+  Switch,
+  Tooltip,
+  message,
+} from 'antd';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
 import { IApiResponse } from '../../../interfaces/api.interface';
 import { API_BASE_URL } from '../../../const/api.const';
@@ -765,8 +774,6 @@ function AdminEmployeePreview() {
                           />
                         </Tooltip>
                       </Popconfirm>
-
-
                     </Flex>
                     <p
                       style={{
