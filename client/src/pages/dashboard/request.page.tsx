@@ -29,6 +29,7 @@ function RequestPage() {
     }
     await axios.post(`${API_BASE_URL}/api/contribution/v1`, data);
 
+    reset();
     return toastSuccess('Submitted successfully!');
   };
 
