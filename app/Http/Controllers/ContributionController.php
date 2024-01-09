@@ -45,8 +45,11 @@ class ContributionController extends Controller
             $query->whereBetween('batchDate', [$from, $to]);
         }
         
+        // Add orderBy clause for the latest update
+        $query->orderBy('updated_at', 'desc');
+
         $contributions = $query->get();
-        
+
         return response()->json($contributions);
     }
 
