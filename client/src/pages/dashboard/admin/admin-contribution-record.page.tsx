@@ -50,9 +50,9 @@ interface IState {
   selectedContributionId: number | null;
   batchDate: string;
   sbrModalContent: {
-    sbrDate:string;
-    sbrNo:string;
-  }
+    sbrDate: string;
+    sbrNo: string;
+  };
 }
 
 export default function AdminContributionRecord() {
@@ -68,9 +68,9 @@ export default function AdminContributionRecord() {
     selectedContributionId: null,
     batchDate: '',
     sbrModalContent: {
-      sbrDate: "",
-      sbrNo: ""
-    }
+      sbrDate: '',
+      sbrNo: '',
+    },
   });
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -128,46 +128,49 @@ export default function AdminContributionRecord() {
           ...el,
           key: el.id,
           batchDate: dayjs(el.batchDate).format('MMM YYYY'),
-       actions: (
+          ec: '₱' + el.ec,
+          ss: '₱' + el.ss,
+          total: '₱' + el.total,
+          actions: (
             <Flex gap={10}>
               <Popconfirm
                 title="Do you want to edit this contribution?"
-                onConfirm={() =>{
+                onConfirm={() => {
                   sbrFormReset();
-                  if(el?.sbr_no) {
-                    setSbrValue("sbr_no", el.sbr_no)
+                  if (el?.sbr_no) {
+                    setSbrValue('sbr_no', el.sbr_no);
                   }
-                  if(el?.sbr_date) {
+                  if (el?.sbr_date) {
                     setSbrValue(
                       'sbr_date',
                       moment(el.sbr_date, 'YYYY-MM-DD') as any
                     );
                   }
-                  if(el?.ec) {
-                    setSbrValue("ec", el.ec)
+                  if (el?.ec) {
+                    setSbrValue('ec', el.ec);
                   }
-                  if(el?.ss) {
-                    setSbrValue("ss", el.ss)
+                  if (el?.ss) {
+                    setSbrValue('ss', el.ss);
                   }
-                  if(el?.total) {
-                    setSbrValue("total", el.total)
+                  if (el?.total) {
+                    setSbrValue('total', el.total);
                   }
-                  if(el?.name) {
-                    setSbrValue("name", el.name)
+                  if (el?.name) {
+                    setSbrValue('name', el.name);
                   }
-                  if(el?.sbr_no) {
-                    setSbrValue("sbr_no", el.sbr_no)
+                  if (el?.sbr_no) {
+                    setSbrValue('sbr_no', el.sbr_no);
                   }
-                  if(el?.sss_no) {
-                    setSbrValue("sss_no", el.sss_no)
+                  if (el?.sss_no) {
+                    setSbrValue('sss_no', el.sss_no);
                   }
 
                   setState((prev) => ({
                     ...prev,
                     selectedContributionId: el.id,
                     isSBRModalOpen: !prev.isSBRModalOpen,
-                  }))
-               } }
+                  }));
+                }}
                 okText="Yes"
                 cancelText="No"
                 placement="bottomLeft"
@@ -362,32 +365,29 @@ export default function AdminContributionRecord() {
   const rowProps = (record: IContribution) => ({
     onDoubleClick: () => {
       sbrFormReset();
-      if(record?.sbr_no) {
-        setSbrValue("sbr_no", record.sbr_no)
+      if (record?.sbr_no) {
+        setSbrValue('sbr_no', record.sbr_no);
       }
-      if(record?.sbr_date) {
-        setSbrValue(
-          'sbr_date',
-          moment(record.sbr_date, 'YYYY-MM-DD') as any
-        );
+      if (record?.sbr_date) {
+        setSbrValue('sbr_date', moment(record.sbr_date, 'YYYY-MM-DD') as any);
       }
-      if(record?.ec) {
-        setSbrValue("ec", record.ec)
+      if (record?.ec) {
+        setSbrValue('ec', record.ec);
       }
-      if(record?.ss) {
-        setSbrValue("ss", record.ss)
+      if (record?.ss) {
+        setSbrValue('ss', record.ss);
       }
-      if(record?.total) {
-        setSbrValue("total", record.total)
+      if (record?.total) {
+        setSbrValue('total', record.total);
       }
-      if(record?.name) {
-        setSbrValue("name", record.name)
+      if (record?.name) {
+        setSbrValue('name', record.name);
       }
-      if(record?.sbr_no) {
-        setSbrValue("sbr_no", record.sbr_no)
+      if (record?.sbr_no) {
+        setSbrValue('sbr_no', record.sbr_no);
       }
-      if(record?.sss_no) {
-        setSbrValue("sss_no", record.sss_no)
+      if (record?.sss_no) {
+        setSbrValue('sss_no', record.sss_no);
       }
       setState((prev: any) => ({
         ...prev,
