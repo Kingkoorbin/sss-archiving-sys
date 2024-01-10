@@ -509,16 +509,6 @@ export default function AdminContributionRecord() {
             <form onSubmit={handleSubmitSBRFormData(handleUpdateSbr)}>
               <ContributionFormFields control={sbrController} />
               <Button
-                type="default"
-                size="middle"
-                htmlType="reset"
-                style={{ marginTop: 50 }}
-                onClick={() => sbrFormReset()}
-                block
-              >
-                Reset
-              </Button>
-              <Button
                 type="primary"
                 size="middle"
                 loading={isCreatingSBR}
