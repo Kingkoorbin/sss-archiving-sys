@@ -224,11 +224,12 @@ export default function AdminContributionRecord() {
       return;
     }
 
+    sbrFormReset();
+
     await getContributions();
 
     toastSuccess('Updated successfully!');
 
-    sbrFormReset();
     setState((prev) => ({
       ...prev,
       isSBRModalOpen: false,
