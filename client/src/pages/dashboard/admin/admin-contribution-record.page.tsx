@@ -34,10 +34,11 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import DateRangeeFormFields from '../../../components/form-daterange.component';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
-import SbrFormFields from '../../../components/form-sbr.component';
+import ContributionFormFields from '../../../components/form-sbr.component';
 import { isEmpty } from '../../../utils/util';
 
 import dayjs from 'dayjs';
+import moment from 'moment';
 
 const { Dragger } = Upload;
 
@@ -48,6 +49,10 @@ interface IState {
   contributions: IContribution[];
   selectedContributionId: number | null;
   batchDate: string;
+  sbrModalContent: {
+    sbrDate:string;
+    sbrNo:string;
+  }
 }
 
 export default function AdminContributionRecord() {
@@ -62,6 +67,10 @@ export default function AdminContributionRecord() {
     contributions: [],
     selectedContributionId: null,
     batchDate: '',
+    sbrModalContent: {
+      sbrDate: "",
+      sbrNo: ""
+    }
   });
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -79,6 +88,7 @@ export default function AdminContributionRecord() {
     handleSubmit: handleSubmitSBRFormData,
     control: sbrController,
     reset: sbrFormReset,
+    setValue: setSbrValue,
     formState: { isSubmitting: isCreatingSBR },
   } = useForm<ISBRPayload>();
 
@@ -122,13 +132,42 @@ export default function AdminContributionRecord() {
             <Flex gap={10}>
               <Popconfirm
                 title="Do you want to edit this contribution?"
-                onConfirm={() =>
+                onConfirm={() =>{
+                  sbrFormReset();
+                  if(el?.sbr_no) {
+                    setSbrValue("sbr_no", el.sbr_no)
+                  }
+                  if(el?.sbr_date) {
+                    setSbrValue(
+                      'sbr_date',
+                      moment(el.sbr_date, 'YYYY-MM-DD') as any
+                    );
+                  }
+                  if(el?.ec) {
+                    setSbrValue("ec", el.ec)
+                  }
+                  if(el?.ss) {
+                    setSbrValue("ss", el.ss)
+                  }
+                  if(el?.total) {
+                    setSbrValue("total", el.total)
+                  }
+                  if(el?.name) {
+                    setSbrValue("name", el.name)
+                  }
+                  if(el?.sbr_no) {
+                    setSbrValue("sbr_no", el.sbr_no)
+                  }
+                  if(el?.sss_no) {
+                    setSbrValue("sss_no", el.sss_no)
+                  }
+
                   setState((prev) => ({
                     ...prev,
                     selectedContributionId: el.id,
                     isSBRModalOpen: !prev.isSBRModalOpen,
                   }))
-                }
+               } }
                 okText="Yes"
                 cancelText="No"
                 placement="bottomLeft"
@@ -319,13 +358,41 @@ export default function AdminContributionRecord() {
     },
   };
 
-  const rowProps = (record: any) => ({
+  const rowProps = (record: IContribution) => ({
     onDoubleClick: () => {
-      setState((prev) => ({
+      sbrFormReset();
+      if(record?.sbr_no) {
+        setSbrValue("sbr_no", record.sbr_no)
+      }
+      if(record?.sbr_date) {
+        setSbrValue(
+          'sbr_date',
+          moment(record.sbr_date, 'YYYY-MM-DD') as any
+        );
+      }
+      if(record?.ec) {
+        setSbrValue("ec", record.ec)
+      }
+      if(record?.ss) {
+        setSbrValue("ss", record.ss)
+      }
+      if(record?.total) {
+        setSbrValue("total", record.total)
+      }
+      if(record?.name) {
+        setSbrValue("name", record.name)
+      }
+      if(record?.sbr_no) {
+        setSbrValue("sbr_no", record.sbr_no)
+      }
+      if(record?.sss_no) {
+        setSbrValue("sss_no", record.sss_no)
+      }
+      setState((prev: any) => ({
         ...prev,
         selectedContributionId: record.id,
         isSBRModalOpen: !prev.isSBRModalOpen,
-      }))
+      }));
     },
   });
 
@@ -422,7 +489,7 @@ export default function AdminContributionRecord() {
           </form>
 
           <Modal
-            title="Edit SBR"
+            title="Edit Contribution"
             open={state.isSBRModalOpen}
             cancelButtonProps={{
               style: { display: 'none' },
@@ -430,7 +497,7 @@ export default function AdminContributionRecord() {
             okButtonProps={{
               style: { display: 'none' },
             }}
-            width={400}
+            width={500}
             onCancel={() =>
               setState((prev) => ({
                 ...prev,
@@ -439,13 +506,23 @@ export default function AdminContributionRecord() {
             }
           >
             <form onSubmit={handleSubmitSBRFormData(handleUpdateSbr)}>
-              <SbrFormFields control={sbrController} />
+              <ContributionFormFields control={sbrController} />
+              <Button
+                type="default"
+                size="middle"
+                htmlType="reset"
+                style={{ marginTop: 50 }}
+                onClick={() => sbrFormReset()}
+                block
+              >
+                Reset
+              </Button>
               <Button
                 type="primary"
                 size="middle"
                 loading={isCreatingSBR}
                 htmlType="submit"
-                style={{ marginTop: 20 }}
+                style={{ marginTop: 10 }}
                 block
               >
                 Submit
@@ -454,7 +531,7 @@ export default function AdminContributionRecord() {
           </Modal>
 
           <Table
-            columns={contributionColumns}
+            columns={contributionColumns as any}
             dataSource={state.contributions as any}
             loading={state.isFetchingContributions}
             size="middle"

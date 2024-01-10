@@ -5,12 +5,16 @@ namespace App\Http\Validators;
 use Illuminate\Support\Facades\Validator;
 
 class ContributionValidator {
-
     public static function validateUpdateSbrValues($request)
     {
         $validator = Validator::make($request->all(), [
-            'sbr_no' => 'required|numeric',
-            'sbr_date' => 'required|date',
+            'ss' => 'required|string',
+            'ec' => 'required|string',
+            'total' => 'required|string',
+            'name' => 'required|string',
+            'sss_no' => 'required|string',
+            'sbr_no' => 'nullable|numeric',
+            'sbr_date' => 'nullable|date',
         ]);
 
         return $validator;

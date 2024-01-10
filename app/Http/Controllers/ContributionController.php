@@ -100,8 +100,12 @@ class ContributionController extends Controller
 
         // Find the contribution by ID
         $contribution = Contributions::find($id);
-
         $contribution->update([
+            'ss' => $request->ss,
+            'ec' => $request->ec,
+            'total' => $request->total,
+            'name' => $request->name,
+            'sss_no' => $request->sss_no,
             'sbr_date' => $request->sbr_date,
             'sbr_no' => $request->sbr_no,
         ]);

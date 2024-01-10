@@ -167,6 +167,11 @@ export interface IGeneratePdfPayload {
 export interface ISBRPayload {
   sbr_date: string;
   sbr_no: string;
+  ss: string;
+  ec: string;
+  total: string;
+  name: string;
+  sss_no: string;
 }
 
 export interface IContributionRequest {
