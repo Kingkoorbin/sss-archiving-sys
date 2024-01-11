@@ -53,6 +53,7 @@ interface IState {
     sbrDate: string;
     sbrNo: string;
   };
+  generatePdfQuery?: any;
 }
 
 export default function AdminContributionRecord() {
@@ -71,6 +72,7 @@ export default function AdminContributionRecord() {
       sbrDate: '',
       sbrNo: '',
     },
+    generatePdfQuery: {}
   });
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -249,33 +251,46 @@ export default function AdminContributionRecord() {
       return toastError('Search keyword must be a Name or SSS Number');
     }
 
+    let startDate: any = null;
+    let endDate: any = null;
+    if (data.duration?.length == 2) {
+      startDate = new Date(data.duration[0]).toISOString().substring(0, 10);
+      endDate = new Date(data.duration[1]).toISOString().substring(0, 10);
+    }
+
     // Check if the searchKeyword contains a number
-    const isNumeric = /\d/.test(data.searchKeyword!);
-    if (isNumeric) {
+    const regex = /.*\d.*/;
+    if (regex.test(data.searchKeyword!)) {
       // If it contains a number, search by schoolId
       await getContributions({
         sssNo: data.searchKeyword,
-      });
-    } else {
-      // If it doesn't contain a number, search by department
-
-      let startDate = null;
-      let endDate = null;
-      if (data.duration?.length == 2) {
-        startDate = new Date(data.duration[0]).toISOString().substring(0, 10);
-        endDate = new Date(data.duration[1]).toISOString().substring(0, 10);
-      }
-
-      console.log({
-        name: data.searchKeyword,
         ...(startDate ? { from: startDate } : {}),
         ...(endDate ? { to: endDate } : {}),
       });
+
+      setState((prev) => ({
+        ...prev,
+        generatePdfQuery: {
+          sssNo: data.searchKeyword,
+          from: startDate,
+          to: endDate 
+        }
+      }))
+    } else {
+      // If it doesn't contain a number, search by department
       await getContributions({
         name: data.searchKeyword,
         ...(startDate ? { from: startDate } : {}),
         ...(endDate ? { to: endDate } : {}),
       });
+      setState((prev) => ({
+        ...prev,
+        generatePdfQuery: {
+          name: data.searchKeyword,
+          from: startDate,
+          to: endDate 
+        }
+      }))
     }
   };
 
@@ -287,26 +302,31 @@ export default function AdminContributionRecord() {
         );
       }
 
-      const response = await axios.post(
-        API.generatePdf,
-        {
-          array: state.contributions,
-        },
-        {
-          responseType: 'blob', // Set the response type to blob
-        }
-      );
-
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'output.pdf';
-
-      link.click();
-
-      // Cleanup
-      window.URL.revokeObjectURL(link.href);
+      await axios.get(
+          API.generateContributionPdf,
+          {
+            params: { 
+              ...(state?.generatePdfQuery.name
+                ? { name: state?.generatePdfQuery.name } 
+                : { }),
+              ...(state?.generatePdfQuery.sssNo
+                ? { sssNo: state?.generatePdfQuery.sssNo } 
+                : { }),
+              ...(state?.generatePdfQuery.sssNo 
+                ? { displaySSSNo: state?.generatePdfQuery.sssNo } 
+                : { }),
+              ...(state?.generatePdfQuery.name 
+                ? { displayName: state?.generatePdfQuery.name} 
+                : { }),
+                ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to 
+                  ? { from: state?.generatePdfQuery.from, to: state?.generatePdfQuery.to } 
+                  : { }),
+              ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to 
+                ? { displayCoverage: `${dayjs(state?.generatePdfQuery.from).format("MMMM YYYY")} up to ${dayjs(state?.generatePdfQuery.to).format("MMMM YYYY")}` } 
+                : { }),
+            }
+          }
+        );
     } catch (error) {
       console.error('Error downloading PDF:', error);
     }
@@ -372,13 +392,13 @@ export default function AdminContributionRecord() {
         setSbrValue('sbr_date', moment(record.sbr_date, 'YYYY-MM-DD') as any);
       }
       if (record?.ec) {
-        setSbrValue('ec', record.ec);
+        setSbrValue('ec', record.ec.substring(1, record.ec.length));
       }
       if (record?.ss) {
-        setSbrValue('ss', record.ss);
+        setSbrValue('ss', record.ss.substring(1, record.ss.length));
       }
       if (record?.total) {
-        setSbrValue('total', record.total);
+        setSbrValue('total', record.total.substring(1, record.total.length));
       }
       if (record?.name) {
         setSbrValue('name', record.name);

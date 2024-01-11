@@ -124,11 +124,6 @@ function AdminEmployeeEdit() {
       }));
       toastSuccess('Success!');
     } catch (error) {
-      // setState((prev) => ({
-      //   ...prev,
-      //   isSuccessUpdatingEmployee: false,
-      // }));
-      // toastError('Failed!');
     }
   };
 

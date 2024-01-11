@@ -50,6 +50,7 @@ interface IState {
   contributions: IContribution[];
   selectedContributionId: number | null;
   batchDate: string;
+  generatePdfQuery?: any;
 }
 
 export default function StaffContributionRecord() {
@@ -65,6 +66,7 @@ export default function StaffContributionRecord() {
     contributions: [],
     selectedContributionId: null,
     batchDate: '',
+    generatePdfQuery: {}
   });
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -252,44 +254,57 @@ export default function StaffContributionRecord() {
   };
 
   const handleApplyFilter: SubmitHandler<
-    IGeneratePdfPayload & { searchKeyword?: string; duration?: any }
-  > = async (data) => {
-    const isInvalidSearchkey =
-      /[0-9]/.test(data.searchKeyword!) && /[a-zA-Z]/.test(data.searchKeyword!);
+  IGeneratePdfPayload & { searchKeyword?: string; duration?: any }
+> = async (data) => {
+  const isInvalidSearchkey =
+    /[0-9]/.test(data.searchKeyword!) && /[a-zA-Z]/.test(data.searchKeyword!);
 
-    if (isInvalidSearchkey) {
-      return toastError('Search keyword must be a Name or SSS Number');
-    }
+  if (isInvalidSearchkey) {
+    return toastError('Search keyword must be a Name or SSS Number');
+  }
 
-    // Check if the searchKeyword contains a number
-    const isNumeric = /\d/.test(data.searchKeyword!);
-    if (isNumeric) {
-      // If it contains a number, search by schoolId
-      await getContributions({
+  let startDate: any = null;
+  let endDate: any = null;
+  if (data.duration?.length == 2) {
+    startDate = new Date(data.duration[0]).toISOString().substring(0, 10);
+    endDate = new Date(data.duration[1]).toISOString().substring(0, 10);
+  }
+
+  // Check if the searchKeyword contains a number
+  const regex = /.*\d.*/;
+  if (regex.test(data.searchKeyword!)) {
+    // If it contains a number, search by schoolId
+    await getContributions({
+      sssNo: data.searchKeyword,
+      ...(startDate ? { from: startDate } : {}),
+      ...(endDate ? { to: endDate } : {}),
+    });
+
+    setState((prev) => ({
+      ...prev,
+      generatePdfQuery: {
         sssNo: data.searchKeyword,
-      });
-    } else {
-      // If it doesn't contain a number, search by department
-
-      let startDate = null;
-      let endDate = null;
-      if (data.duration?.length == 2) {
-        startDate = new Date(data.duration[0]).toISOString().substring(0, 10);
-        endDate = new Date(data.duration[1]).toISOString().substring(0, 10);
+        from: startDate,
+        to: endDate 
       }
-
-      console.log({
+    }))
+  } else {
+    // If it doesn't contain a number, search by department
+    await getContributions({
+      name: data.searchKeyword,
+      ...(startDate ? { from: startDate } : {}),
+      ...(endDate ? { to: endDate } : {}),
+    });
+    setState((prev) => ({
+      ...prev,
+      generatePdfQuery: {
         name: data.searchKeyword,
-        ...(startDate ? { from: startDate } : {}),
-        ...(endDate ? { to: endDate } : {}),
-      });
-      await getContributions({
-        name: data.searchKeyword,
-        ...(startDate ? { from: startDate } : {}),
-        ...(endDate ? { to: endDate } : {}),
-      });
-    }
-  };
+        from: startDate,
+        to: endDate 
+      }
+    }))
+  }
+};
 
   const handleGeneratePdf = async () => {
     try {
@@ -299,26 +314,53 @@ export default function StaffContributionRecord() {
         );
       }
 
-      const response = await axios.post(
-        API.generatePdf,
-        {
-          array: state.contributions,
-        },
-        {
-          responseType: 'blob', // Set the response type to blob
+      console.log({
+        params: { 
+          ...(state?.generatePdfQuery.name
+            ? { name: state?.generatePdfQuery.name } 
+            : { }),
+          ...(state?.generatePdfQuery.sssNo
+            ? { sssNo: state?.generatePdfQuery.sssNo } 
+            : { }),
+          ...(state?.generatePdfQuery.sssNo 
+            ? { displaySSSNo: state?.generatePdfQuery.sssNo } 
+            : { }),
+          ...(state?.generatePdfQuery.name 
+            ? { displayName: state?.generatePdfQuery.name} 
+            : { }),
+            ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to 
+              ? { from: state?.generatePdfQuery.from, to: state?.generatePdfQuery.to } 
+              : { }),
+          ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to 
+            ? { displayCoverage: `${state?.generatePdfQuery.from} to ${state?.generatePdfQuery.to}` } 
+            : { }),
         }
-      );
-
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'output.pdf';
-
-      link.click();
-
-      // Cleanup
-      window.URL.revokeObjectURL(link.href);
+      })
+      await axios.get(
+          API.generateContributionPdf,
+          {
+            params: { 
+              ...(state?.generatePdfQuery.name
+                ? { name: state?.generatePdfQuery.name } 
+                : { }),
+              ...(state?.generatePdfQuery.sssNo
+                ? { sssNo: state?.generatePdfQuery.sssNo } 
+                : { }),
+              ...(state?.generatePdfQuery.sssNo 
+                ? { displaySSSNo: state?.generatePdfQuery.sssNo } 
+                : { }),
+              ...(state?.generatePdfQuery.name 
+                ? { displayName: state?.generatePdfQuery.name} 
+                : { }),
+                ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to 
+                  ? { from: state?.generatePdfQuery.from, to: state?.generatePdfQuery.to } 
+                  : { }),
+              ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to 
+                ? { displayCoverage: `${dayjs(state?.generatePdfQuery.from).format("MMMM YYYY")} up to ${dayjs(state?.generatePdfQuery.to).format("MMMM YYYY")}` } 
+                : { }),
+            }
+          }
+        );
     } catch (error) {
       console.error('Error downloading PDF:', error);
     }

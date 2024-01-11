@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Client extends Model
 {
@@ -53,5 +54,15 @@ class Client extends Model
     public function contributions()
     {
         return $this->hasMany(Contributions::class, 'sss_no', 'sss_no');
+    }
+
+    public function scopeFindBySSSNo(Builder $query, $sssNo)
+    {
+        return $query->where('sss_no', $sssNo);
+    }
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->first_name} {$this->middle_name} {$this->last_name}";
     }
 }
