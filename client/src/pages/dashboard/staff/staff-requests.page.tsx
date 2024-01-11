@@ -13,17 +13,20 @@ import {
   theme,
 } from 'antd';
 import { CaretRightOutlined, EyeOutlined, MailOutlined } from '@ant-design/icons';
-import { IContributionRequest } from '../../../interfaces/client.interface';
+import { IContributionRequest, IUser } from '../../../interfaces/client.interface';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
 import { IApiResponse, IEmailPayload } from '../../../interfaces/api.interface';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../../const/api.const';
 import { formatStandardDate } from '../../../utils/date.util';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import EmailFormFields from '../../../components/form-sendemail.component';
+import { TPermissionTypes } from '../../../interfaces/permission.interface';
+import { hasPermission } from '../../../utils/util';
 
 interface IState {
+  user?: IUser;
   isAuthModalOpen: boolean;
   isFetchingContributionRequests: boolean;
   contributionRequests: IContributionRequest[];
@@ -59,6 +62,7 @@ function StaffRequests() {
     null
   );
   const [state, setState] = useState<IState>({
+    user: undefined,
     isAuthModalOpen: false,
     isFetchingContributionRequests: false,
     contributionRequests: [],
@@ -122,6 +126,15 @@ function StaffRequests() {
       isFetchingContributionRequests: true,
       selectedStatus: status!,
     }));
+
+    const getProfileResponse: AxiosResponse = await axios.get(
+      `${API_BASE_URL}/api/user/v1`,
+      {
+        ...config,
+      }
+    );
+
+    const user: IUser = getProfileResponse.data;
 
     try {
       const getAllContributionRequestsResponse: {
@@ -226,11 +239,22 @@ function StaffRequests() {
                   {formatStandardDate(el.date_needed)}
                 </div>
                 <Flex gap={10}>
-                  <Tooltip title="Send Email">
+                  <Tooltip     title={
+                  !hasPermission(
+                    user?.user_permissions!,
+                    TPermissionTypes.EMAIL
+                  )
+                    ? 'No permission'
+                    : 'Send Email'
+                }>
                     <Button
                       type="dashed"
                       icon={<MailOutlined />}
                       style={{ marginTop: 50 }}
+                      disabled={!hasPermission(
+                        user?.user_permissions!,
+                        TPermissionTypes.EMAIL
+                      )}
                       onClick={() => {
                         setEmailValue('email', el.email);
                         setState((prev) => ({
@@ -303,8 +327,28 @@ function StaffRequests() {
     } catch (error) {}
   };
 
+  const onGetUserProfile = async () => {
+    const config: AxiosRequestConfig = {
+      headers: {
+        Authorization: `Bearer ${getAuthResponse?.access_token}`,
+      },
+    };
+    const getProfileResponse: AxiosResponse = await axios.get(
+      `${API_BASE_URL}/api/user/v1`,
+      {
+        ...config,
+      }
+    );
+
+    setState((prev) => ({
+      ...prev,
+      user: getProfileResponse.data,
+    }));
+  };
+  
   useEffect(() => {
     document.title = 'Requests | SSS Archiving System';
+    onGetUserProfile();
     getContributionsRequests();
     return () => {};
   }, []);

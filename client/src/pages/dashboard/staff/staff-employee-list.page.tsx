@@ -207,6 +207,7 @@ function StaffEmployeeList() {
         Authorization: `Bearer ${getAuthResponse?.access_token}`,
       },
     };
+
     const getProfileResponse: AxiosResponse = await axios.get(
       `${API_BASE_URL}/api/user/v1`,
       {
