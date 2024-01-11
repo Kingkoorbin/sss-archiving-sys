@@ -29,14 +29,19 @@ import {
   formatStandardDate,
   formatStandardDateTime,
 } from '../../../utils/date.util';
-import { employeeColumns } from '../../../const/table-columns.const';
+import {
+  employeeColumns,
+  employeeContributionColumns,
+} from '../../../const/table-columns.const';
 import {
   EditOutlined,
   EyeOutlined,
   ManOutlined,
+  SettingOutlined,
   WomanOutlined,
 } from '@ant-design/icons';
 import SearchFormFields from '../../../components/form-search-employee.component';
+import axios from 'axios';
 
 interface IState {
   isFetchingStaffs: boolean;
@@ -212,6 +217,39 @@ function StaffEmployeeList() {
     }));
   };
 
+  const handleGeneratePdf = async (contributions: any[]) => {
+    try {
+      if (contributions.length >= 100) {
+        return toastError(
+          'Oops! Sorry, We cannot Generate PDF with more than 100 rows'
+        );
+      }
+
+      const response = await axios.post(
+        API.generatePdf,
+        {
+          array: contributions,
+        },
+        {
+          responseType: 'blob', // Set the response type to blob
+        }
+      );
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'output.pdf';
+
+      link.click();
+
+      // Cleanup
+      window.URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+    }
+  };
+
   useEffect(() => {
     document.title = 'Account Management | SSS Archiving System';
     getAllEmployees();
@@ -230,19 +268,35 @@ function StaffEmployeeList() {
           isSearching={isSearchingEmployee}
         />
         <Table
-          columns={employeeColumns}
+          columns={employeeColumns as any}
           dataSource={state.employees as any}
           size="middle"
           loading={state.isFetchingEmployees}
           expandable={{
-            expandedRowRender: (record: any) => {
+            expandedRowRender: (record: IEmployeeProfile) => {
               return (
-                <div style={{ padding: 20 }}>
+                <div
+                  style={{
+                    padding: 10,
+                    border: '1px solid #e4e4e4',
+                    borderRadius: 20,
+                  }}
+                >
+                  <Flex justify="center">
+                    <p
+                      style={{
+                        fontSize: 24,
+                        fontWeight: 'bold',
+                        color: '#111',
+                      }}
+                    >
+                      Summary of {record.first_name}
+                    </p>
+                  </Flex>
                   <Flex>
                     <div
                       style={{
                         flex: 1,
-                        margin: 50,
                         padding: 50,
                         background: 'white',
                         borderRadius: 20,
@@ -250,13 +304,26 @@ function StaffEmployeeList() {
                     >
                       <p
                         style={{
-                          fontSize: 24,
-                          fontWeight: 'bold',
+                          padding: 0,
+                          margin: 0,
+                          fontSize: 14,
                           color: '#111',
                         }}
                       >
-                        Summary
+                        SSS Number
                       </p>
+                      <p
+                        style={{
+                          padding: 0,
+                          margin: 0,
+                          fontSize: 17,
+                          fontWeight: 'normal',
+                          color: '#444',
+                        }}
+                      >
+                        {record.sss_no}{' '}
+                      </p>
+                      <Divider />
                       <p
                         style={{
                           padding: 0,
@@ -271,7 +338,7 @@ function StaffEmployeeList() {
                         style={{
                           padding: 0,
                           margin: 0,
-                          fontSize: 24,
+                          fontSize: 17,
                           fontWeight: 'normal',
                           color: '#444',
                         }}
@@ -279,7 +346,6 @@ function StaffEmployeeList() {
                         {record.last_name}, {record.first_name}{' '}
                         {record.middle_name}
                       </p>
-
                       <p
                         style={{
                           padding: 0,
@@ -295,7 +361,7 @@ function StaffEmployeeList() {
                         style={{
                           padding: 0,
                           margin: 0,
-                          fontSize: 24,
+                          fontSize: 17,
                           fontWeight: 'normal',
                           color: '#444',
                         }}
@@ -312,7 +378,6 @@ function StaffEmployeeList() {
                         )}{' '}
                         {record.gender}
                       </p>
-
                       <p
                         style={{
                           padding: 0,
@@ -328,7 +393,7 @@ function StaffEmployeeList() {
                         style={{
                           padding: 0,
                           margin: 0,
-                          fontSize: 24,
+                          fontSize: 17,
                           fontWeight: 'normal',
                           color: '#444',
                         }}
@@ -336,13 +401,80 @@ function StaffEmployeeList() {
                         {record.birthdate}
                       </p>
                       <Divider />
-
+                      <p
+                        style={{
+                          fontSize: 17,
+                          fontWeight: 'bold',
+                          color: '#444',
+                        }}
+                      >
+                        Work History
+                      </p>
+                      <div>
+                        {record?.work_history.map(
+                          (v: IWorkHistory, index: number) => {
+                            return (
+                              <div
+                                key={v.id}
+                                style={{ marginTop: index == 0 ? 0 : 30 }}
+                              >
+                                <p
+                                  style={{
+                                    color: '#111',
+                                    fontSize: 16,
+                                    margin: 0,
+                                    padding: 0,
+                                  }}
+                                >
+                                  {v.company_name}
+                                </p>
+                                <p
+                                  style={{
+                                    color: '#111',
+                                    fontSize: 12,
+                                    fontWeight: 'bold',
+                                    margin: 0,
+                                    padding: 0,
+                                  }}
+                                >
+                                  <i>{v.position}</i>
+                                </p>
+                                <p
+                                  style={{
+                                    color: '#111',
+                                    fontSize: 12,
+                                    margin: 0,
+                                    padding: 0,
+                                  }}
+                                >
+                                  {v.responsibilities}
+                                </p>
+                                <p
+                                  style={{
+                                    color: '#111',
+                                    fontSize: 10,
+                                    margin: 0,
+                                    padding: 0,
+                                    marginTop: 10,
+                                  }}
+                                >
+                                  {formatStandardDate(v.start_date)} -{' '}
+                                  {isEmpty(v.end_date)
+                                    ? 'Present'
+                                    : formatStandardDate(v.end_date)}
+                                </p>
+                              </div>
+                            );
+                          }
+                        )}
+                      </div>
+                      <Divider />
                       <p
                         style={{
                           padding: 0,
                           margin: 0,
                           marginTop: 100,
-                          fontSize: 12,
+                          fontSize: 8,
                           color: '#111',
                         }}
                       >
@@ -352,7 +484,7 @@ function StaffEmployeeList() {
                         style={{
                           padding: 0,
                           margin: 0,
-                          fontSize: 16,
+                          fontSize: 12,
                           fontWeight: 'normal',
                           color: '#444',
                         }}
@@ -362,102 +494,38 @@ function StaffEmployeeList() {
                     </div>
                     <div
                       style={{
-                        flex: 2,
-                        margin: 50,
-                        padding: 50,
-                        background: 'white',
+                        flex: 5,
                         borderRadius: 20,
                       }}
                     >
-                      {record?.work_history?.length ? (
-                        <>
-                          <p
-                            style={{
-                              padding: 0,
-                              margin: 0,
-                              fontSize: 24,
-                              fontWeight: 'bold',
-                              color: '#111',
-                              marginBottom: 20,
-                            }}
+                      <Flex justify="end" gap={10} style={{ marginBottom: 10 }}>
+                        <Tooltip title="Print PDF">
+                          <Button
+                            type="primary"
+                            icon={<EditOutlined />}
+                            onClick={() => {
+                              handleGeneratePdf(record.contributions)
+                            }
+                            }
                           >
-                            Experience
-                          </p>
-                          <Divider />
-                          <Timeline
-                            mode="left"
-                            items={record?.work_history?.map((v: any) => ({
-                              children: (
-                                <div
-                                  style={{ cursor: 'pointer' }}
-                                  onClick={() => {
-                                    setState((prev) => ({
-                                      ...prev,
-                                      isWorkHistoryModalOpen: true,
-                                      stateWorkHistoryPreview: v,
-                                    }));
-                                  }}
-                                >
-                                  <p
-                                    style={{
-                                      padding: 0,
-                                      margin: 0,
-                                      fontSize: 16,
-                                      fontWeight: 'bold',
-                                      color: '#111',
-                                    }}
-                                  >
-                                    {v.company_name}
-                                  </p>
-                                  <p
-                                    style={{
-                                      padding: 0,
-                                      margin: 0,
-                                      fontSize: 12,
-                                      fontWeight: 'normal',
-                                      color: '#444',
-                                      fontStyle: 'italic',
-                                    }}
-                                  >
-                                    {v.position}
-                                  </p>
-                                  <p
-                                    style={{
-                                      padding: 0,
-                                      margin: 0,
-                                      fontSize: 14,
-                                      fontWeight: 'normal',
-                                      color: '#111',
-                                    }}
-                                  >
-                                    {v.responsibilities}
-                                  </p>
-
-                                  <p
-                                    style={{
-                                      padding: 0,
-                                      margin: 0,
-                                      fontSize: 12,
-                                      marginTop: 20,
-                                      color: '#111',
-                                    }}
-                                  >
-                                    {v.start_date} to {v.end_date}
-                                  </p>
-                                </div>
-                              ),
-                            }))}
-                          />
-                        </>
-                      ) : (
-                        <div> </div>
-                      )}
+                            Generate
+                          </Button>
+                        </Tooltip>
+                      </Flex>
+                      <Table
+                        columns={employeeContributionColumns}
+                        dataSource={record?.contributions?.map((el: any) => ({
+                          ...el,
+                          key: el.id,
+                        }))}
+                        loading={false}
+                        size="small"
+                      />
                     </div>
                   </Flex>
                 </div>
               );
             },
-            rowExpandable: (record) => record.name !== 'Not Expandable',
           }}
         />
       </div>

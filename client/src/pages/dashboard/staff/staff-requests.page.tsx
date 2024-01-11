@@ -120,6 +120,7 @@ function StaffRequests() {
     setState((prev) => ({
       ...prev,
       isFetchingContributionRequests: true,
+      selectedStatus: status!,
     }));
 
     try {
@@ -416,15 +417,21 @@ function StaffRequests() {
           </Flex>
         </Flex>
 
-        <Collapse
-          bordered={false}
-          size="middle"
-          ghost
-          expandIcon={({ isActive }) => (
-            <CaretRightOutlined rotate={isActive ? 90 : 0} />
-          )}
-          items={state.contributionRequests as any}
-        />
+        {!state.contributionRequests.length ? (
+          <Flex style={{ height: "50vh"}} justify='center' align='center'>
+            <p style={{ fontSize: "20px", color: "#666"}}>No {state.selectedStatus} request</p>
+          </Flex>
+        ) : (
+          <Collapse
+            bordered={false}
+            size="middle"
+            ghost
+            expandIcon={({ isActive }) => (
+              <CaretRightOutlined rotate={isActive ? 90 : 0} />
+            )}
+            items={state.contributionRequests as any}
+          />
+        )}
       </div>
 
       <Modal
