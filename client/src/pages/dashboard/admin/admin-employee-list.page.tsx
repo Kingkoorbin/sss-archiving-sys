@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import NavigationBarAdmin from '../../../components/nav-admin.component';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { isEmpty } from '../../../utils/util';
-import { API } from '../../../const/api.const';
+import { API, API_BASE_URL } from '../../../const/api.const';
 import HttpClient from '../../../utils/http-client.util';
 import { IApiResponse } from '../../../interfaces/api.interface';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
@@ -34,6 +34,7 @@ import {
   employeeContributionColumns,
 } from '../../../const/table-columns.const';
 import {
+  DeleteOutlined,
   EditOutlined,
   EyeOutlined,
   ManOutlined,
@@ -125,16 +126,6 @@ function AdminEmployeeList() {
     }));
 
     navigate('/', { replace: true });
-  };
-
-  const toastError = (message: string) => {
-    messageApi.error({
-      type: 'error',
-      content: message,
-      style: {
-        marginTop: '90vh',
-      },
-    });
   };
 
   const handleGeneratePdf = async (contributions: any[]) => {
@@ -232,6 +223,19 @@ function AdminEmployeeList() {
         actions: (
           <Flex gap={10}>
             <Popconfirm
+              title="Do you want to delete employee information?"
+              onConfirm={() => handleDeleteEmployee(el.school_id)}
+              okText="Yes"
+              cancelText="No"
+              placement="bottomLeft"
+            >
+              <Tooltip title="Delete">
+                <Button htmlType="button" type="dashed" icon={<DeleteOutlined />}>
+                  Delete
+                </Button>
+              </Tooltip>
+            </Popconfirm>
+            <Popconfirm
               title="Do you want to update employee information?"
               onConfirm={() =>
                 navigate(
@@ -262,7 +266,6 @@ function AdminEmployeeList() {
                   })
                 }
               >
-                {' '}
                 View
               </Button>
             </Tooltip>
@@ -272,6 +275,21 @@ function AdminEmployeeList() {
       })) as any,
     }));
   };
+
+  const handleDeleteEmployee = async (school_id: string) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/api/client/v1/${school_id}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      });
+
+      toastSuccess('Removed successfully!');
+      await getAllEmployees();
+    } catch (error) {
+      toastError('Oops! Something went wrong, Please try again.');
+    }
+  }
 
   useEffect(() => {
     document.title = 'Account Management | SSS Archiving System';
@@ -538,6 +556,26 @@ function AdminEmployeeList() {
       </Modal>
     </>
   );
+
+  function toastSuccess(message: string) {
+    messageApi.success({
+      type: 'success',
+      content: message,
+      style: {
+        marginTop: '90vh',
+      },
+    });
+  }
+
+  function toastError(message: string) {
+    messageApi.error({
+      type: 'error',
+      content: message,
+      style: {
+        marginTop: '90vh',
+      },
+    });
+  }
 }
 
 export default AdminEmployeeList;

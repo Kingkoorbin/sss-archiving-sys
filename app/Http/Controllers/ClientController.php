@@ -185,7 +185,7 @@ class ClientController extends Controller
 
     public function deleteClientById($id) {
         try {
-            $allowedRoles = ["ADMIN"];
+            $allowedRoles = ["ADMIN", "STAFF"];
             $user = auth()->user();
 
             if(!in_array($user->role, $allowedRoles)) {

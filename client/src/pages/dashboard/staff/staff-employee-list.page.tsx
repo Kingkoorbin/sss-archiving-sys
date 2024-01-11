@@ -4,6 +4,7 @@ import {
   Divider,
   Flex,
   Modal,
+  Popconfirm,
   Table,
   Timeline,
   Tooltip,
@@ -14,8 +15,8 @@ import { useNavigate } from 'react-router-dom';
 // Custom Imports
 import StaffNavbar from '../../../components/nav-staff.component';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { isEmpty } from '../../../utils/util';
-import { API } from '../../../const/api.const';
+import { hasPermission, isEmpty } from '../../../utils/util';
+import { API, API_BASE_URL } from '../../../const/api.const';
 import HttpClient from '../../../utils/http-client.util';
 import { IApiResponse } from '../../../interfaces/api.interface';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
@@ -34,6 +35,7 @@ import {
   employeeContributionColumns,
 } from '../../../const/table-columns.const';
 import {
+  DeleteOutlined,
   EditOutlined,
   EyeOutlined,
   ManOutlined,
@@ -41,7 +43,8 @@ import {
   WomanOutlined,
 } from '@ant-design/icons';
 import SearchFormFields from '../../../components/form-search-employee.component';
-import axios from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { TPermissionTypes } from '../../../interfaces/permission.interface';
 
 interface IState {
   isFetchingStaffs: boolean;
@@ -56,6 +59,7 @@ interface IState {
   stateWorkHistoryPreview?: IWorkHistory;
   employees: IEmployeeProfile[];
   users: IUser[];
+  user?: IUser;
 }
 
 function StaffEmployeeList() {
@@ -96,7 +100,27 @@ function StaffEmployeeList() {
     },
     employees: [],
     users: [],
+    user: undefined,
   });
+
+  const onGetUserProfile = async () => {
+    const config: AxiosRequestConfig = {
+      headers: {
+        Authorization: `Bearer ${getAuthResponse?.access_token}`,
+      },
+    };
+    const getProfileResponse: AxiosResponse = await axios.get(
+      `${API_BASE_URL}/api/user/v1`,
+      {
+        ...config,
+      }
+    );
+
+    setState((prev) => ({
+      ...prev,
+      user: getProfileResponse.data,
+    }));
+  };
 
   const handleSearch: SubmitHandler<ISearchPayload> = async (data) => {
     const isInvalidSearchkey =
@@ -125,16 +149,6 @@ function StaffEmployeeList() {
     }));
 
     navigate('/', { replace: true });
-  };
-
-  const toastError = (message: string) => {
-    messageApi.error({
-      type: 'error',
-      content: message,
-      style: {
-        marginTop: '90vh',
-      },
-    });
   };
 
   const getAllEmployees = async (data?: {
@@ -188,6 +202,20 @@ function StaffEmployeeList() {
       );
     }
 
+    const config: AxiosRequestConfig = {
+      headers: {
+        Authorization: `Bearer ${getAuthResponse?.access_token}`,
+      },
+    };
+    const getProfileResponse: AxiosResponse = await axios.get(
+      `${API_BASE_URL}/api/user/v1`,
+      {
+        ...config,
+      }
+    );
+
+    const user: IUser = getProfileResponse.data;
+
     setState((prev) => ({
       ...prev,
       isFetchingEmployees: false,
@@ -197,20 +225,60 @@ function StaffEmployeeList() {
         birthdate: formatStandardDate(el.birthdate),
         created_at: formatStandardDateTime(el.created_at),
         actions: (
-          <Tooltip title="View">
-            <Button
-              type="primary"
-              icon={<EyeOutlined />}
-              onClick={() =>
-                navigate(`/dashboard/s/employee/${el.school_id}`, {
-                  state: el,
-                })
+          <Flex gap={10}>
+            <Popconfirm
+              title="Do you want to delete employee information?"
+              onConfirm={() => handleDeleteEmployee(el.school_id)}
+              okText="Yes"
+              cancelText="No"
+              placement="bottomLeft"
+              disabled={
+                !hasPermission(
+                  user?.user_permissions!,
+                  TPermissionTypes.DELETE
+                )
               }
             >
-              {' '}
-              View
-            </Button>
-          </Tooltip>
+              <Tooltip
+                title={
+                  !hasPermission(
+                    user?.user_permissions!,
+                    TPermissionTypes.DELETE
+                  )
+                    ? 'No permission'
+                    : 'Delete'
+                }
+              >
+                <Button
+                  htmlType="button"
+                  type="dashed"
+                  icon={<DeleteOutlined />}
+                  disabled={
+                    !hasPermission(
+                      user?.user_permissions!,
+                      TPermissionTypes.DELETE
+                    )
+                  }
+                >
+                  Delete
+                </Button>
+              </Tooltip>
+            </Popconfirm>
+
+            <Tooltip title="View">
+              <Button
+                type="primary"
+                icon={<EyeOutlined />}
+                onClick={() =>
+                  navigate(`/dashboard/s/employee/${el.school_id}`, {
+                    state: el,
+                  })
+                }
+              >
+                View
+              </Button>
+            </Tooltip>
+          </Flex>
         ),
         key: el.id,
       })) as any,
@@ -250,8 +318,24 @@ function StaffEmployeeList() {
     }
   };
 
+  const handleDeleteEmployee = async (school_id: string) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/api/client/v1/${school_id}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      });
+
+      toastSuccess('Removed successfully!');
+      await getAllEmployees();
+    } catch (error) {
+      toastError('Oops! Something went wrong, Please try again.');
+    }
+  };
+
   useEffect(() => {
     document.title = 'Account Management | SSS Archiving System';
+    onGetUserProfile();
     getAllEmployees();
     return () => {};
   }, []);
@@ -499,13 +583,28 @@ function StaffEmployeeList() {
                       }}
                     >
                       <Flex justify="end" gap={10} style={{ marginBottom: 10 }}>
-                        <Tooltip title="Print PDF">
+                        <Tooltip
+                          title={
+                            !hasPermission(
+                              state.user?.user_permissions!,
+                              TPermissionTypes.GENERATE
+                            )
+                              ? 'No permission'
+                              : 'Print PDF'
+                          }
+                        >
+                          {' '}
                           <Button
                             type="primary"
                             icon={<EditOutlined />}
                             onClick={() => {
-                              handleGeneratePdf(record.contributions)
-                            }
+                              handleGeneratePdf(record.contributions);
+                            }}
+                            disabled={
+                              !hasPermission(
+                                state.user?.user_permissions!,
+                                TPermissionTypes.GENERATE
+                              )
                             }
                           >
                             Generate
@@ -547,6 +646,26 @@ function StaffEmployeeList() {
       </Modal>
     </>
   );
+
+  function toastSuccess(message: string) {
+    messageApi.success({
+      type: 'success',
+      content: message,
+      style: {
+        marginTop: '90vh',
+      },
+    });
+  }
+
+  function toastError(message: string) {
+    messageApi.error({
+      type: 'error',
+      content: message,
+      style: {
+        marginTop: '90vh',
+      },
+    });
+  }
 }
 
 export default StaffEmployeeList;
