@@ -258,7 +258,7 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
                 checked={field.value}
                 onChange={(e) => field.onChange(e.target.checked)}
               >
-                Same as Full name
+                Same as full name
               </Checkbox>
             )}
           />
@@ -267,6 +267,38 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
           <div style={{ color: 'red', padding: 5 }}>
             {errors.requester.message}
           </div>
+        )}
+        {watch('requester') !== watch('name') ? (
+          <>
+            <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>
+              Relationship
+            </p>
+            <Controller
+              name="relationship"
+              control={control}
+              rules={{
+                required: 'This field is required',
+                minLength: {
+                  message: 'Please use a real name.',
+                  value: 6,
+                },
+                maxLength: {
+                  message: 'Please use a real name.',
+                  value: 255,
+                },
+              }}
+              render={({ field }) => (
+                <Input
+                  size="large"
+                  placeholder="Enter"
+                  prefix={<UserOutlined />}
+                  {...field}
+                />
+              )}
+            />
+          </>
+        ) : (
+          <></>
         )}
       </div>
       <p style={{ padding: 0, color: 'GrayText', fontSize: 12 }}>Date needed</p>
@@ -294,7 +326,10 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
               onChange={(e) => field.onChange(e.target.checked)}
               style={{ fontSize: 11 }}
             >
-              I have read and understood the terms and conditions outlined in the Data Privacy Act of 2012, <br/>and I hereby agree to abide by them. I understand that my use of this system is subject to these terms.
+              I have read and understood the terms and conditions outlined in
+              the Data Privacy Act of 2012, <br />
+              and I hereby agree to abide by them. I understand that my use of
+              this system is subject to these terms.
             </Checkbox>
           )}
         />

@@ -20,7 +20,8 @@ class ContributionRequest extends Model
         'phone_number',
         'date_needed',
         'status',
-        'all'
+        'all',
+        'relationship'
     ];
 
     public function editor()

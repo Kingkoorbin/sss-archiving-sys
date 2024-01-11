@@ -20,6 +20,7 @@ class ContributionRequestValidator {
             'date_needed' => 'required|date',
             'all' => 'nullable',
             'status' => 'required|string|in:PENDING,PROCESSING,REJECTED,DONE',
+            'relationship' => 'nullable|string',
         ]);
 
         return $validator;

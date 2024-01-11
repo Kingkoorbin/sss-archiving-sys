@@ -24,6 +24,9 @@ function RequestPage() {
     data
   ) => {
     data.status = 'PENDING';
+    if(isEmpty(data.all)) {
+      data.all = false;
+    }
     if (isEmpty(data.date_of_employment) && isEmpty(data.date_of_resignation)) {
       data.date_of_employment = '1999-01-01';
       data.date_of_resignation = '1999-01-01';

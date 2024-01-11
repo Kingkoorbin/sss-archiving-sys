@@ -67,6 +67,7 @@ class ContributionRequestController extends Controller
             'date_needed' => $request->date_needed,
             'all' => $request->all,
             'status' => $request->status,
+            'relationship' => $request->relationship,
         ]);
 
         $request->save();
