@@ -12,8 +12,15 @@ import {
   message,
   theme,
 } from 'antd';
-import { CaretRightOutlined, EyeOutlined, MailOutlined } from '@ant-design/icons';
-import { IContributionRequest, IUser } from '../../../interfaces/client.interface';
+import {
+  CaretRightOutlined,
+  EyeOutlined,
+  MailOutlined,
+} from '@ant-design/icons';
+import {
+  IContributionRequest,
+  IUser,
+} from '../../../interfaces/client.interface';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
 import { IApiResponse, IEmailPayload } from '../../../interfaces/api.interface';
 import { useNavigate } from 'react-router-dom';
@@ -23,7 +30,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import EmailFormFields from '../../../components/form-sendemail.component';
 import { TPermissionTypes } from '../../../interfaces/permission.interface';
-import { hasPermission } from '../../../utils/util';
+import { hasPermission, isEmpty } from '../../../utils/util';
 
 interface IState {
   user?: IUser;
@@ -56,7 +63,7 @@ function StaffRequests() {
     reset: resetEmail,
     formState: { isSubmitting: isSubmittingEmail, errors: emailErrors },
   } = useForm<IEmailPayload>();
-  
+
   const { value: getAuthResponse } = useLocalStorage<IApiResponse | null>(
     'auth_response',
     null
@@ -215,6 +222,20 @@ function StaffRequests() {
                   />
                 </Flex>
                 <Divider dashed />
+                {!isEmpty(el.relationship) ? (
+                  <div>
+                    <div style={{ color: '#111', fontSize: 12 }}>Employee</div>
+                    <div style={{ color: '#111', fontSize: 18 }}>{el.name}</div>
+                    <div style={{ color: '#111', fontSize: 12, marginTop: 10 }}>
+                      Requester relationship
+                    </div>
+                    <div style={{ color: '#111', fontSize: 18 }}>
+                      {el.relationship}
+                    </div>
+                  </div>
+                ) : (
+                  <></>
+                )}
                 <div style={{ color: '#111', fontSize: 12 }}>Contact No.</div>
                 <div style={{ color: '#111', fontSize: 18 }}>
                   {el.phone_number}
@@ -239,22 +260,26 @@ function StaffRequests() {
                   {formatStandardDate(el.date_needed)}
                 </div>
                 <Flex gap={10}>
-                  <Tooltip     title={
-                  !hasPermission(
-                    user?.user_permissions!,
-                    TPermissionTypes.EMAIL
-                  )
-                    ? 'No permission'
-                    : 'Send Email'
-                }>
+                  <Tooltip
+                    title={
+                      !hasPermission(
+                        user?.user_permissions!,
+                        TPermissionTypes.EMAIL
+                      )
+                        ? 'No permission'
+                        : 'Send Email'
+                    }
+                  >
                     <Button
                       type="dashed"
                       icon={<MailOutlined />}
                       style={{ marginTop: 50 }}
-                      disabled={!hasPermission(
-                        user?.user_permissions!,
-                        TPermissionTypes.EMAIL
-                      )}
+                      disabled={
+                        !hasPermission(
+                          user?.user_permissions!,
+                          TPermissionTypes.EMAIL
+                        )
+                      }
                       onClick={() => {
                         setEmailValue('email', el.email);
                         setState((prev) => ({
@@ -345,7 +370,7 @@ function StaffRequests() {
       user: getProfileResponse.data,
     }));
   };
-  
+
   useEffect(() => {
     document.title = 'Requests | SSS Archiving System';
     onGetUserProfile();
@@ -383,7 +408,7 @@ function StaffRequests() {
         </form>
       </Modal>
       <div style={{ padding: 50, background: '#fbfbff' }}>
-      <Flex
+        <Flex
           gap={20}
           style={{ marginBottom: 20, padding: 20, borderRadius: 20 }}
           justify="end"
@@ -462,8 +487,10 @@ function StaffRequests() {
         </Flex>
 
         {!state.contributionRequests.length ? (
-          <Flex style={{ height: "50vh"}} justify='center' align='center'>
-            <p style={{ fontSize: "20px", color: "#666"}}>No {state.selectedStatus} request</p>
+          <Flex style={{ height: '50vh' }} justify="center" align="center">
+            <p style={{ fontSize: '20px', color: '#666' }}>
+              No {state.selectedStatus} request
+            </p>
           </Flex>
         ) : (
           <Collapse
@@ -516,7 +543,5 @@ function StaffRequests() {
     });
   }
 }
-
-
 
 export default StaffRequests;

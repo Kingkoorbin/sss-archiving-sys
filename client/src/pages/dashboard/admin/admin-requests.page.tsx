@@ -27,6 +27,7 @@ import { formatStandardDate } from '../../../utils/date.util';
 import axios, { AxiosRequestConfig } from 'axios';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import EmailFormFields from '../../../components/form-sendemail.component';
+import { isEmpty } from '../../../utils/util';
 
 interface IState {
   isAuthModalOpen: boolean;
@@ -209,7 +210,22 @@ function AdminRequests() {
                     />
                   </Flex>
                   <Divider dashed />
-                  <div style={{ color: '#111', fontSize: 12 }}>Contact No.</div>
+                  {!isEmpty(el.relationship) 
+                    ?    <div>
+                    <div style={{ color: '#111', fontSize: 12 }}>Employee</div>
+                    <div style={{ color: '#111', fontSize: 18 }}>{el.name}</div>
+                    <div style={{ color: '#111', fontSize: 12, marginTop: 10 }}>
+                      Requester relationship
+                    </div>
+                    <div style={{ color: '#111', fontSize: 18 }}>
+                      {el.relationship}
+                    </div>
+                  </div>
+                    : <></>}
+               
+                  <div style={{ color: '#111', fontSize: 12, marginTop: 10 }}>
+                    Contact No.
+                  </div>
                   <div style={{ color: '#111', fontSize: 18 }}>
                     {el.phone_number}
                   </div>
@@ -441,8 +457,10 @@ function AdminRequests() {
         </Flex>
 
         {!state.contributionRequests.length ? (
-          <Flex style={{ height: "50vh"}} justify='center' align='center'>
-            <p style={{ fontSize: "20px", color: "#666"}}>No {state.selectedStatus} request</p>
+          <Flex style={{ height: '50vh' }} justify="center" align="center">
+            <p style={{ fontSize: '20px', color: '#666' }}>
+              No {state.selectedStatus} request
+            </p>
           </Flex>
         ) : (
           <Collapse
