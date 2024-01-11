@@ -42,7 +42,7 @@ class PermissionNameSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => "Upload",
+                'name' => "Email",
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
