@@ -286,34 +286,14 @@ function StaffEmployeeList() {
     }));
   };
 
-  const handleGeneratePdf = async (contributions: any[]) => {
+  const handleGeneratePdf = async (sssNo: string) => {
     try {
-      if (contributions.length >= 100) {
-        return toastError(
-          'Oops! Sorry, We cannot Generate PDF with more than 100 rows'
-        );
-      }
-
-      const response = await axios.post(
-        API.generatePdf,
+      await axios.get(
+        API.generateContributionPdf,
         {
-          array: contributions,
-        },
-        {
-          responseType: 'blob', // Set the response type to blob
+          params: { sssNo }
         }
       );
-
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'output.pdf';
-
-      link.click();
-
-      // Cleanup
-      window.URL.revokeObjectURL(link.href);
     } catch (error) {
       console.error('Error downloading PDF:', error);
     }
@@ -338,7 +318,7 @@ function StaffEmployeeList() {
     document.title = 'Account Management | SSS Archiving System';
     onGetUserProfile();
     getAllEmployees();
-    return () => {};
+    return () => { };
   }, []);
 
   return (
@@ -584,33 +564,37 @@ function StaffEmployeeList() {
                       }}
                     >
                       <Flex justify="end" gap={10} style={{ marginBottom: 10 }}>
-                        <Tooltip
-                          title={
-                            !hasPermission(
-                              state.user?.user_permissions!,
-                              TPermissionTypes.GENERATE
-                            )
-                              ? 'No permission'
-                              : 'Print PDF'
-                          }
+                        <Popconfirm
+                          title="Do you want to print PDF?"
+                          onConfirm={() => handleGeneratePdf(record.sss_no!)}
+                          okText="Yes"
+                          cancelText="No"
+                          placement="bottomLeft"
                         >
-                          {' '}
-                          <Button
-                            type="primary"
-                            icon={<EditOutlined />}
-                            onClick={() => {
-                              handleGeneratePdf(record.contributions);
-                            }}
-                            disabled={
+                          <Tooltip
+                            title={
                               !hasPermission(
                                 state.user?.user_permissions!,
                                 TPermissionTypes.GENERATE
                               )
-                            }
-                          >
-                            Generate
-                          </Button>
-                        </Tooltip>
+                                ? 'No permission'
+                                : 'Print PDF'
+                            }>
+                            <Button
+                              type='primary'
+                              htmlType="button"
+                              icon={<EditOutlined />}
+                              disabled={
+                                !hasPermission(
+                                  state.user?.user_permissions!,
+                                  TPermissionTypes.GENERATE
+                                )
+                              }
+                            >
+                              Generate
+                            </Button>
+                          </Tooltip>
+                        </Popconfirm>
                       </Flex>
                       <Table
                         columns={employeeContributionColumns}

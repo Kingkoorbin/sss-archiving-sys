@@ -29,11 +29,13 @@ class GeneratePDFController extends Controller
             $client = Client::findBySSSNo($sssNo)->first();
             if($client) {
                 $displayName = $client->full_name;
+                $displaySSSNo = $sssNo;
             }
         }
         
         if ($sssNo && !$from && !$to) {
             $query->where('sss_no', $sssNo);
+            $displaySSSNo = $sssNo;
         }
         
         if ($name) {
@@ -43,6 +45,7 @@ class GeneratePDFController extends Controller
         if ($sssNo && $from && $to) {
             $query->where('sss_no', $sssNo);
             $query->whereBetween('batchDate', [$from, $to]);
+            $displaySSSNo = $sssNo;
         }
         
         $query->orderBy('updated_at', 'desc');

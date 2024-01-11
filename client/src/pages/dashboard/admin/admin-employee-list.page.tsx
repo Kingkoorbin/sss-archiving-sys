@@ -37,6 +37,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   EyeOutlined,
+  FilePdfOutlined,
   ManOutlined,
   SettingOutlined,
   WomanOutlined,
@@ -128,34 +129,14 @@ function AdminEmployeeList() {
     navigate('/', { replace: true });
   };
 
-  const handleGeneratePdf = async (contributions: any[]) => {
+  const handleGeneratePdf = async (sssNo: string) => {
     try {
-      if (contributions.length >= 100) {
-        return toastError(
-          'Oops! Sorry, We cannot Generate PDF with more than 100 rows'
-        );
-      }
-
-      const response = await axios.post(
-        API.generatePdf,
+      await axios.get(
+        API.generateContributionPdf,
         {
-          array: contributions,
-        },
-        {
-          responseType: 'blob', // Set the response type to blob
+          params: { sssNo }
         }
       );
-
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'output.pdf';
-
-      link.click();
-
-      // Cleanup
-      window.URL.revokeObjectURL(link.href);
     } catch (error) {
       console.error('Error downloading PDF:', error);
     }
@@ -449,17 +430,17 @@ function AdminEmployeeList() {
                         }}
                       >
                         Work History
-                        </p>
-                        <div>
-                          {record?.work_history.map((v: IWorkHistory, index: number) => {
-                            return <div key={v.id} style={{ marginTop: index== 0 ? 0 : 30}}>
-                              <p style={{color: "#111", fontSize: 16, margin: 0, padding: 0}}>{v.company_name}</p>
-                              <p style={{color: "#111", fontSize: 12, fontWeight: "bold", margin: 0, padding: 0}}><i>{v.position}</i></p>
-                              <p style={{color: "#111", fontSize: 12, margin: 0, padding: 0}}>{v.responsibilities}</p>
-                              <p style={{color: "#111", fontSize: 10, margin: 0, padding: 0, marginTop: 10}}>{formatStandardDate(v.start_date)} - {isEmpty(v.end_date) ? "Present" : formatStandardDate(v.end_date)}</p>
-                            </div>
-                          })}
-                        </div>
+                      </p>
+                      <div>
+                        {record?.work_history.map((v: IWorkHistory, index: number) => {
+                          return <div key={v.id} style={{ marginTop: index == 0 ? 0 : 30 }}>
+                            <p style={{ color: "#111", fontSize: 16, margin: 0, padding: 0 }}>{v.company_name}</p>
+                            <p style={{ color: "#111", fontSize: 12, fontWeight: "bold", margin: 0, padding: 0 }}><i>{v.position}</i></p>
+                            <p style={{ color: "#111", fontSize: 12, margin: 0, padding: 0 }}>{v.responsibilities}</p>
+                            <p style={{ color: "#111", fontSize: 10, margin: 0, padding: 0, marginTop: 10 }}>{formatStandardDate(v.start_date)} - {isEmpty(v.end_date) ? "Present" : formatStandardDate(v.end_date)}</p>
+                          </div>
+                        })}
+                      </div>
                       <Divider />
                       <p
                         style={{
@@ -509,17 +490,23 @@ function AdminEmployeeList() {
                           </Button>
                         </Tooltip>
 
-                        <Tooltip title="Print PDF">
-                          <Button
-                            type="primary"
-                            icon={<EditOutlined />}
-                            onClick={() =>
-                              handleGeneratePdf(record.contributions)
-                            }
-                          >
-                            Generate
-                          </Button>
-                        </Tooltip>
+                        <Popconfirm
+                          title="Do you want to print PDF?"
+                          onConfirm={() => handleGeneratePdf(record.sss_no!)}
+                          okText="Yes"
+                          cancelText="No"
+                          placement="bottomLeft"
+                        >
+                          <Tooltip title="Print">
+                            <Button
+                              type='primary'
+                              htmlType="button"
+                              icon={<FilePdfOutlined />}
+                            >
+                              Generate
+                            </Button>
+                          </Tooltip>
+                        </Popconfirm>
                       </Flex>
                       <Table
                         columns={employeeContributionColumns}
