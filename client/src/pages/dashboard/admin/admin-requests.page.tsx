@@ -133,148 +133,153 @@ function AdminRequests() {
       const getAllContributionRequestsResponse: {
         data: IContributionRequest[];
       } = await axios.get(`${API_BASE_URL}/api/contribution/v1`, config);
+
       setState((prev) => ({
         ...prev,
         isFetchingContributionRequests: false,
         contributionRequests: getAllContributionRequestsResponse.data?.map(
-          (el) => ({
-            ...el,
-            key: el.id,
-            label: (
-              <Flex justify="space-between">
-                <Flex gap={20}>
-                  <div style={{ color: '#111', fontWeight: '600' }}>
-                    Requester: {el.requester}
-                  </div>
-                  <div style={{ color: '#111', fontWeight: '600' }}>
-                    SSS No. {el.sss_no}
-                  </div>
-                </Flex>
-                <Flex gap={20}>
-                  <div style={{ color: '#111' }}>
-                    {formatStandardDate(el.created_at)}
-                  </div>
-                  <div style={{ color: '#111', fontWeight: '600' }}>
-                    {getBadge(el.status)}
-                  </div>
-                </Flex>
-              </Flex>
-            ),
-            children: (
-              <div
-                style={{ background: 'white', padding: 20, borderRadius: 20 }}
-              >
-                <Flex justify="space-between" align="start">
-                  <div>
-                    <div style={{ color: '#111', fontSize: 12 }}>SSS No.</div>
-                    <div style={{ color: '#111', fontSize: 32 }}>
-                      {el.sss_no}
+          (el) => {
+            return {
+              ...el,
+              key: el.id,
+              label: (
+                <Flex justify="space-between">
+                  <Flex gap={20}>
+                    <div style={{ color: '#111', fontWeight: '600' }}>
+                      Requester: {el.requester}
                     </div>
-                    <div style={{ color: '#111', fontSize: 12 }}>
-                      Request my entire record
-                    </div>
-                    <div style={{ color: '#111', fontSize: 32 }}>
-                      {' '}
-                      {el.all ? 'YES' : 'NO'}
-                    </div>
-                  </div>
-
-                  <Select
-                    style={{ width: 200 }}
-                    placeholder="Search to Select"
-                    defaultValue={el.status}
-                    onChange={(v) =>
-                      onContributionRequestStatusChange(v, el.id)
-                    }
-                    options={[
-                      {
-                        value: 'PENDING',
-                        label: 'Pending',
-                      },
-                      {
-                        value: 'PROCESSING',
-                        label: 'Processing',
-                      },
-                      {
-                        value: 'REJECTED',
-                        label: 'Rejected',
-                      },
-                      {
-                        value: 'DONE',
-                        label: 'Done',
-                      },
-                    ]}
-                  />
-                </Flex>
-                <Divider dashed />
-                <div style={{ color: '#111', fontSize: 12 }}>Contact No.</div>
-                <div style={{ color: '#111', fontSize: 18 }}>
-                  {el.phone_number}
-                </div>
-                <Divider dashed />
-                <div style={{ color: '#111', fontSize: 12 }}>Email</div>
-                <div style={{ color: '#111', fontSize: 18 }}>{el.email}</div>
-                <Divider dashed />
-                <div style={{ display: el.all ? 'none' : 'block' }}>
-                  <div style={{ color: '#111', fontSize: 12 }}>Start - End</div>
-                  <Flex gap={20} align="center">
-                    <div style={{ color: '#111', fontSize: 18 }}>
-                      {formatStandardDate(el.date_of_employment)}
-                    </div>
-                    <div style={{ fontSize: 10 }}>TO</div>
-                    <div style={{ color: '#111', fontSize: 18 }}>
-                      {formatStandardDate(el.date_of_resignation)}
+                    <div style={{ color: '#111', fontWeight: '600' }}>
+                      SSS No. {el.sss_no}
                     </div>
                   </Flex>
-                  <Divider dashed />
-                </div>
-                <div style={{ color: '#111', fontSize: 12 }}>Date needed</div>
-                <div style={{ color: '#111', fontSize: 18 }}>
-                  {formatStandardDate(el.date_needed)}
-                </div>
-                <Flex gap={10}>
-                  <Tooltip title="Send Email">
-                    <Button
-                      type="dashed"
-                      icon={<MailOutlined />}
-                      style={{ marginTop: 50 }}
-                      onClick={() => {
-                        setEmailValue('email', el.email);
-                        setState((prev) => ({
-                          ...prev,
-                          modal: {
-                            isSendEmailModalOpen: true,
-                            emailerReceiver: el.email,
-                          },
-                        }));
-                      }}
-                    >
-                      Send Email
-                    </Button>
-                  </Tooltip>
-
-                  <Tooltip title="View">
-                    <Button
-                      type="primary"
-                      icon={<EyeOutlined />}
-                      style={{ marginTop: 50 }}
-                      onClick={() =>
-                        navigate(`/dashboard/a/contribution`, {
-                          state: {
-                            request: el,
-                          },
-                        })
-                      }
-                    >
-                      View contributions
-                    </Button>
-                  </Tooltip>
+                  <Flex gap={20}>
+                    <div style={{ color: '#111' }}>
+                      {formatStandardDate(el.created_at)}
+                    </div>
+                    <div style={{ color: '#111', fontWeight: '600' }}>
+                      {getBadge(el.status)}
+                    </div>
+                  </Flex>
                 </Flex>
-                ,
-              </div>
-            ),
-            style: panelStyle,
-          })
+              ),
+              children: (
+                <div
+                  style={{ background: 'white', padding: 20, borderRadius: 20 }}
+                >
+                  <Flex justify="space-between" align="start">
+                    <div>
+                      <div style={{ color: '#111', fontSize: 12 }}>SSS No.</div>
+                      <div style={{ color: '#111', fontSize: 32 }}>
+                        {el.sss_no}
+                      </div>
+                      <div style={{ color: '#111', fontSize: 12 }}>
+                        Request my entire record
+                      </div>
+                      <div style={{ color: '#111', fontSize: 32 }}>
+                        {' '}
+                        {el.all ? 'YES' : 'NO'}
+                      </div>
+                    </div>
+
+                    <Select
+                      style={{ width: 200 }}
+                      placeholder="Search to Select"
+                      defaultValue={el.status}
+                      onChange={(v) =>
+                        onContributionRequestStatusChange(v, el.id)
+                      }
+                      options={[
+                        {
+                          value: 'PENDING',
+                          label: 'Pending',
+                        },
+                        {
+                          value: 'PROCESSING',
+                          label: 'Processing',
+                        },
+                        {
+                          value: 'REJECTED',
+                          label: 'Rejected',
+                        },
+                        {
+                          value: 'DONE',
+                          label: 'Done',
+                        },
+                      ]}
+                    />
+                  </Flex>
+                  <Divider dashed />
+                  <div style={{ color: '#111', fontSize: 12 }}>Contact No.</div>
+                  <div style={{ color: '#111', fontSize: 18 }}>
+                    {el.phone_number}
+                  </div>
+                  <Divider dashed />
+                  <div style={{ color: '#111', fontSize: 12 }}>Email</div>
+                  <div style={{ color: '#111', fontSize: 18 }}>{el.email}</div>
+                  <Divider dashed />
+                  <div style={{ display: el.all ? 'none' : 'block' }}>
+                    <div style={{ color: '#111', fontSize: 12 }}>
+                      Start - End
+                    </div>
+                    <Flex gap={20} align="center">
+                      <div style={{ color: '#111', fontSize: 18 }}>
+                        {formatStandardDate(el.date_of_employment)}
+                      </div>
+                      <div style={{ fontSize: 10 }}>TO</div>
+                      <div style={{ color: '#111', fontSize: 18 }}>
+                        {formatStandardDate(el.date_of_resignation)}
+                      </div>
+                    </Flex>
+                    <Divider dashed />
+                  </div>
+                  <div style={{ color: '#111', fontSize: 12 }}>Date needed</div>
+                  <div style={{ color: '#111', fontSize: 18 }}>
+                    {formatStandardDate(el.date_needed)}
+                  </div>
+                  <Flex gap={10}>
+                    <Tooltip title="Send Email">
+                      <Button
+                        type="dashed"
+                        icon={<MailOutlined />}
+                        style={{ marginTop: 50 }}
+                        onClick={() => {
+                          setEmailValue('email', el.email);
+                          setState((prev) => ({
+                            ...prev,
+                            modal: {
+                              isSendEmailModalOpen: true,
+                              emailerReceiver: el.email,
+                            },
+                          }));
+                        }}
+                      >
+                        Send Email
+                      </Button>
+                    </Tooltip>
+
+                    <Tooltip title="View">
+                      <Button
+                        type="primary"
+                        icon={<EyeOutlined />}
+                        style={{ marginTop: 50 }}
+                        onClick={() =>
+                          navigate(`/dashboard/a/contribution`, {
+                            state: {
+                              request: el,
+                            },
+                          })
+                        }
+                      >
+                        View contributions
+                      </Button>
+                    </Tooltip>
+                  </Flex>
+                  ,
+                </div>
+              ),
+              style: panelStyle,
+            };
+          }
         ) as any,
       }));
     } catch (error: any) {
@@ -435,15 +440,21 @@ function AdminRequests() {
           </Flex>
         </Flex>
 
-        <Collapse
-          bordered={false}
-          size="middle"
-          ghost
-          expandIcon={({ isActive }) => (
-            <CaretRightOutlined rotate={isActive ? 90 : 0} />
-          )}
-          items={state.contributionRequests as any}
-        />
+        {!state.contributionRequests.length ? (
+          <Flex style={{ height: "50vh"}} justify='center' align='center'>
+            <p style={{ fontSize: "20px", color: "#666"}}>No {state.selectedStatus} request</p>
+          </Flex>
+        ) : (
+          <Collapse
+            bordered={false}
+            size="middle"
+            ghost
+            expandIcon={({ isActive }) => (
+              <CaretRightOutlined rotate={isActive ? 90 : 0} />
+            )}
+            items={state.contributionRequests as any}
+          />
+        )}
       </div>
 
       <Modal

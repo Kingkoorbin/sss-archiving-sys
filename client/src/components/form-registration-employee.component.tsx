@@ -412,7 +412,6 @@ const RegistrationEmployeeFormFields: React.FC<
               >
                 <Radio.Button value="MALE">Male</Radio.Button>
                 <Radio.Button value="FEMALE">Female</Radio.Button>
-                <Radio.Button value="OTHERS">Others</Radio.Button>
               </Radio.Group>
             )}
           />
