@@ -48,7 +48,7 @@ class GeneratePDFController extends Controller
             $displaySSSNo = $sssNo;
         }
         
-        $query->orderBy('updated_at', 'desc');
+        $query->orderBy('batchDate', 'asc');
 
         $contributions = $query->get();
 
