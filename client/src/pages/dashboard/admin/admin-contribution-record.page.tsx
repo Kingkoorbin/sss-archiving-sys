@@ -3,8 +3,10 @@ import {
   CloseOutlined,
   DownloadOutlined,
   EditOutlined,
+  FileOutlined,
   FilterOutlined,
   InboxOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import {
@@ -46,6 +48,7 @@ interface IState {
   isAuthModalOpen: boolean;
   isFetchingContributions: boolean;
   isSBRModalOpen: boolean;
+  isModalSingleContributionOpen: boolean;
   contributions: IContribution[];
   selectedContributionId: number | null;
   batchDate: string;
@@ -72,7 +75,8 @@ export default function AdminContributionRecord() {
       sbrDate: '',
       sbrNo: '',
     },
-    generatePdfQuery: {}
+    isModalSingleContributionOpen: false,
+    generatePdfQuery: {},
   });
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -83,7 +87,6 @@ export default function AdminContributionRecord() {
     handleSubmit: handleSubmitGenerateFormData,
     control: generateController,
     setValue: setSearchValue,
-    formState: { isSubmitting: isGeneratingPdf },
   } = useForm<IGeneratePdfPayload>();
 
   const {
@@ -91,8 +94,15 @@ export default function AdminContributionRecord() {
     control: sbrController,
     reset: sbrFormReset,
     setValue: setSbrValue,
-    formState: { isSubmitting: isCreatingSBR },
+    formState: { isSubmitting: isCreatingSBR, errors: contributionEditErrors},
   } = useForm<ISBRPayload>();
+
+  const {
+    handleSubmit: singleContributionSubmit,
+    control: singleContributionController,
+    reset: singleContributionReset,
+    formState: { isSubmitting: singleContributionIsSubmitting, errors: singleContributionErrors },
+  } = useForm<IContribution>();
 
   const getContributions = async (data?: IGeneratePdfPayload) => {
     setState((prev) => ({
@@ -273,9 +283,9 @@ export default function AdminContributionRecord() {
         generatePdfQuery: {
           sssNo: data.searchKeyword,
           from: startDate,
-          to: endDate 
-        }
-      }))
+          to: endDate,
+        },
+      }));
     } else {
       // If it doesn't contain a number, search by department
       await getContributions({
@@ -288,9 +298,9 @@ export default function AdminContributionRecord() {
         generatePdfQuery: {
           name: data.searchKeyword,
           from: startDate,
-          to: endDate 
-        }
-      }))
+          to: endDate,
+        },
+      }));
     }
   };
 
@@ -302,31 +312,37 @@ export default function AdminContributionRecord() {
         );
       }
 
-      await axios.get(
-          API.generateContributionPdf,
-          {
-            params: { 
-              ...(state?.generatePdfQuery.name
-                ? { name: state?.generatePdfQuery.name } 
-                : { }),
-              ...(state?.generatePdfQuery.sssNo
-                ? { sssNo: state?.generatePdfQuery.sssNo } 
-                : { }),
-              ...(state?.generatePdfQuery.sssNo 
-                ? { displaySSSNo: state?.generatePdfQuery.sssNo } 
-                : { }),
-              ...(state?.generatePdfQuery.name 
-                ? { displayName: state?.generatePdfQuery.name} 
-                : { }),
-                ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to 
-                  ? { from: state?.generatePdfQuery.from, to: state?.generatePdfQuery.to } 
-                  : { }),
-              ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to 
-                ? { displayCoverage: `${dayjs(state?.generatePdfQuery.from).format("MMMM YYYY")} up to ${dayjs(state?.generatePdfQuery.to).format("MMMM YYYY")}` } 
-                : { }),
-            }
-          }
-        );
+      await axios.get(API.generateContributionPdf, {
+        params: {
+          ...(state?.generatePdfQuery.name
+            ? { name: state?.generatePdfQuery.name }
+            : {}),
+          ...(state?.generatePdfQuery.sssNo
+            ? { sssNo: state?.generatePdfQuery.sssNo }
+            : {}),
+          ...(state?.generatePdfQuery.sssNo
+            ? { displaySSSNo: state?.generatePdfQuery.sssNo }
+            : {}),
+          ...(state?.generatePdfQuery.name
+            ? { displayName: state?.generatePdfQuery.name }
+            : {}),
+          ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
+            ? {
+                from: state?.generatePdfQuery.from,
+                to: state?.generatePdfQuery.to,
+              }
+            : {}),
+          ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
+            ? {
+                displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
+                  'MMMM YYYY'
+                )} up to ${dayjs(state?.generatePdfQuery.to).format(
+                  'MMMM YYYY'
+                )}`,
+              }
+            : {}),
+        },
+      });
     } catch (error) {
       console.error('Error downloading PDF:', error);
     }
@@ -337,7 +353,6 @@ export default function AdminContributionRecord() {
     multiple: false,
     customRequest({ file, onSuccess, onError }) {
       if (typeof file === 'string') {
-        // Handle the case where 'file' is a string (e.g., file URL)
         console.log('String file:', file);
         return;
       }
@@ -350,12 +365,10 @@ export default function AdminContributionRecord() {
         axios
           .post(API.uploadCsv, formData)
           .then((response) => {
-            // Handle success
             onSuccess?.(response, file as any);
             console.log('Upload success:', response);
           })
           .catch((error) => {
-            // Handle error
             onError?.(error, file);
             console.error('Upload error:', error);
           });
@@ -450,6 +463,28 @@ export default function AdminContributionRecord() {
     }
   };
 
+  const handleSaveSingleContribution: SubmitHandler<IContribution> = async (
+    data
+  ) => {
+    try {
+
+      await axios.post(`${API_BASE_URL}/api/record/v1/s`, data, {
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      });
+
+      singleContributionReset();
+
+      await getContributions();
+
+      toastSuccess('Saved successfully!');
+      await getContributions();
+    } catch (error) {
+      toastError('Oops! Something went wrong, Please try again.');
+    }
+  };
+
   useEffect(() => {
     getContributions();
   }, []);
@@ -484,10 +519,26 @@ export default function AdminContributionRecord() {
         <div style={{ marginTop: 20 }}>
           <form onSubmit={handleSubmitGenerateFormData(handleApplyFilter)}>
             <Flex gap={5}>
-              <SearchSSSNoFormFields
-                control={generateController}
-                isSearching={false}
-              />
+              <Tooltip title="Add a single contribution">
+                <Button
+                  type="default"
+                  shape="circle"
+                  icon={<FileOutlined />}
+                  onClick={() =>
+                    setState((prev) => ({
+                      ...prev,
+                      isModalSingleContributionOpen:
+                        !prev.isModalSingleContributionOpen,
+                    }))
+                  }
+                />
+              </Tooltip>
+              <Flex gap={10} flex={1}>
+                <SearchSSSNoFormFields
+                  control={generateController}
+                  isSearching={false}
+                />
+              </Flex>
 
               <div>
                 <DateRangeeFormFields control={generateController} />
@@ -510,6 +561,44 @@ export default function AdminContributionRecord() {
           </form>
 
           <Modal
+            title="Save Contribution"
+            open={state.isModalSingleContributionOpen}
+            cancelButtonProps={{
+              style: { display: 'none' },
+            }}
+            okButtonProps={{
+              style: { display: 'none' },
+            }}
+            width={700}
+            onCancel={() =>
+              setState((prev) => ({
+                ...prev,
+                isModalSingleContributionOpen:
+                  !prev.isModalSingleContributionOpen,
+              }))
+            }
+          >
+            <form
+              onSubmit={singleContributionSubmit(handleSaveSingleContribution)}
+            >
+              <ContributionFormFields 
+                control={singleContributionController} 
+                errors={singleContributionErrors} 
+                includeBatchDate/>
+              <Button
+                type="primary"
+                size="middle"
+                loading={singleContributionIsSubmitting}
+                htmlType="submit"
+                style={{ marginTop: 10 }}
+                block
+              >
+                Submit
+              </Button>
+            </form>
+          </Modal>
+
+          <Modal
             title="Edit Contribution"
             open={state.isSBRModalOpen}
             cancelButtonProps={{
@@ -518,7 +607,7 @@ export default function AdminContributionRecord() {
             okButtonProps={{
               style: { display: 'none' },
             }}
-            width={500}
+            width={700}
             onCancel={() =>
               setState((prev) => ({
                 ...prev,
@@ -527,7 +616,9 @@ export default function AdminContributionRecord() {
             }
           >
             <form onSubmit={handleSubmitSBRFormData(handleUpdateSbr)}>
-              <ContributionFormFields control={sbrController} />
+              <ContributionFormFields
+                errors={contributionEditErrors}
+                control={sbrController} />
               <Button
                 type="primary"
                 size="middle"

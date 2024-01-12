@@ -34,4 +34,21 @@ class ContributionValidator {
 
         return $validator;
     }
+
+
+    public static function validateSaveContribution($request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'total' => 'required|string',
+            'ss' => 'required|string',
+            'ec' => 'required|string',
+            'sss_no' => 'required|string',
+            'batchDate' => 'required|date',
+            'sbr_no' => 'nullable|numeric',
+            'sbr_date' => 'nullable|date',
+        ]);
+
+        return $validator;
+    }
 }

@@ -77,8 +77,27 @@ class ContributionController extends Controller
         return response()->json($contributionsData, 201);
     }
 
+    public function saveContribution(Request $request) {
+        $validator = ContributionValidator::validateSaveContribution($request);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json([
+                'status' => 'error',
+                'message' => $errors->all(),
+            ], 400);
+        }
+
+        $contribution = Contributions::create($request->all());
+
+        return response()->json([
+            'message' => 'Contribution created successfully',
+            'data' => $contribution
+        ], 201);
+    }
+
     public function updateSbrValues(Request $request, $id) {
-        $allowedRoles = ["ADMIN"];
+        $allowedRoles = ["ADMIN", "STAFF"];
         $user = auth()->user();
 
         if(!in_array($user->role, $allowedRoles)) {

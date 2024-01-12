@@ -3,6 +3,7 @@ import {
   CloseOutlined,
   DownloadOutlined,
   EditOutlined,
+  FileOutlined,
   FilterOutlined,
   InboxOutlined,
 } from '@ant-design/icons';
@@ -39,6 +40,8 @@ import SbrFormFields from '../../../components/form-sbr.component';
 import { hasPermission, isEmpty } from '../../../utils/util';
 import { TPermissionTypes } from '../../../interfaces/permission.interface';
 import dayjs from 'dayjs';
+import ContributionFormFields from '../../../components/form-sbr.component';
+import moment from 'moment';
 
 const { Dragger } = Upload;
 
@@ -51,6 +54,7 @@ interface IState {
   selectedContributionId: number | null;
   batchDate: string;
   generatePdfQuery?: any;
+  isModalSingleContributionOpen: boolean;
 }
 
 export default function StaffContributionRecord() {
@@ -66,6 +70,7 @@ export default function StaffContributionRecord() {
     contributions: [],
     selectedContributionId: null,
     batchDate: '',
+    isModalSingleContributionOpen: false,
     generatePdfQuery: {}
   });
 
@@ -82,8 +87,17 @@ export default function StaffContributionRecord() {
   const {
     handleSubmit: handleSubmitSBRFormData,
     control: sbrController,
-    formState: { isSubmitting: isCreatingSBR },
+    setValue: cntributionSetValue,
+    formState: { isSubmitting: isCreatingSBR, errors: contributionEditErrors},
   } = useForm<ISBRPayload>();
+
+  const {
+    handleSubmit: singleContributionSubmit,
+    control: singleContributionController,
+    reset: singleContributionReset,
+    setValue: singleContributionSetValue,
+    formState: { isSubmitting: singleContributionIsSubmitting, errors: singleContributionErrors },
+  } = useForm<IContribution>();
 
   const onGetUserProfile = async () => {
     const config: AxiosRequestConfig = {
@@ -152,6 +166,9 @@ export default function StaffContributionRecord() {
             ...el,
             key: el.id,
             batchDate: dayjs(el.batchDate).format('MMM YYYY'),
+            ec: '₱' + el.ec,
+            ss: '₱' + el.ss,
+            total: '₱' + el.total,
             actions: (
               <Flex gap={10}>
                 <Tooltip
@@ -170,12 +187,37 @@ export default function StaffContributionRecord() {
                         TPermissionTypes.EDIT
                       )
                     }
-                    onClick={() =>
+                    onClick={() =>{
+                      singleContributionReset();
+                      if (el?.sbr_no) {
+                        cntributionSetValue('sbr_no', el.sbr_no);
+                      }
+                      if (el?.sbr_date) {
+                        cntributionSetValue('sbr_date', moment(el.sbr_date, 'YYYY-MM-DD') as any);
+                      }
+                      if (el?.ec) {
+                        cntributionSetValue('ec', el.ec.startsWith('₱') ? el.ec.substring(1) : el.ec);
+                      }
+                      if (el?.ss) {
+                        cntributionSetValue('ss', el.ss.startsWith('₱') ? el.ss.substring(1) : el.ss);
+                      }
+                      if (el?.total) {
+                        cntributionSetValue('total', el.total.startsWith('₱') ? el.total.substring(1) : el.total);
+                      }
+                      if (el?.name) {
+                        cntributionSetValue('name', el.name);
+                      }
+                      if (el?.sbr_no) {
+                        cntributionSetValue('sbr_no', el.sbr_no);
+                      }
+                      if (el?.sss_no) {
+                        cntributionSetValue('sss_no', el.sss_no);
+                      }
                       setState((prev) => ({
                         ...prev,
                         selectedContributionId: el.id,
                         isSBRModalOpen: !prev.isSBRModalOpen,
-                      }))
+                      }))}
                     }
                   >
                     Edit
@@ -448,6 +490,63 @@ export default function StaffContributionRecord() {
     }
   };
 
+  const handleSaveSingleContribution: SubmitHandler<IContribution> = async (
+    data
+  ) => {
+    try {
+
+      await axios.post(`${API_BASE_URL}/api/record/v1/s`, data, {
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      });
+
+      singleContributionReset();
+
+      await getContributions();
+
+      toastSuccess('Saved successfully!');
+      await getContributions();
+    } catch (error) {
+      toastError('Oops! Something went wrong, Please try again.');
+    }
+  };
+
+  const rowProps = (record: IContribution) => ({
+    onDoubleClick: () => {
+      singleContributionReset();
+      if (record?.sbr_no) {
+        cntributionSetValue('sbr_no', record.sbr_no);
+      }
+      if (record?.sbr_date) {
+        cntributionSetValue('sbr_date', moment(record.sbr_date, 'YYYY-MM-DD') as any);
+      }
+      if (record?.ec) {
+        cntributionSetValue('ec', record.ec.substring(1, record.ec.length));
+      }
+      if (record?.ss) {
+        cntributionSetValue('ss', record.ss.substring(1, record.ss.length));
+      }
+      if (record?.total) {
+        cntributionSetValue('total', record.total.substring(1, record.total.length));
+      }
+      if (record?.name) {
+        cntributionSetValue('name', record.name);
+      }
+      if (record?.sbr_no) {
+        cntributionSetValue('sbr_no', record.sbr_no);
+      }
+      if (record?.sss_no) {
+        cntributionSetValue('sss_no', record.sss_no);
+      }
+      setState((prev: any) => ({
+        ...prev,
+        selectedContributionId: record.id,
+        isSBRModalOpen: !prev.isSBRModalOpen,
+      }));
+    },
+  });
+  
   useEffect(() => {
     getContributions();
     onGetUserProfile();
@@ -512,10 +611,30 @@ export default function StaffContributionRecord() {
         <div style={{ marginTop: 20 }}>
           <form onSubmit={handleSubmitGenerateFormData(handleApplyFilter)}>
             <Flex gap={5}>
-              <SearchSSSNoFormFields
-                control={generateController}
-                isSearching={false}
-              />
+            <Tooltip title="Add a single contribution">
+                <Button
+                  type="default"
+                  shape="circle"
+                  icon={<FileOutlined />}
+                  disabled={!hasPermission(
+                    state.user?.user_permissions!,
+                    TPermissionTypes.UPLOAD
+                  )}
+                  onClick={() =>
+                    setState((prev) => ({
+                      ...prev,
+                      isModalSingleContributionOpen:
+                        !prev.isModalSingleContributionOpen,
+                    }))
+                  }
+                />
+              </Tooltip>
+              <Flex gap={10} flex={1}>
+                <SearchSSSNoFormFields
+                  control={generateController}
+                  isSearching={false}
+                />
+              </Flex>
               <div>
                 <DateRangeeFormFields control={generateController} />
               </div>
@@ -554,6 +673,44 @@ export default function StaffContributionRecord() {
           </form>
 
           <Modal
+            title="Save Contribution"
+            open={state.isModalSingleContributionOpen}
+            cancelButtonProps={{
+              style: { display: 'none' },
+            }}
+            okButtonProps={{
+              style: { display: 'none' },
+            }}
+            width={700}
+            onCancel={() =>
+              setState((prev) => ({
+                ...prev,
+                isModalSingleContributionOpen:
+                  !prev.isModalSingleContributionOpen,
+              }))
+            }
+          >
+            <form
+              onSubmit={singleContributionSubmit(handleSaveSingleContribution)}
+            >
+              <ContributionFormFields
+                control={singleContributionController} 
+                errors={singleContributionErrors} 
+                includeBatchDate/>
+              <Button
+                type="primary"
+                size="middle"
+                loading={singleContributionIsSubmitting}
+                htmlType="submit"
+                style={{ marginTop: 10 }}
+                block
+              >
+                Submit
+              </Button>
+            </form>
+          </Modal>
+
+          <Modal
             title="Edit SBR"
             open={state.isSBRModalOpen}
             cancelButtonProps={{
@@ -562,7 +719,7 @@ export default function StaffContributionRecord() {
             okButtonProps={{
               style: { display: 'none' },
             }}
-            width={400}
+            width={700}
             onCancel={() =>
               setState((prev) => ({
                 ...prev,
@@ -571,7 +728,9 @@ export default function StaffContributionRecord() {
             }
           >
             <form onSubmit={handleSubmitSBRFormData(handleUpdateSbr)}>
-              <SbrFormFields control={sbrController} />
+              <SbrFormFields 
+              control={sbrController} 
+              errors={contributionEditErrors}/>
               <Button
                 type="primary"
                 size="middle"
@@ -586,9 +745,10 @@ export default function StaffContributionRecord() {
           </Modal>
 
           <Table
-            columns={contributionColumns}
+            columns={contributionColumns as any}
             dataSource={state.contributions as any}
             loading={state.isFetchingContributions}
+            onRow={rowProps}
             size="middle"
           />
 

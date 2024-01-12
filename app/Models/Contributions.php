@@ -20,4 +20,8 @@ class Contributions extends Model
         'batchDate'
     ];
 
+    public static function saveContribution(array $data)
+    {
+        return self::create($data);
+    }
 }
