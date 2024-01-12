@@ -14,6 +14,7 @@ use App\Http\Controllers\AcitivityController;
 use App\Http\Controllers\ContributionController;
 use App\Http\Controllers\PermissionNameController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\GeneratePDFController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,12 @@ use App\Http\Controllers\EmailController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::controller(GeneratePDFController::class)->group(function () {
+    Route::get('/generate-contribution/v1', 'generatePDF');
+});
+
+
 
 // Authentication
 Route::controller(AuthController::class)->group(function () {

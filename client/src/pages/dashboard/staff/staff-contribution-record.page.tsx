@@ -349,65 +349,63 @@ export default function StaffContributionRecord() {
   }
 };
 
-  const handleGeneratePdf = async () => {
-    try {
-      if (state.contributions.length >= 100) {
-        return toastError(
-          'Oops! Sorry, We cannot Generate PDF with more than 100 rows'
-        );
-      }
 
-      console.log({
-        params: { 
-          ...(state?.generatePdfQuery.name
-            ? { name: state?.generatePdfQuery.name } 
-            : { }),
-          ...(state?.generatePdfQuery.sssNo
-            ? { sssNo: state?.generatePdfQuery.sssNo } 
-            : { }),
-          ...(state?.generatePdfQuery.sssNo 
-            ? { displaySSSNo: state?.generatePdfQuery.sssNo } 
-            : { }),
-          ...(state?.generatePdfQuery.name 
-            ? { displayName: state?.generatePdfQuery.name} 
-            : { }),
-            ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to 
-              ? { from: state?.generatePdfQuery.from, to: state?.generatePdfQuery.to } 
-              : { }),
-          ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to 
-            ? { displayCoverage: `${state?.generatePdfQuery.from} to ${state?.generatePdfQuery.to}` } 
-            : { }),
-        }
-      })
-      await axios.get(
-          API.generateContributionPdf,
-          {
-            params: { 
-              ...(state?.generatePdfQuery.name
-                ? { name: state?.generatePdfQuery.name } 
-                : { }),
-              ...(state?.generatePdfQuery.sssNo
-                ? { sssNo: state?.generatePdfQuery.sssNo } 
-                : { }),
-              ...(state?.generatePdfQuery.sssNo 
-                ? { displaySSSNo: state?.generatePdfQuery.sssNo } 
-                : { }),
-              ...(state?.generatePdfQuery.name 
-                ? { displayName: state?.generatePdfQuery.name} 
-                : { }),
-                ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to 
-                  ? { from: state?.generatePdfQuery.from, to: state?.generatePdfQuery.to } 
-                  : { }),
-              ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to 
-                ? { displayCoverage: `${dayjs(state?.generatePdfQuery.from).format("MMMM YYYY")} up to ${dayjs(state?.generatePdfQuery.to).format("MMMM YYYY")}` } 
-                : { }),
-            }
-          }
-        );
-    } catch (error) {
-      console.error('Error downloading PDF:', error);
+const handleGeneratePdf = async () => {
+  try {
+    if (state.contributions.length >= 100) {
+      return toastError(
+        'Oops! Sorry, We cannot Generate PDF with more than 100 rows'
+      );
     }
-  };
+    await axios.get(API.generateContributionPdf, {
+      params: {
+        ...(state?.generatePdfQuery.name
+          ? { name: state?.generatePdfQuery.name }
+          : {}),
+        ...(state?.generatePdfQuery.sssNo
+          ? { sssNo: state?.generatePdfQuery.sssNo }
+          : {}),
+        ...(state?.generatePdfQuery.sssNo
+          ? { displaySSSNo: state?.generatePdfQuery.sssNo }
+          : {}),
+        ...(state?.generatePdfQuery.name
+          ? { displayName: state?.generatePdfQuery.name }
+          : {}),
+        ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
+          ? {
+              from: state?.generatePdfQuery.from,
+              to: state?.generatePdfQuery.to,
+            }
+          : {}),
+        ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
+          ? {
+              displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
+                'MMMM YYYY'
+              )} up to ${dayjs(state?.generatePdfQuery.to).format(
+                'MMMM YYYY'
+              )}`,
+            }
+          : {}),
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/pdf',
+      },
+      responseType: 'blob',
+    }).then((response) => {
+      console.log('response', response);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${new Date().toISOString()}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+    });
+  } catch (error) {
+    console.log('error', error)
+  }
+};
+
 
   const props: UploadProps = {
     name: 'csv',

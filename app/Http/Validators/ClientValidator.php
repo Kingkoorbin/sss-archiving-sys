@@ -63,8 +63,8 @@ class ClientValidator {
             'bpi_atm_account_no' => 'nullable|string',
             'date_hired' => 'required|date',
             'date_resigned' => 'nullable|date',
-            'main_employer' => 'required|string',
-            'address' => 'required|string',
+            'main_employer' => 'nullable|string',
+            'address' => 'nullable|string',
         ]);
 
         return $validator;

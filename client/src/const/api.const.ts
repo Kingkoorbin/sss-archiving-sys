@@ -35,7 +35,7 @@ export const API = {
   generatePdf: `${
     import.meta.env.VITE_API_MICROSERVICE_BASE_URL
   }/api/generate/v1/pdf`,
-  generateContributionPdf: `${API_BASE_URL}/generate-contribution`,
+  generateContributionPdf: `${API_BASE_URL}/api/generate-contribution/v1`,
 };
 
 export const API_GET_PROFILES = `${API_BASE_URL}/api/clients/v1/profiles`;

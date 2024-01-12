@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GeneratePDFController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +13,6 @@ use App\Http\Controllers\GeneratePDFController;
 |
 */
 
-Route::get('generate-contribution', [GeneratePDFController::class, 'generatePDF']);
 
 Route::get('/', function () {
     return view('welcome');
