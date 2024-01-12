@@ -513,36 +513,45 @@ const handleGeneratePdf = async () => {
 
   const rowProps = (record: IContribution) => ({
     onDoubleClick: () => {
-      singleContributionReset();
-      if (record?.sbr_no) {
-        cntributionSetValue('sbr_no', record.sbr_no);
+      if(hasPermission(
+        state.user?.user_permissions!,
+        TPermissionTypes.EDIT
+      )) {
+        singleContributionReset();
+        if (record?.sbr_no) {
+          cntributionSetValue('sbr_no', record.sbr_no);
+        }
+        if (record?.sbr_date) {
+          cntributionSetValue('sbr_date', moment(record.sbr_date, 'YYYY-MM-DD') as any);
+        }
+        if (record?.ec) {
+          cntributionSetValue('ec', record.ec.substring(1, record.ec.length));
+        }
+        if (record?.ss) {
+          cntributionSetValue('ss', record.ss.substring(1, record.ss.length));
+        }
+        if (record?.total) {
+          cntributionSetValue('total', record.total.substring(1, record.total.length));
+        }
+        if (record?.name) {
+          cntributionSetValue('name', record.name);
+        }
+        if (record?.sbr_no) {
+          cntributionSetValue('sbr_no', record.sbr_no);
+        }
+        if (record?.sss_no) {
+          cntributionSetValue('sss_no', record.sss_no);
+        }
+        setState((prev: any) => ({
+          ...prev,
+          selectedContributionId: record.id,
+          isSBRModalOpen: !prev.isSBRModalOpen,
+        }));
+
+        return;
       }
-      if (record?.sbr_date) {
-        cntributionSetValue('sbr_date', moment(record.sbr_date, 'YYYY-MM-DD') as any);
-      }
-      if (record?.ec) {
-        cntributionSetValue('ec', record.ec.substring(1, record.ec.length));
-      }
-      if (record?.ss) {
-        cntributionSetValue('ss', record.ss.substring(1, record.ss.length));
-      }
-      if (record?.total) {
-        cntributionSetValue('total', record.total.substring(1, record.total.length));
-      }
-      if (record?.name) {
-        cntributionSetValue('name', record.name);
-      }
-      if (record?.sbr_no) {
-        cntributionSetValue('sbr_no', record.sbr_no);
-      }
-      if (record?.sss_no) {
-        cntributionSetValue('sss_no', record.sss_no);
-      }
-      setState((prev: any) => ({
-        ...prev,
-        selectedContributionId: record.id,
-        isSBRModalOpen: !prev.isSBRModalOpen,
-      }));
+
+      alert("No Edit Permission");
     },
   });
   
