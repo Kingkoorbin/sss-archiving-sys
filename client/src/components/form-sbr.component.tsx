@@ -145,8 +145,8 @@ const ContributionFormFields: React.FC<ContributionFormFieldsProps> = ({
             rules={{
               required: 'This field is required',
               pattern: {
-                value: /^[0-9]+(\.[0-9]{1,2})?$/,
-                message: 'Only numbers and up to two decimals are allowed.',
+                value: /^[0-9,]*(\.[0-9]{1,2})?$/,
+                message: 'Only numbers, commas, and up to two decimals are allowed.',
               },
             }}
             render={({ field }) => (
@@ -168,8 +168,8 @@ const ContributionFormFields: React.FC<ContributionFormFieldsProps> = ({
             rules={{
               required: 'This field is required',
               pattern: {
-                value: /^[0-9]+(\.[0-9]{1,2})?$/,
-                message: 'Only numbers and up to two decimals are allowed.',
+                value: /^[0-9,]*(\.[0-9]{1,2})?$/,
+                message: 'Only numbers, commas, and up to two decimals are allowed.',
               },
             }}
             control={control}
@@ -192,8 +192,8 @@ const ContributionFormFields: React.FC<ContributionFormFieldsProps> = ({
             rules={{
               required: 'This field is required',
               pattern: {
-                value: /^[0-9]+(\.[0-9]{1,2})?$/,
-                message: 'Only numbers and up to two decimals are allowed.',
+                value: /^[0-9,]*(\.[0-9]{1,2})?$/,
+                message: 'Only numbers, commas, and up to two decimals are allowed.',
               },
             }}
             control={control}
