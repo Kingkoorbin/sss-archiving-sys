@@ -52,28 +52,8 @@ class GeneratePDFController extends Controller
 
         $contributions = $query->get();
 
-        $groupedContributions = $contributions->groupBy(function ($contribution) {
-            return Carbon::parse($contribution->batchDate)->format('Y');
-        });    
-        
-        $result = $groupedContributions->map(function ($contributions, $batchDate) {
-            return [
-                'batch' => $batchDate,
-                'contributions' => $contributions->map(function ($contribution) {
-                    $contribution->month = Carbon::parse($contribution->batchDate)->format('F');
-                    return $contribution;
-                }),            
-            ];
-        })->values()->toArray();
-        
-        $pdf = PDF::loadView('contributions', [
-            'contributions' => $result,
-            'displaySSSNo' => $displaySSSNo,
-            'displayName' => $displayName,
-            'displayCoverage' => $displayCoverage,
-        ]);     
+        $pdf = PDF::loadView('contributions', compact('contributions', 'displaySSSNo', 'displayName', 'displayCoverage'));
         $filename = now()->format('Y-m-d') . '_contribution';
-
         return $pdf->download("$filename.pdf");
     }
 }

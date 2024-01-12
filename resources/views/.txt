@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://res.cloudinary.com/diigkcc6g/image/upload/v1705038091/SSS%20Archiving%20System/411071210_1317672516288649_1257777723783135304_n_lysw8k.jpg');
+            background-repeat: no-repeat;
+            background-size: cover; /* or 'contain' based on your preference */
+            margin: 0; /* Remove body margin */
+            padding: 0; /* Remove body padding */
+        }
+</style>
+</head>
+<body>
+        @foreach($contributions as $contribution)
+            <table class="table table-bordered page-break">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>SBR Date</th>
+                        <th>SBR No</th>
+                        <th>SS</th>
+                        <th>EC</th>
+                        <th>Total</th>
+                        <!-- Add other columns as needed -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ $contribution['id'] }}</td>
+                        <td>{{ $contribution['name'] }}</td>
+                        <td>{{ $contribution['sbr_date'] }}</td>
+                        <td>{{ $contribution['sbr_no'] }}</td>
+                        <td>{{ $contribution['ss'] }}</td>
+                        <td>{{ $contribution['ec'] }}</td>
+                        <td>{{ $contribution['total'] }}</td>
+                        <!-- Add other columns as needed -->
+                    </tr>
+                </tbody>
+            </table>
+        @endforeach
+</body>
+</html>
