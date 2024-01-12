@@ -14,6 +14,7 @@ import {
   DatePicker,
   Flex,
   Modal,
+  Popconfirm,
   Table,
   Tooltip,
   Upload,
@@ -641,33 +642,37 @@ export default function StaffContributionRecord() {
               <Button type="dashed" icon={<FilterOutlined />} htmlType="submit">
                 Search
               </Button>
-
               <div style={{ marginLeft: 20 }}>
-                <Tooltip
+                <Popconfirm
                   title={
                     hasPermission(
                       state.user?.user_permissions!,
                       TPermissionTypes.GENERATE
                     )
-                      ? 'Generate'
+                      ? 'Do you want to print PDF?'
                       : 'No Permission'
                   }
+                  onConfirm={() => handleGeneratePdf()}
+                  okText="Yes"
+                  cancelText="No"
+                  placement="bottomLeft"
                 >
-                  <Button
-                    type="primary"
-                    icon={<DownloadOutlined />}
-                    onClick={() => handleGeneratePdf()}
-                    disabled={
-                      state.contributions.length >= 100 ||
-                      !hasPermission(
-                        state.user?.user_permissions!,
-                        TPermissionTypes.GENERATE
-                      )
-                    }
-                  >
-                    Generate
-                  </Button>
-                </Tooltip>
+                  <Tooltip title="Print">
+                    <Button
+                      type="primary"
+                      htmlType="button"
+                      icon={<DownloadOutlined />}
+                      disabled={
+                        state.contributions.length >= 100 ||
+                        !hasPermission(
+                          state.user?.user_permissions!,
+                          TPermissionTypes.GENERATE
+                        )
+                      }                    >
+                      Generate
+                    </Button>
+                  </Tooltip>
+                </Popconfirm>
               </div>
             </Flex>
           </form>

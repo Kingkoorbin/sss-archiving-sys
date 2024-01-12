@@ -94,14 +94,17 @@ export default function AdminContributionRecord() {
     control: sbrController,
     reset: sbrFormReset,
     setValue: setSbrValue,
-    formState: { isSubmitting: isCreatingSBR, errors: contributionEditErrors},
+    formState: { isSubmitting: isCreatingSBR, errors: contributionEditErrors },
   } = useForm<ISBRPayload>();
 
   const {
     handleSubmit: singleContributionSubmit,
     control: singleContributionController,
     reset: singleContributionReset,
-    formState: { isSubmitting: singleContributionIsSubmitting, errors: singleContributionErrors },
+    formState: {
+      isSubmitting: singleContributionIsSubmitting,
+      errors: singleContributionErrors,
+    },
   } = useForm<IContribution>();
 
   const getContributions = async (data?: IGeneratePdfPayload) => {
@@ -467,7 +470,6 @@ export default function AdminContributionRecord() {
     data
   ) => {
     try {
-
       await axios.post(`${API_BASE_URL}/api/record/v1/s`, data, {
         headers: {
           Authorization: `Bearer ${getAuthResponse?.access_token}`,
@@ -546,16 +548,25 @@ export default function AdminContributionRecord() {
               <Button type="dashed" icon={<FilterOutlined />} htmlType="submit">
                 Search
               </Button>
-
               <div style={{ marginLeft: 20 }}>
-                <Button
-                  type="primary"
-                  icon={<DownloadOutlined />}
-                  onClick={() => handleGeneratePdf()}
-                  disabled={state.contributions.length >= 100}
+                <Popconfirm
+                  title="Do you want to print PDF?"
+                  onConfirm={() => handleGeneratePdf()}
+                  okText="Yes"
+                  cancelText="No"
+                  placement="bottomLeft"
                 >
-                  Generate
-                </Button>
+                  <Tooltip title="Print">
+                    <Button
+                      type="primary"
+                      htmlType="button"
+                      icon={<DownloadOutlined />}
+                      disabled={state.contributions.length >= 100}
+                    >
+                      Generate
+                    </Button>
+                  </Tooltip>
+                </Popconfirm>
               </div>
             </Flex>
           </form>
@@ -581,10 +592,11 @@ export default function AdminContributionRecord() {
             <form
               onSubmit={singleContributionSubmit(handleSaveSingleContribution)}
             >
-              <ContributionFormFields 
-                control={singleContributionController} 
-                errors={singleContributionErrors} 
-                includeBatchDate/>
+              <ContributionFormFields
+                control={singleContributionController}
+                errors={singleContributionErrors}
+                includeBatchDate
+              />
               <Button
                 type="primary"
                 size="middle"
@@ -618,7 +630,8 @@ export default function AdminContributionRecord() {
             <form onSubmit={handleSubmitSBRFormData(handleUpdateSbr)}>
               <ContributionFormFields
                 errors={contributionEditErrors}
-                control={sbrController} />
+                control={sbrController}
+              />
               <Button
                 type="primary"
                 size="middle"
