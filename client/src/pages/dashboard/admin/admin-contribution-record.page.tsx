@@ -1,6 +1,7 @@
 import NavigationBarAdmin from '../../../components/nav-admin.component';
 import {
   CloseOutlined,
+  DeleteColumnOutlined,
   DownloadOutlined,
   EditOutlined,
   FileOutlined,
@@ -60,6 +61,7 @@ interface IState {
 }
 
 export default function AdminContributionRecord() {
+
   const { value: getAuthResponse } = useLocalStorage<IApiResponse | null>(
     'auth_response',
     null
@@ -314,52 +316,54 @@ export default function AdminContributionRecord() {
           'Oops! Sorry, We cannot Generate PDF with more than 100 rows'
         );
       }
-      await axios.get(API.generateContributionPdf, {
-        params: {
-          ...(state?.generatePdfQuery.name
-            ? { name: state?.generatePdfQuery.name }
-            : {}),
-          ...(state?.generatePdfQuery.sssNo
-            ? { sssNo: state?.generatePdfQuery.sssNo }
-            : {}),
-          ...(state?.generatePdfQuery.sssNo
-            ? { displaySSSNo: state?.generatePdfQuery.sssNo }
-            : {}),
-          ...(state?.generatePdfQuery.name
-            ? { displayName: state?.generatePdfQuery.name }
-            : {}),
-          ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
-            ? {
-                from: state?.generatePdfQuery.from,
-                to: state?.generatePdfQuery.to,
-              }
-            : {}),
-          ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
-            ? {
-                displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
-                  'MMMM YYYY'
-                )} up to ${dayjs(state?.generatePdfQuery.to).format(
-                  'MMMM YYYY'
-                )}`,
-              }
-            : {}),
-        },
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/pdf',
-        },
-        responseType: 'blob',
-      }).then((response) => {
-        console.log('response', response);
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `${new Date().toISOString()}.pdf`);
-        document.body.appendChild(link);
-        link.click();
-      });
+      await axios
+        .get(API.generateContributionPdf, {
+          params: {
+            ...(state?.generatePdfQuery.name
+              ? { name: state?.generatePdfQuery.name }
+              : {}),
+            ...(state?.generatePdfQuery.sssNo
+              ? { sssNo: state?.generatePdfQuery.sssNo }
+              : {}),
+            ...(state?.generatePdfQuery.sssNo
+              ? { displaySSSNo: state?.generatePdfQuery.sssNo }
+              : {}),
+            ...(state?.generatePdfQuery.name
+              ? { displayName: state?.generatePdfQuery.name }
+              : {}),
+            ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
+              ? {
+                  from: state?.generatePdfQuery.from,
+                  to: state?.generatePdfQuery.to,
+                }
+              : {}),
+            ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
+              ? {
+                  displayCoverage: `${dayjs(
+                    state?.generatePdfQuery.from
+                  ).format('MMMM YYYY')} up to ${dayjs(
+                    state?.generatePdfQuery.to
+                  ).format('MMMM YYYY')}`,
+                }
+              : {}),
+          },
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/pdf',
+          },
+          responseType: 'blob',
+        })
+        .then((response) => {
+          console.log('response', response);
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', `${new Date().toISOString()}.pdf`);
+          document.body.appendChild(link);
+          link.click();
+        });
     } catch (error) {
-      console.log('error', error)
+      console.log('error', error);
     }
   };
 
@@ -499,6 +503,24 @@ export default function AdminContributionRecord() {
     }
   };
 
+  const handleDeleteContributionsByBatch = async () => {
+    try {
+      await axios.delete(`${API_BASE_URL}/api/record/v1/batch/delete`, {
+        data: {
+          "date": `${state.batchDate.substring(0, 7)}-01`
+        },
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      });
+
+      toastSuccess('Batch removed successfully!');
+      await getContributions();
+    } catch (error) {
+      toastError('Oops! Something went wrong, Please try again.');
+    }
+  }
+
   useEffect(() => {
     getContributions();
   }, []);
@@ -508,7 +530,7 @@ export default function AdminContributionRecord() {
       {contextHolder}
       <NavigationBarAdmin />
       <div style={{ padding: 50 }}>
-        <div style={{ position: 'relative' }}>
+        <div>
           <Dragger disabled={isEmpty(state.batchDate)} {...props}>
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
@@ -521,13 +543,6 @@ export default function AdminContributionRecord() {
               files.
             </p>
           </Dragger>
-          <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
-            <DatePicker
-              onChange={(v) => handleChangeBatchDate(v)}
-              picker="month"
-              size="large"
-            />
-          </div>
         </div>
 
         <div style={{ marginTop: 20 }}>
@@ -547,7 +562,7 @@ export default function AdminContributionRecord() {
                   }
                 />
               </Tooltip>
-              <Flex gap={10} flex={1}>
+              <Flex gap={10} flex={3}>
                 <SearchSSSNoFormFields
                   control={generateController}
                   isSearching={false}
@@ -574,11 +589,42 @@ export default function AdminContributionRecord() {
                       htmlType="button"
                       icon={<DownloadOutlined />}
                       disabled={state.contributions.length >= 100}
+                      style={{ opacity:  state.contributions.length >= 100 ? 0.3 : 1 }}
                     >
                       Generate
                     </Button>
                   </Tooltip>
                 </Popconfirm>
+              </div>
+              <Flex flex={1}>
+                <div></div>
+              </Flex>
+              <div>
+                <Flex gap={5}>
+                  <Tooltip
+                    title="Select a batch date before uploading"
+                    placement="bottomLeft"
+                  >
+                    <DatePicker
+                      onChange={(v) => handleChangeBatchDate(v)}
+                      picker="month"
+                    />
+                  </Tooltip>
+                  <Tooltip
+                    title="Delete the selected batch"
+                    placement="bottomLeft"
+                  >
+                    <Button
+                      type="default"
+                      icon={<DeleteColumnOutlined />}
+                      style={{ color: 'red', opacity:  isEmpty(state.batchDate) ? 0.3 : 1 }}
+                      onClick={() => handleDeleteContributionsByBatch()}
+                      disabled={isEmpty(state.batchDate)}
+                    >
+                      Delete
+                    </Button>
+                  </Tooltip>
+                </Flex>
               </div>
             </Flex>
           </form>

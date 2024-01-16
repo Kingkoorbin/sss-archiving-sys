@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 // Custom Imports
 use App\Events\UserActivity;
 use App\Http\Validators\ContributionValidator;
+use Carbon\Carbon;
 
 // Laravel Imports
 use Illuminate\Http\Request;
@@ -165,4 +166,32 @@ class ContributionController extends Controller
         }
     }
 
+    public function deleteContributionsByBatch(Request $request) {
+        try {
+            $validator = ContributionValidator::validateDeleteContributionsByBatch($request);
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $errors->all(),
+                ], 400);
+            }
+            $inputDate = $request->input('date');
+            $parsedDate = Carbon::parse($inputDate);
+
+            $month = $parsedDate->format('m');
+            $year = $parsedDate->format('Y');
+
+            // Now use $month and $year in your database query
+            Contributions::whereMonth('batchDate', '=', $month)
+                     ->whereYear('batchDate', '=', $year)
+                     ->delete();
+            return response()->json(['message' => 'Rows deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

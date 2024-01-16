@@ -82,6 +82,7 @@ Route::controller(ContributionController::class)->group(function () {
     Route::post('/record/v1/s', 'saveContribution');
     Route::put('/record/v1/{id}/sbr', 'updateSbrValues');
     Route::delete('/record/v1/{sssNo}', 'deleteContributionById');
+    Route::delete('/record/v1/batch/delete', 'deleteContributionsByBatch');
 });
 
 /// Services

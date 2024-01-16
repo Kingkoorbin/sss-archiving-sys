@@ -51,4 +51,14 @@ class ContributionValidator {
 
         return $validator;
     }
+
+    public static function validateDeleteContributionsByBatch($request)
+    {
+        $validator = Validator::make($request->all(), [
+            'date' => 'required|date'
+        ]);
+
+        return $validator;
+    }
+
 }
