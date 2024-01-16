@@ -89,6 +89,7 @@ export default function StaffContributionRecord() {
     handleSubmit: handleSubmitSBRFormData,
     control: sbrController,
     setValue: cntributionSetValue,
+    reset: sbrFormReset,
     formState: { isSubmitting: isCreatingSBR, errors: contributionEditErrors },
   } = useForm<ISBRPayload>();
 
@@ -287,14 +288,17 @@ export default function StaffContributionRecord() {
   };
 
   const handleUpdateSbr: SubmitHandler<ISBRPayload> = async (data) => {
-    const updateSbrResponse = await HttpClient.setAuthToken(
-      getAuthResponse?.access_token
-    ).put<IApiResponse, ISBRPayload>(
-      `${API.contributions}/${state.selectedContributionId}/sbr`,
-      data
-    );
+    const date = new Date(data.sbr_date);
+    data.sbr_date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().substring(0, 10);
+    
+    const response =  await axios.put(`${API_BASE_URL}/api/record/v1/${state.selectedContributionId}/sbr`, data, {
+      headers: {
+        Authorization: `Bearer ${getAuthResponse?.access_token}`,
+      },
+    });
 
-    if (updateSbrResponse?.message === 'Authentication required.') {
+
+    if (response?.data.message === 'Authentication required.') {
       setState((prev) => ({
         ...prev,
         isAuthModalOpen: true,
@@ -302,6 +306,8 @@ export default function StaffContributionRecord() {
 
       return;
     }
+
+    sbrFormReset();
 
     await getContributions();
 

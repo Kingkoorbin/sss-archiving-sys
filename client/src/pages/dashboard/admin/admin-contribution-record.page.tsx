@@ -156,10 +156,16 @@ export default function AdminContributionRecord() {
                     setSbrValue('sbr_no', el.sbr_no);
                   }
                   if (el?.sbr_date) {
+
+                    console.log("MAP DATE", el.sbr_date)
                     setSbrValue(
                       'sbr_date',
                       moment(el.sbr_date, 'YYYY-MM-DD') as any
                     );
+
+                    const newDate =  moment(el.sbr_date, 'YYYY-MM-DD') as any;
+
+                    console.log("NEW DATE",newDate)
                   }
                   if (el?.ec) {
                     setSbrValue('ec', el.ec);
@@ -226,14 +232,17 @@ export default function AdminContributionRecord() {
   };
 
   const handleUpdateSbr: SubmitHandler<ISBRPayload> = async (data) => {
-    const updateSbrResponse = await HttpClient.setAuthToken(
-      getAuthResponse?.access_token
-    ).put<IApiResponse, ISBRPayload>(
-      `${API.contributions}/${state.selectedContributionId}/sbr`,
-      data
-    );
+    const date = new Date(data.sbr_date);
+    data.sbr_date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().substring(0, 10);
+    
+    const response =  await axios.put(`${API_BASE_URL}/api/record/v1/${state.selectedContributionId}/sbr`, data, {
+      headers: {
+        Authorization: `Bearer ${getAuthResponse?.access_token}`,
+      },
+    });
 
-    if (updateSbrResponse?.message === 'Authentication required.') {
+
+    if (response?.data.message === 'Authentication required.') {
       setState((prev) => ({
         ...prev,
         isAuthModalOpen: true,
