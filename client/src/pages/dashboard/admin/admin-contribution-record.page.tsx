@@ -7,7 +7,6 @@ import {
   FileOutlined,
   FilterOutlined,
   InboxOutlined,
-  PlusOutlined,
 } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import {
@@ -61,7 +60,6 @@ interface IState {
 }
 
 export default function AdminContributionRecord() {
-
   const { value: getAuthResponse } = useLocalStorage<IApiResponse | null>(
     'auth_response',
     null
@@ -507,7 +505,7 @@ export default function AdminContributionRecord() {
     try {
       await axios.delete(`${API_BASE_URL}/api/record/v1/batch/delete`, {
         data: {
-          "date": `${state.batchDate.substring(0, 7)}-01`
+          date: `${state.batchDate.substring(0, 7)}-01`,
         },
         headers: {
           Authorization: `Bearer ${getAuthResponse?.access_token}`,
@@ -519,7 +517,7 @@ export default function AdminContributionRecord() {
     } catch (error) {
       toastError('Oops! Something went wrong, Please try again.');
     }
-  }
+  };
 
   useEffect(() => {
     getContributions();
@@ -589,7 +587,9 @@ export default function AdminContributionRecord() {
                       htmlType="button"
                       icon={<DownloadOutlined />}
                       disabled={state.contributions.length >= 100}
-                      style={{ opacity:  state.contributions.length >= 100 ? 0.3 : 1 }}
+                      style={{
+                        opacity: state.contributions.length >= 100 ? 0.3 : 1,
+                      }}
                     >
                       Generate
                     </Button>
@@ -617,7 +617,10 @@ export default function AdminContributionRecord() {
                     <Button
                       type="default"
                       icon={<DeleteColumnOutlined />}
-                      style={{ color: 'red', opacity:  isEmpty(state.batchDate) ? 0.3 : 1 }}
+                      style={{
+                        color: 'red',
+                        opacity: isEmpty(state.batchDate) ? 0.3 : 1,
+                      }}
                       onClick={() => handleDeleteContributionsByBatch()}
                       disabled={isEmpty(state.batchDate)}
                     >

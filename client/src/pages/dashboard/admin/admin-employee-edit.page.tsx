@@ -123,8 +123,7 @@ function AdminEmployeeEdit() {
         isSuccessUpdatingEmployee: true,
       }));
       toastSuccess('Success!');
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const toastSuccess = (message: string) => {

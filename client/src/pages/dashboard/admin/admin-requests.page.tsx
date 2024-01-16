@@ -210,19 +210,26 @@ function AdminRequests() {
                     />
                   </Flex>
                   <Divider dashed />
-                  {!isEmpty(el.relationship) 
-                    ?    <div>
-                    <div style={{ color: '#111', fontSize: 12 }}>Employee</div>
-                    <div style={{ color: '#111', fontSize: 18 }}>{el.name}</div>
-                    <div style={{ color: '#111', fontSize: 12, marginTop: 10 }}>
-                      Requester relationship
+                  {!isEmpty(el.relationship) ? (
+                    <div>
+                      <div style={{ color: '#111', fontSize: 12 }}>
+                        Employee
+                      </div>
+                      <div style={{ color: '#111', fontSize: 18 }}>
+                        {el.name}
+                      </div>
+                      <div
+                        style={{ color: '#111', fontSize: 12, marginTop: 10 }}
+                      >
+                        Requester relationship
+                      </div>
+                      <div style={{ color: '#111', fontSize: 18 }}>
+                        {el.relationship}
+                      </div>
                     </div>
-                    <div style={{ color: '#111', fontSize: 18 }}>
-                      {el.relationship}
-                    </div>
-                  </div>
-                    : <></>}
-               
+                  ) : (
+                    <></>
+                  )}
                   <div style={{ color: '#111', fontSize: 12, marginTop: 10 }}>
                     Contact No.
                   </div>

@@ -131,27 +131,28 @@ function AdminEmployeeList() {
 
   const handleGeneratePdf = async (sssNo: string) => {
     try {
-      await axios.get(API.generateContributionPdf, {
-        params: { sssNo },
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/pdf',
-        },
-        responseType: 'blob',
-      }).then((response) => {
-        console.log('response', response);
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `${new Date().toISOString()}.pdf`);
-        document.body.appendChild(link);
-        link.click();
-      });
+      await axios
+        .get(API.generateContributionPdf, {
+          params: { sssNo },
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/pdf',
+          },
+          responseType: 'blob',
+        })
+        .then((response) => {
+          console.log('response', response);
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', `${new Date().toISOString()}.pdf`);
+          document.body.appendChild(link);
+          link.click();
+        });
     } catch (error) {
-      console.log('error', error)
+      console.log('error', error);
     }
   };
-
 
   const getAllEmployees = async (data?: {
     searchKeyword?: string;
@@ -222,7 +223,11 @@ function AdminEmployeeList() {
               placement="bottomLeft"
             >
               <Tooltip title="Delete">
-                <Button htmlType="button" type="dashed" icon={<DeleteOutlined />}>
+                <Button
+                  htmlType="button"
+                  type="dashed"
+                  icon={<DeleteOutlined />}
+                >
                   Delete
                 </Button>
               </Tooltip>
@@ -281,12 +286,12 @@ function AdminEmployeeList() {
     } catch (error) {
       toastError('Oops! Something went wrong, Please try again.');
     }
-  }
+  };
 
   useEffect(() => {
     document.title = 'Account Management | SSS Archiving System';
     getAllEmployees();
-    return () => { };
+    return () => {};
   }, []);
 
   return (
@@ -354,7 +359,8 @@ function AdminEmployeeList() {
                           color: '#444',
                         }}
                       >
-                        {record.sss_no} </p>
+                        {record.sss_no}{' '}
+                      </p>
                       <Divider />
                       <p
                         style={{
@@ -443,14 +449,62 @@ function AdminEmployeeList() {
                         Work History
                       </p>
                       <div>
-                        {record?.work_history.map((v: IWorkHistory, index: number) => {
-                          return <div key={v.id} style={{ marginTop: index == 0 ? 0 : 30 }}>
-                            <p style={{ color: "#111", fontSize: 16, margin: 0, padding: 0 }}>{v.company_name}</p>
-                            <p style={{ color: "#111", fontSize: 12, fontWeight: "bold", margin: 0, padding: 0 }}><i>{v.position}</i></p>
-                            <p style={{ color: "#111", fontSize: 12, margin: 0, padding: 0 }}>{v.responsibilities}</p>
-                            <p style={{ color: "#111", fontSize: 10, margin: 0, padding: 0, marginTop: 10 }}>{formatStandardDate(v.start_date)} - {isEmpty(v.end_date) ? "Present" : formatStandardDate(v.end_date)}</p>
-                          </div>
-                        })}
+                        {record?.work_history.map(
+                          (v: IWorkHistory, index: number) => {
+                            return (
+                              <div
+                                key={v.id}
+                                style={{ marginTop: index == 0 ? 0 : 30 }}
+                              >
+                                <p
+                                  style={{
+                                    color: '#111',
+                                    fontSize: 16,
+                                    margin: 0,
+                                    padding: 0,
+                                  }}
+                                >
+                                  {v.company_name}
+                                </p>
+                                <p
+                                  style={{
+                                    color: '#111',
+                                    fontSize: 12,
+                                    fontWeight: 'bold',
+                                    margin: 0,
+                                    padding: 0,
+                                  }}
+                                >
+                                  <i>{v.position}</i>
+                                </p>
+                                <p
+                                  style={{
+                                    color: '#111',
+                                    fontSize: 12,
+                                    margin: 0,
+                                    padding: 0,
+                                  }}
+                                >
+                                  {v.responsibilities}
+                                </p>
+                                <p
+                                  style={{
+                                    color: '#111',
+                                    fontSize: 10,
+                                    margin: 0,
+                                    padding: 0,
+                                    marginTop: 10,
+                                  }}
+                                >
+                                  {formatStandardDate(v.start_date)} -{' '}
+                                  {isEmpty(v.end_date)
+                                    ? 'Present'
+                                    : formatStandardDate(v.end_date)}
+                                </p>
+                              </div>
+                            );
+                          }
+                        )}
                       </div>
                       <Divider />
                       <p
@@ -510,7 +564,7 @@ function AdminEmployeeList() {
                         >
                           <Tooltip title="Print">
                             <Button
-                              type='primary'
+                              type="primary"
                               htmlType="button"
                               icon={<FilePdfOutlined />}
                             >

@@ -114,20 +114,19 @@ export const contributionColumns: ColumnsType<DataType> = [
     title: 'SS',
     dataIndex: 'ss',
     width: '10%',
-    align: "end"
+    align: 'end',
   },
   {
     title: 'EC',
     dataIndex: 'ec',
     width: '10%',
-    align: "end"
-
+    align: 'end',
   },
   {
     title: 'Total',
     dataIndex: 'total',
     width: '10%',
-    align: "end"
+    align: 'end',
   },
   {
     title: '',
@@ -166,18 +165,18 @@ export const employeeContributionColumns: ColumnsType<DataType> = [
     title: 'SS',
     dataIndex: 'ss',
     width: '10%',
-    align: "end"
+    align: 'end',
   },
   {
     title: 'EC',
     dataIndex: 'ec',
     width: '10%',
-    align: "end"
+    align: 'end',
   },
   {
     title: 'Total',
     dataIndex: 'total',
     width: '10%',
-    align: "end"
+    align: 'end',
   },
 ];

@@ -72,7 +72,7 @@ export default function StaffContributionRecord() {
     selectedContributionId: null,
     batchDate: '',
     isModalSingleContributionOpen: false,
-    generatePdfQuery: {}
+    generatePdfQuery: {},
   });
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -89,7 +89,7 @@ export default function StaffContributionRecord() {
     handleSubmit: handleSubmitSBRFormData,
     control: sbrController,
     setValue: cntributionSetValue,
-    formState: { isSubmitting: isCreatingSBR, errors: contributionEditErrors},
+    formState: { isSubmitting: isCreatingSBR, errors: contributionEditErrors },
   } = useForm<ISBRPayload>();
 
   const {
@@ -97,7 +97,10 @@ export default function StaffContributionRecord() {
     control: singleContributionController,
     reset: singleContributionReset,
     setValue: singleContributionSetValue,
-    formState: { isSubmitting: singleContributionIsSubmitting, errors: singleContributionErrors },
+    formState: {
+      isSubmitting: singleContributionIsSubmitting,
+      errors: singleContributionErrors,
+    },
   } = useForm<IContribution>();
 
   const onGetUserProfile = async () => {
@@ -188,22 +191,36 @@ export default function StaffContributionRecord() {
                         TPermissionTypes.EDIT
                       )
                     }
-                    onClick={() =>{
+                    onClick={() => {
                       singleContributionReset();
                       if (el?.sbr_no) {
                         cntributionSetValue('sbr_no', el.sbr_no);
                       }
                       if (el?.sbr_date) {
-                        cntributionSetValue('sbr_date', moment(el.sbr_date, 'YYYY-MM-DD') as any);
+                        cntributionSetValue(
+                          'sbr_date',
+                          moment(el.sbr_date, 'YYYY-MM-DD') as any
+                        );
                       }
                       if (el?.ec) {
-                        cntributionSetValue('ec', el.ec.startsWith('₱') ? el.ec.substring(1) : el.ec);
+                        cntributionSetValue(
+                          'ec',
+                          el.ec.startsWith('₱') ? el.ec.substring(1) : el.ec
+                        );
                       }
                       if (el?.ss) {
-                        cntributionSetValue('ss', el.ss.startsWith('₱') ? el.ss.substring(1) : el.ss);
+                        cntributionSetValue(
+                          'ss',
+                          el.ss.startsWith('₱') ? el.ss.substring(1) : el.ss
+                        );
                       }
                       if (el?.total) {
-                        cntributionSetValue('total', el.total.startsWith('₱') ? el.total.substring(1) : el.total);
+                        cntributionSetValue(
+                          'total',
+                          el.total.startsWith('₱')
+                            ? el.total.substring(1)
+                            : el.total
+                        );
                       }
                       if (el?.name) {
                         cntributionSetValue('name', el.name);
@@ -218,8 +235,8 @@ export default function StaffContributionRecord() {
                         ...prev,
                         selectedContributionId: el.id,
                         isSBRModalOpen: !prev.isSBRModalOpen,
-                      }))}
-                    }
+                      }));
+                    }}
                   >
                     Edit
                   </Button>
@@ -297,115 +314,115 @@ export default function StaffContributionRecord() {
   };
 
   const handleApplyFilter: SubmitHandler<
-  IGeneratePdfPayload & { searchKeyword?: string; duration?: any }
-> = async (data) => {
-  const isInvalidSearchkey =
-    /[0-9]/.test(data.searchKeyword!) && /[a-zA-Z]/.test(data.searchKeyword!);
+    IGeneratePdfPayload & { searchKeyword?: string; duration?: any }
+  > = async (data) => {
+    const isInvalidSearchkey =
+      /[0-9]/.test(data.searchKeyword!) && /[a-zA-Z]/.test(data.searchKeyword!);
 
-  if (isInvalidSearchkey) {
-    return toastError('Search keyword must be a Name or SSS Number');
-  }
-
-  let startDate: any = null;
-  let endDate: any = null;
-  if (data.duration?.length == 2) {
-    startDate = new Date(data.duration[0]).toISOString().substring(0, 10);
-    endDate = new Date(data.duration[1]).toISOString().substring(0, 10);
-  }
-
-  // Check if the searchKeyword contains a number
-  const regex = /.*\d.*/;
-  if (regex.test(data.searchKeyword!)) {
-    // If it contains a number, search by schoolId
-    await getContributions({
-      sssNo: data.searchKeyword,
-      ...(startDate ? { from: startDate } : {}),
-      ...(endDate ? { to: endDate } : {}),
-    });
-
-    setState((prev) => ({
-      ...prev,
-      generatePdfQuery: {
-        sssNo: data.searchKeyword,
-        from: startDate,
-        to: endDate 
-      }
-    }))
-  } else {
-    // If it doesn't contain a number, search by department
-    await getContributions({
-      name: data.searchKeyword,
-      ...(startDate ? { from: startDate } : {}),
-      ...(endDate ? { to: endDate } : {}),
-    });
-    setState((prev) => ({
-      ...prev,
-      generatePdfQuery: {
-        name: data.searchKeyword,
-        from: startDate,
-        to: endDate 
-      }
-    }))
-  }
-};
-
-
-const handleGeneratePdf = async () => {
-  try {
-    if (state.contributions.length >= 100) {
-      return toastError(
-        'Oops! Sorry, We cannot Generate PDF with more than 100 rows'
-      );
+    if (isInvalidSearchkey) {
+      return toastError('Search keyword must be a Name or SSS Number');
     }
-    await axios.get(API.generateContributionPdf, {
-      params: {
-        ...(state?.generatePdfQuery.name
-          ? { name: state?.generatePdfQuery.name }
-          : {}),
-        ...(state?.generatePdfQuery.sssNo
-          ? { sssNo: state?.generatePdfQuery.sssNo }
-          : {}),
-        ...(state?.generatePdfQuery.sssNo
-          ? { displaySSSNo: state?.generatePdfQuery.sssNo }
-          : {}),
-        ...(state?.generatePdfQuery.name
-          ? { displayName: state?.generatePdfQuery.name }
-          : {}),
-        ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
-          ? {
-              from: state?.generatePdfQuery.from,
-              to: state?.generatePdfQuery.to,
-            }
-          : {}),
-        ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
-          ? {
-              displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
-                'MMMM YYYY'
-              )} up to ${dayjs(state?.generatePdfQuery.to).format(
-                'MMMM YYYY'
-              )}`,
-            }
-          : {}),
-      },
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/pdf',
-      },
-      responseType: 'blob',
-    }).then((response) => {
-      console.log('response', response);
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${new Date().toISOString()}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-    });
-  } catch (error) {
-    console.log('error', error)
-  }
-};
 
+    let startDate: any = null;
+    let endDate: any = null;
+    if (data.duration?.length == 2) {
+      startDate = new Date(data.duration[0]).toISOString().substring(0, 10);
+      endDate = new Date(data.duration[1]).toISOString().substring(0, 10);
+    }
+
+    // Check if the searchKeyword contains a number
+    const regex = /.*\d.*/;
+    if (regex.test(data.searchKeyword!)) {
+      // If it contains a number, search by schoolId
+      await getContributions({
+        sssNo: data.searchKeyword,
+        ...(startDate ? { from: startDate } : {}),
+        ...(endDate ? { to: endDate } : {}),
+      });
+
+      setState((prev) => ({
+        ...prev,
+        generatePdfQuery: {
+          sssNo: data.searchKeyword,
+          from: startDate,
+          to: endDate,
+        },
+      }));
+    } else {
+      // If it doesn't contain a number, search by department
+      await getContributions({
+        name: data.searchKeyword,
+        ...(startDate ? { from: startDate } : {}),
+        ...(endDate ? { to: endDate } : {}),
+      });
+      setState((prev) => ({
+        ...prev,
+        generatePdfQuery: {
+          name: data.searchKeyword,
+          from: startDate,
+          to: endDate,
+        },
+      }));
+    }
+  };
+
+  const handleGeneratePdf = async () => {
+    try {
+      if (state.contributions.length >= 100) {
+        return toastError(
+          'Oops! Sorry, We cannot Generate PDF with more than 100 rows'
+        );
+      }
+      await axios
+        .get(API.generateContributionPdf, {
+          params: {
+            ...(state?.generatePdfQuery.name
+              ? { name: state?.generatePdfQuery.name }
+              : {}),
+            ...(state?.generatePdfQuery.sssNo
+              ? { sssNo: state?.generatePdfQuery.sssNo }
+              : {}),
+            ...(state?.generatePdfQuery.sssNo
+              ? { displaySSSNo: state?.generatePdfQuery.sssNo }
+              : {}),
+            ...(state?.generatePdfQuery.name
+              ? { displayName: state?.generatePdfQuery.name }
+              : {}),
+            ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
+              ? {
+                  from: state?.generatePdfQuery.from,
+                  to: state?.generatePdfQuery.to,
+                }
+              : {}),
+            ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
+              ? {
+                  displayCoverage: `${dayjs(
+                    state?.generatePdfQuery.from
+                  ).format('MMMM YYYY')} up to ${dayjs(
+                    state?.generatePdfQuery.to
+                  ).format('MMMM YYYY')}`,
+                }
+              : {}),
+          },
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/pdf',
+          },
+          responseType: 'blob',
+        })
+        .then((response) => {
+          console.log('response', response);
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', `${new Date().toISOString()}.pdf`);
+          document.body.appendChild(link);
+          link.click();
+        });
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
 
   const props: UploadProps = {
     name: 'csv',
@@ -493,7 +510,6 @@ const handleGeneratePdf = async () => {
     data
   ) => {
     try {
-
       await axios.post(`${API_BASE_URL}/api/record/v1/s`, data, {
         headers: {
           Authorization: `Bearer ${getAuthResponse?.access_token}`,
@@ -513,16 +529,16 @@ const handleGeneratePdf = async () => {
 
   const rowProps = (record: IContribution) => ({
     onDoubleClick: () => {
-      if(hasPermission(
-        state.user?.user_permissions!,
-        TPermissionTypes.EDIT
-      )) {
+      if (hasPermission(state.user?.user_permissions!, TPermissionTypes.EDIT)) {
         singleContributionReset();
         if (record?.sbr_no) {
           cntributionSetValue('sbr_no', record.sbr_no);
         }
         if (record?.sbr_date) {
-          cntributionSetValue('sbr_date', moment(record.sbr_date, 'YYYY-MM-DD') as any);
+          cntributionSetValue(
+            'sbr_date',
+            moment(record.sbr_date, 'YYYY-MM-DD') as any
+          );
         }
         if (record?.ec) {
           cntributionSetValue('ec', record.ec.substring(1, record.ec.length));
@@ -531,7 +547,10 @@ const handleGeneratePdf = async () => {
           cntributionSetValue('ss', record.ss.substring(1, record.ss.length));
         }
         if (record?.total) {
-          cntributionSetValue('total', record.total.substring(1, record.total.length));
+          cntributionSetValue(
+            'total',
+            record.total.substring(1, record.total.length)
+          );
         }
         if (record?.name) {
           cntributionSetValue('name', record.name);
@@ -551,10 +570,10 @@ const handleGeneratePdf = async () => {
         return;
       }
 
-      alert("No Edit Permission");
+      alert('No Edit Permission');
     },
   });
-  
+
   useEffect(() => {
     getContributions();
     onGetUserProfile();
@@ -619,15 +638,17 @@ const handleGeneratePdf = async () => {
         <div style={{ marginTop: 20 }}>
           <form onSubmit={handleSubmitGenerateFormData(handleApplyFilter)}>
             <Flex gap={5}>
-            <Tooltip title="Add a single contribution">
+              <Tooltip title="Add a single contribution">
                 <Button
                   type="default"
                   shape="circle"
                   icon={<FileOutlined />}
-                  disabled={!hasPermission(
-                    state.user?.user_permissions!,
-                    TPermissionTypes.UPLOAD
-                  )}
+                  disabled={
+                    !hasPermission(
+                      state.user?.user_permissions!,
+                      TPermissionTypes.UPLOAD
+                    )
+                  }
                   onClick={() =>
                     setState((prev) => ({
                       ...prev,
@@ -675,7 +696,8 @@ const handleGeneratePdf = async () => {
                           state.user?.user_permissions!,
                           TPermissionTypes.GENERATE
                         )
-                      }                    >
+                      }
+                    >
                       Generate
                     </Button>
                   </Tooltip>
@@ -706,9 +728,10 @@ const handleGeneratePdf = async () => {
               onSubmit={singleContributionSubmit(handleSaveSingleContribution)}
             >
               <ContributionFormFields
-                control={singleContributionController} 
-                errors={singleContributionErrors} 
-                includeBatchDate/>
+                control={singleContributionController}
+                errors={singleContributionErrors}
+                includeBatchDate
+              />
               <Button
                 type="primary"
                 size="middle"
@@ -740,9 +763,10 @@ const handleGeneratePdf = async () => {
             }
           >
             <form onSubmit={handleSubmitSBRFormData(handleUpdateSbr)}>
-              <SbrFormFields 
-              control={sbrController} 
-              errors={contributionEditErrors}/>
+              <SbrFormFields
+                control={sbrController}
+                errors={contributionEditErrors}
+              />
               <Button
                 type="primary"
                 size="middle"

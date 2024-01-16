@@ -27,11 +27,7 @@ const ContributionFormFields: React.FC<ContributionFormFieldsProps> = ({
             required: 'This field is required',
           }}
           render={({ field }) => (
-            <Input
-              size="large"
-              placeholder="Enter"
-              {...field}
-            />
+            <Input size="large" placeholder="Enter" {...field} />
           )}
         />
         {errors.name && (
@@ -146,15 +142,12 @@ const ContributionFormFields: React.FC<ContributionFormFieldsProps> = ({
               required: 'This field is required',
               pattern: {
                 value: /^[0-9,]*(\.[0-9]{1,2})?$/,
-                message: 'Only numbers, commas, and up to two decimals are allowed.',
+                message:
+                  'Only numbers, commas, and up to two decimals are allowed.',
               },
             }}
             render={({ field }) => (
-              <Input
-                size="large"
-                placeholder="Enter"
-                {...field}
-              />
+              <Input size="large" placeholder="Enter" {...field} />
             )}
           />
           {errors.ss && (
@@ -169,16 +162,13 @@ const ContributionFormFields: React.FC<ContributionFormFieldsProps> = ({
               required: 'This field is required',
               pattern: {
                 value: /^[0-9,]*(\.[0-9]{1,2})?$/,
-                message: 'Only numbers, commas, and up to two decimals are allowed.',
+                message:
+                  'Only numbers, commas, and up to two decimals are allowed.',
               },
             }}
             control={control}
             render={({ field }) => (
-              <Input
-                size="large"
-                placeholder="Enter"
-                {...field}
-              />
+              <Input size="large" placeholder="Enter" {...field} />
             )}
           />
           {errors.ec && (
@@ -193,16 +183,13 @@ const ContributionFormFields: React.FC<ContributionFormFieldsProps> = ({
               required: 'This field is required',
               pattern: {
                 value: /^[0-9,]*(\.[0-9]{1,2})?$/,
-                message: 'Only numbers, commas, and up to two decimals are allowed.',
+                message:
+                  'Only numbers, commas, and up to two decimals are allowed.',
               },
             }}
             control={control}
             render={({ field }) => (
-              <Input
-                size="large"
-                placeholder="Enter"
-                {...field}
-              />
+              <Input size="large" placeholder="Enter" {...field} />
             )}
           />
           {errors.total && (

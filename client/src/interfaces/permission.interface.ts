@@ -4,5 +4,5 @@ export enum TPermissionTypes {
   GENERATE = 'Generate',
   EDIT = 'Edit',
   VIEW = 'View',
-  EMAIL = 'Email'
+  EMAIL = 'Email',
 }

@@ -24,7 +24,7 @@ function RequestPage() {
     data
   ) => {
     data.status = 'PENDING';
-    if(isEmpty(data.all)) {
+    if (isEmpty(data.all)) {
       data.all = false;
     }
     if (isEmpty(data.date_of_employment) && isEmpty(data.date_of_resignation)) {
@@ -54,7 +54,7 @@ function RequestPage() {
     if (watch('accept_terms')) {
       Modal.info({
         title: 'Data Privacy Act of 2012 Agreement',
-        width:"30%",
+        width: '30%',
         content: (
           <div>
             <p>
@@ -64,14 +64,14 @@ function RequestPage() {
               information. Terms and Conditions:
             </p>
             <p>
-              1. <b>Confidentiality</b>: We assure you that any information you provide
-              will be treated with the utmost confidentiality and will only be
-              used for the intended purposes.
+              1. <b>Confidentiality</b>: We assure you that any information you
+              provide will be treated with the utmost confidentiality and will
+              only be used for the intended purposes.
             </p>
             <p>
-              2. <b>Data Security</b>: We employ industry-standard security measures to
-              safeguard your data against unauthorized access, disclosure,
-              alteration, and destruction.
+              2. <b>Data Security</b>: We employ industry-standard security
+              measures to safeguard your data against unauthorized access,
+              disclosure, alteration, and destruction.
             </p>
             <p>
               3. <b>Purpose Limitation</b>: Your data will only be used for the
@@ -79,9 +79,9 @@ function RequestPage() {
               unrelated purposes.
             </p>
             <p>
-              4. <b>Consent</b>: You explicitly consent to the processing of your
-              personal information in accordance with the provisions of the Data
-              Privacy Act of 2012.
+              4. <b>Consent</b>: You explicitly consent to the processing of
+              your personal information in accordance with the provisions of the
+              Data Privacy Act of 2012.
             </p>
           </div>
         ),
