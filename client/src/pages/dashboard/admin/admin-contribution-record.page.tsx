@@ -610,23 +610,34 @@ export default function AdminContributionRecord() {
                       picker="month"
                     />
                   </Tooltip>
-                  <Tooltip
-                    title="Delete the selected batch"
+
+                  <Popconfirm
+                    title={`Do you want to delete all records within batch ${state.batchDate.substring(
+                      0,
+                      7
+                    )}?`}
+                    onConfirm={() => handleDeleteContributionsByBatch()}
+                    okText="Yes"
+                    cancelText="No"
                     placement="bottomLeft"
                   >
-                    <Button
-                      type="default"
-                      icon={<DeleteColumnOutlined />}
-                      style={{
-                        color: 'red',
-                        opacity: isEmpty(state.batchDate) ? 0.3 : 1,
-                      }}
-                      onClick={() => handleDeleteContributionsByBatch()}
-                      disabled={isEmpty(state.batchDate)}
+                    <Tooltip
+                      title="Delete the selected batch"
+                      placement="leftBottom"
                     >
-                      Delete
-                    </Button>
-                  </Tooltip>
+                      <Button
+                        type="default"
+                        icon={<DeleteColumnOutlined />}
+                        style={{
+                          color: 'red',
+                          opacity: isEmpty(state.batchDate) ? 0.3 : 1,
+                        }}
+                        disabled={isEmpty(state.batchDate)}
+                      >
+                        Delete
+                      </Button>
+                    </Tooltip>
+                  </Popconfirm>
                 </Flex>
               </div>
             </Flex>
