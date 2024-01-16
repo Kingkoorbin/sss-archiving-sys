@@ -13,7 +13,7 @@ class ContributionValidator {
             'total' => 'required|string',
             'name' => 'required|string',
             'sss_no' => 'required|string',
-            'sbr_no' => 'nullable|numeric',
+            'sbr_no' => 'nullable|string',
             'sbr_date' => 'nullable|date',
         ]);
 
@@ -45,7 +45,7 @@ class ContributionValidator {
             'ec' => 'required|string',
             'sss_no' => 'required|string',
             'batchDate' => 'required|date',
-            'sbr_no' => 'nullable|numeric',
+            'sbr_no' => 'nullable|string',
             'sbr_date' => 'nullable|date',
         ]);
 

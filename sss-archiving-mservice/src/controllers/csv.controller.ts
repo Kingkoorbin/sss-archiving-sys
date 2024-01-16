@@ -6,6 +6,7 @@ import { statuses } from '../_core/const/api.statuses';
 import axios from 'axios';
 import { getEnv } from '../_core/config/env.config';
 import dayjs from 'dayjs';
+import { convertToISODate, isEmpty } from '../_core/utils/common/common.util';
 
 export const uploadCsv = async (req: Request, res: Response) => {
   try {
@@ -13,7 +14,7 @@ export const uploadCsv = async (req: Request, res: Response) => {
     const env = await getEnv();
 
     const mappedData = csvData.map((v) => {
-      return {
+      const mappedObject: any = {
         name: v['Name of Employee'],
         sss_no: v['SS Number'],
         ss: v['SS'],
@@ -21,8 +22,16 @@ export const uploadCsv = async (req: Request, res: Response) => {
         total: v['Total Contributions'],
         batchDate: req.body?.batchDate
       };
-    });
 
+      if(!isEmpty(v['SBR No'])) {
+        mappedObject.sbr_no = v['SBR No'];
+      }
+      if(!isEmpty(v['SBR Date'])) {
+        mappedObject.sbr_date = convertToISODate(v['SBR Date']);
+      }
+      return mappedObject;
+    });
+    
     await axios.post(`${env.RECEIVER_HOST}/api/record/v1`, {
       contributions: mappedData,
     });
