@@ -2,13 +2,17 @@
 <html lang="en">
 <head>
   <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
         body {
             font-family: 'Arial', sans-serif;
-            background-image: url('https://res.cloudinary.com/diigkcc6g/image/upload/v1705038091/SSS%20Archiving%20System/411071210_1317672516288649_1257777723783135304_n_lysw8k.jpg');
+            background-image: url("{{ public_path('images/pdf_bg.jpg') }}");
             background-repeat: no-repeat;
             background-size: cover; /* or 'contain' based on your preference */
-            margin: 0; /* Remove body margin */
-            padding: 0; /* Remove body padding */
+            background-position: center;
         }
         .page-break {
             page-break-after: always;

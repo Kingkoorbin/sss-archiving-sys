@@ -131,24 +131,20 @@ function AdminEmployeeList() {
 
   const handleGeneratePdf = async (sssNo: string) => {
     try {
-      await axios
-        .get(API.generateContributionPdf, {
-          params: { sssNo },
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/pdf',
-          },
-          responseType: 'blob',
-        })
-        .then((response) => {
-          console.log('response', response);
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', `${new Date().toISOString()}.pdf`);
-          document.body.appendChild(link);
-          link.click();
-        });
+      const response = await axios.get(API.generateContributionPdf, {
+        params: { sssNo },
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/pdf',
+        },
+        responseType: 'blob',
+      });
+
+      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(pdfBlob);
+
+      // Open the PDF in a new tab
+      window.open(url, '_blank');
     } catch (error) {
       console.log('error', error);
     }
