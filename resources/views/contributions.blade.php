@@ -25,11 +25,11 @@
         }
 
         .page-space {
-            margin-top: 200px;
+            margin-top: 350px;
         }
 
         table {
-            margin-left: 150px;
+            margin-left: 170px;
             border-collapse: collapse;
             width: 80%; /* Adjusted table width */
         }
