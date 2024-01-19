@@ -222,23 +222,41 @@ class ClientController extends Controller
         }
     }
 
-    public function getClient(Request $request, $id)
+    public function getClient(Request $request)
     {
         $user = auth()->user();
-
         $allowedRoles = ["ADMIN", "STAFF"];
+        $searchKeyword = $request->query('searchKeyword');
 
-        if(!in_array($user->role, $allowedRoles)) {
+        if(!$searchKeyword) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Employee Not found.',
+            ], 404);
+        }
+        if (!in_array($user->role, $allowedRoles)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Role not authorized',
             ], 401);
         }
 
-        // Assuming 'school_id' is the column name, adjust it based on your actual column name
-        $client = Client::where('school_id', $id)
-            ->with('workHistory')
-            ->first();
+        $query = Client::query();
+
+        if ($searchKeyword) {
+            $query->where(function ($subQuery) use ($searchKeyword) {
+                $subQuery->where('department', 'ILIKE', '%' . $searchKeyword . '%')
+                    ->orWhere('school_id', 'ILIKE', '%' . $searchKeyword . '%')
+                    ->orWhere(function ($nameQuery) use ($searchKeyword) {
+                        $nameQuery->where('first_name', 'ILIKE', '%' . $searchKeyword . '%')
+                            ->orWhere('middle_name', 'ILIKE', '%' . $searchKeyword . '%')
+                            ->orWhere('last_name', 'ILIKE', '%' . $searchKeyword . '%');
+                    })
+                    ->orWhere('sss_no', 'ILIKE', '%' . $searchKeyword . '%');
+            });
+        }
+
+        $client = $query->with('workHistory')->first();
 
         if ($client) {
             return response()->json($client);

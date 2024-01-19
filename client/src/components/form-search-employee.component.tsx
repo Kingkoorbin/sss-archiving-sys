@@ -20,7 +20,7 @@ const SearchFormFields: React.FC<SearchFormFieldsProps> = ({
         control={control}
         render={({ field }) => (
           <Search
-            placeholder="Search by School ID or department"
+            placeholder="Search by id, name, or department"
             style={{ marginBottom: 20 }}
             loading={isSearching}
             onSearch={onSearch}

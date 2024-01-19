@@ -101,23 +101,7 @@ function AdminEmployeeList() {
   });
 
   const handleSearch: SubmitHandler<ISearchPayload> = async (data) => {
-    const isInvalidSearchkey =
-      /[0-9]/.test(data.searchKeyword!) && /[a-zA-Z]/.test(data.searchKeyword!);
-
-    if (isInvalidSearchkey) {
-      return toastError(
-        'Search keyword must be a School ID or Department name.'
-      );
-    }
-    // Check if the searchKeyword contains a number
-    const isNumeric = /\d/.test(data.searchKeyword!);
-    if (isNumeric) {
-      // If it contains a number, search by schoolId
-      await getAllEmployees({ schoolId: data.searchKeyword?.trim() });
-    } else {
-      // If it doesn't contain a number, search by department
       await getAllEmployees({ searchKeyword: data.searchKeyword?.trim() });
-    }
   };
 
   const handleOk = () => {
@@ -152,7 +136,6 @@ function AdminEmployeeList() {
 
   const getAllEmployees = async (data?: {
     searchKeyword?: string;
-    schoolId?: string;
   }) => {
     setState((prev) => ({
       ...prev,
@@ -161,12 +144,12 @@ function AdminEmployeeList() {
 
     let getAllEmployeesResponse: any = null;
 
-    if (!isEmpty(data?.schoolId)) {
+    if (!isEmpty(data?.searchKeyword)) {
       const findBySchoolId = await HttpClient.setAuthToken(
         getAuthResponse?.access_token
       ).get<IEmployeeProfile[], any>(
-        `${API.employees}/${data?.schoolId}/information`,
-        {}
+        `${API.employees}/information`,
+        { searchKeyword: data?.searchKeyword}
       );
       if (findBySchoolId.message === 'Employee Not found.') {
         getAllEmployeesResponse = [];
@@ -174,12 +157,12 @@ function AdminEmployeeList() {
         findBySchoolId.data = [findBySchoolId.data as any];
         getAllEmployeesResponse = findBySchoolId;
       }
-    } else {
+    }
+    else {
       getAllEmployeesResponse = await HttpClient.setAuthToken(
         getAuthResponse?.access_token
       ).get<IEmployeeProfile[], { role: string }>(API.employees, {
         role: 'EMPLOYEE',
-        ...(data?.searchKeyword ? { department: data?.searchKeyword } : {}),
       });
     }
     if (getAllEmployeesResponse.message === 'Authentication required.') {

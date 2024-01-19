@@ -13,6 +13,7 @@ export const API = {
 
   // User related
   users: `${API_BASE_URL}/api/client/v1`,
+  userInformation: `${API_BASE_URL}/api/client/v1/information`,
   employees: `${API_BASE_URL}/api/client/v1`,
   employeeEnrollment: `${API_BASE_URL}/api/client/v1`,
 
