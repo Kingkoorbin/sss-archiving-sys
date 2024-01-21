@@ -187,23 +187,30 @@
         </tbody>
     </table>
     <center>=== Nothing Follows === </center>
-    <br/>
-    <br/>
+    <br><br>
+    @if($index % 13)
+    <div class="page-break"></div>
+    </div>
+        @if($index % 13)
+        <br><br><br><br><br><br><br><br>
+        @endif
+    @endif
     <center>
         <h5 style='padding: 0px; margin: 0px'>Employer Name : LOURDESS COLLEGE</h5>
         <h5 style='padding: 0px; margin: 0px'>Employer Number : 08-0027000-1</h5>
     </center>
     <center>
         <div style=' margin-top: 30px; '>
-            <h6 style='padding: 0px; margin-bottom: 40px;'>Prepared By</h6>
+            <h6 style='padding: 0px; margin-bottom: 50px;'>Prepared By</h6>
             <p style='padding: 0px; margin: 0px'>MS. CRISTIE LYN. ABAMONGA</p>
             <p style='padding: 0px; margin: 0px; font-size: 30px;'>Payroll Incharge</p>
         </div>
         <div style=' margin-top: 30px; '>
-            <h6 style='padding: 0px; margin-bottom: 40px;'>Noted By</h6>
+            <h6 style='padding: 0px; margin-bottom: 50px;'>Noted By</h6>
             <p style='padding: 0px; margin: 0px'>S. MARIA MAE M. ANACAYA, RVM</p>
             <p style='padding: 0px; margin: 0px; font-size: 30px;'>Vice President for Finance</p>
         </div>
     </center>
+
 </body>
 </html>
