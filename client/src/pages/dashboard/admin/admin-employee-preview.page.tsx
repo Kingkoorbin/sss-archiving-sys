@@ -65,8 +65,11 @@ function AdminEmployeePreview() {
 
   const onGeAllWorkExperience = async () => {
     const response: { data: IEmployeeProfile } = await axios.get(
-      `${API_BASE_URL}/api/client/v1/${locationState.school_id}/information`,
+      `${API_BASE_URL}/api/client/v1/information`,
       {
+        params: {
+          searchKeyword: locationState.school_id
+        },
         headers: {
           Authorization: `Bearer ${getAuthResponse?.access_token}`,
         },
@@ -140,8 +143,11 @@ function AdminEmployeePreview() {
   const getEmployeeInfo = async () => {
     try {
       const response: { data: IEmployeeProfile } = await axios.get(
-        `${API_BASE_URL}/api/client/v1/${locationState.school_id}/information`,
+        `${API_BASE_URL}/api/client/v1/information`,
         {
+          params: {
+            searchKeyword: locationState.school_id
+          },
           headers: {
             Authorization: `Bearer ${getAuthResponse?.access_token}`,
           },
