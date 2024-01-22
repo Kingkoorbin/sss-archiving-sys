@@ -149,7 +149,7 @@ function AdminEmployeeList() {
         getAuthResponse?.access_token
       ).get<IEmployeeProfile[], any>(
         `${API.employees}/information`,
-        { searchKeyword: data?.searchKeyword}
+        { searchKeyword: data?.searchKeyword }
       );
       if (findBySchoolId.message === 'Employee Not found.') {
         getAllEmployeesResponse = [];
