@@ -186,14 +186,14 @@
             @endforeach
         </tbody>
     </table>
-    <center>=== Nothing Follows === </center>
+    @if( $index > 0 && $index % 24 === 0)
+    <center><div><h6 style='padding: 0px; margin-bottom: 50px;'></h6></div></center>
+    @endif
+    <center>=== Nothing Follows ===</center>
     <br><br>
-    @if($index % 13)
+    @if($index > 13 && $index % 13)
     <div class="page-break"></div>
-    </div>
-        @if($index % 13)
-        <br><br><br><br><br><br><br><br>
-        @endif
+    <br><br><br><br><br><br><br><br>
     @endif
     <center>
         <h5 style='padding: 0px; margin: 0px'>Employer Name : LOURDESS COLLEGE</h5>
