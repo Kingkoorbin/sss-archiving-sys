@@ -44,7 +44,7 @@ function StaffEmployeePreview() {
       `${API_BASE_URL}/api/client/v1/information`,
       {
         params: {
-          searchKeyword: locationState.school_id
+          searchKeyword: locationState.school_id,
         },
         headers: {
           Authorization: `Bearer ${getAuthResponse?.access_token}`,
@@ -64,7 +64,7 @@ function StaffEmployeePreview() {
         `${API_BASE_URL}/api/client/v1/information`,
         {
           params: {
-            searchKeyword: locationState.school_id
+            searchKeyword: locationState.school_id,
           },
           headers: {
             Authorization: `Bearer ${getAuthResponse?.access_token}`,
@@ -92,284 +92,476 @@ function StaffEmployeePreview() {
       <StaffNavbar />
 
       <div style={{ padding: '50px', background: '#fbfbff' }}>
-        <Flex gap={50} justify="center">
-          <img src={avatar} alt="abatar" style={{ height: 250 }} />
-          <div>
-            <div>
-              <div
-                style={{
-                  background: 'white',
-                  padding: 50,
-                  width: 800,
-                  borderRadius: 20,
-                }}
-              >
-                <div>
-                  <p
-                    style={{
-                      padding: 0,
-                      margin: 0,
-                      fontSize: 11,
-                      color: '#111',
-                      fontWeight: '600',
-                    }}
-                  >
-                    Full name
-                  </p>
-                  <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
-                    {state.employee?.suffix}
-                    {!isEmpty(state.employee?.suffix) && <>.&nbsp;</>}
-                    {state.employee?.first_name}&nbsp;
-                    {state.employee?.last_name},&nbsp;
-                    {state.employee?.middle_name}
-                  </p>
-                </div>
-                <Divider dashed />
-
+        <Flex justify="center">
+          <div
+            style={{
+              background: 'white',
+              padding: 50,
+              width: 800,
+              borderRadius: 20,
+            }}
+          >
+            <Flex gap={30} justify="space-between" align="center">
+              <div>
                 <p
                   style={{
                     padding: 0,
                     margin: 0,
                     fontSize: 11,
-                    color: '#111',
+                    color: '#333',
+                    fontWeight: '600',
+                  }}
+                >
+                  Suffix
+                </p>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
+                  {state.employee?.suffix}
+                </p>
+              </div>
+              <div>
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    fontSize: 11,
+                    color: '#333',
+                    fontWeight: '600',
+                  }}
+                >
+                  First name
+                </p>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
+                  {state.employee?.first_name}
+                </p>
+              </div>
+              <div>
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    fontSize: 11,
+                    color: '#333',
+                    fontWeight: '600',
+                  }}
+                >
+                  Last name
+                </p>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
+                  {state.employee?.last_name}
+                </p>
+              </div>
+              <div>
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    fontSize: 11,
+                    color: '#333',
+                    fontWeight: '600',
+                  }}
+                >
+                  Middle name
+                </p>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
+                  {state.employee?.middle_name}
+                </p>
+              </div>
+            </Flex>
+
+            <Divider dashed />
+            <Flex gap={30} align="center">
+              <div>
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    fontSize: 11,
+                    color: '#333',
                     fontWeight: '600',
                   }}
                 >
                   Gender
                 </p>
-                <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
                   {state.employee?.gender}
                 </p>
+              </div>
+              <div>
                 <p
                   style={{
                     padding: 0,
                     margin: 0,
                     fontSize: 11,
-                    color: '#111',
+                    color: '#333',
                     fontWeight: '600',
                     marginTop: 10,
                   }}
                 >
                   Birthday
                 </p>
-                <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
                   {state.employee?.birthdate}
                 </p>
+              </div>
+              <div>
                 <p
                   style={{
                     padding: 0,
                     margin: 0,
                     fontSize: 11,
-                    color: '#111',
+                    color: '#333',
                     fontWeight: '600',
                     marginTop: 10,
                   }}
                 >
                   Civil Status
                 </p>
-                <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
                   {state.employee?.civil_status}
                 </p>
+              </div>
+              <div>
                 <p
                   style={{
                     padding: 0,
                     margin: 0,
                     fontSize: 11,
-                    color: '#111',
+                    color: '#333',
                     fontWeight: '600',
                     marginTop: 10,
                   }}
                 >
                   Blood type
                 </p>
-                <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
                   {state.employee?.blood_type}
                 </p>
-                <Divider dashed />
+              </div>
+            </Flex>
 
+            <Divider dashed />
+
+            <Flex gap={30} align="center">
+              <div>
                 <p
                   style={{
                     padding: 0,
                     margin: 0,
                     fontSize: 11,
-                    color: '#111',
+                    color: '#333',
                     fontWeight: '600',
                     marginTop: 10,
                   }}
                 >
                   Phone No.
                 </p>
-                <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
                   {state.employee?.phone_number}
                 </p>
+              </div>
+              <div>
                 <p
                   style={{
                     padding: 0,
                     margin: 0,
                     fontSize: 11,
-                    color: '#111',
+                    color: '#333',
                     fontWeight: '600',
                     marginTop: 10,
                   }}
                 >
                   Email
                 </p>
-                <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
                   {state.employee?.email}
                 </p>
-                <Divider dashed />
+              </div>
+            </Flex>
 
+            <Divider dashed />
+
+            <Flex gap={30} align="center">
+              <div>
                 <p
                   style={{
                     padding: 0,
                     margin: 0,
                     fontSize: 11,
-                    color: '#111',
+                    color: '#333',
                     fontWeight: '600',
                     marginTop: 10,
                   }}
                 >
                   Present Address
                 </p>
-                <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
                   {state.employee?.present_address}
                 </p>
+              </div>
+              <div>
                 <p
                   style={{
                     padding: 0,
                     margin: 0,
                     fontSize: 11,
-                    color: '#111',
+                    color: '#333',
                     fontWeight: '600',
                     marginTop: 10,
                   }}
                 >
                   Permanent Address
                 </p>
-                <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
                   {state.employee?.permanent_address}
                 </p>
-                <Divider dashed />
+              </div>
+            </Flex>
 
+            <Divider dashed />
+
+            <Flex gap={30} align="center">
+              <div>
                 <p
                   style={{
                     padding: 0,
                     margin: 0,
                     fontSize: 11,
-                    color: '#111',
+                    color: '#333',
                     fontWeight: '600',
                     marginTop: 10,
                   }}
                 >
                   Main Employer
                 </p>
-                <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
                   {state.employee?.main_employer}
                 </p>
+              </div>
+              <div>
                 <p
                   style={{
                     padding: 0,
                     margin: 0,
                     fontSize: 11,
-                    color: '#111',
+                    color: '#333',
                     fontWeight: '600',
                     marginTop: 10,
                   }}
                 >
                   Address
                 </p>
-                <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
                   {state.employee?.address}
                 </p>
-                <Divider dashed />
+              </div>
+            </Flex>
 
+            <Divider dashed />
+
+            <Flex gap={30} align="center">
+              <div>
                 <p
                   style={{
                     padding: 0,
                     margin: 0,
                     fontSize: 11,
-                    color: '#111',
+                    color: '#333',
                     fontWeight: '600',
                     marginTop: 10,
                   }}
                 >
                   School ID
                 </p>
-                <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
                   {state.employee?.school_id}
                 </p>
+              </div>
+              <div>
                 <p
                   style={{
                     padding: 0,
                     margin: 0,
                     fontSize: 11,
-                    color: '#111',
+                    color: '#333',
                     fontWeight: '600',
                     marginTop: 10,
                   }}
                 >
                   Department
                 </p>
-                <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
                   {state.employee?.department}
                 </p>
+              </div>
+              <div>
                 <p
                   style={{
                     padding: 0,
                     margin: 0,
                     fontSize: 11,
-                    color: '#111',
+                    color: '#333',
                     fontWeight: '600',
                     marginTop: 10,
                   }}
                 >
                   Personnel Category
                 </p>
-                <p style={{ fontSize: 26, padding: 0, margin: 0 }}>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
                   {state.employee?.personnel_category}
                 </p>
               </div>
-            </div>
-            <div>
-              <div style={{ marginTop: 50 }}>
-                {state.workExperience?.map((el) => {
-                  return (
-                    <div key={el.id}>
-                      <Card
-                        bordered={false}
-                        style={{ marginTop: 20, width: 800 }}
-                      >
-                        <p style={{ fontSize: 24, padding: 0, margin: 0 }}>
-                          {el.company_name}
-                        </p>
-                        <p
-                          style={{
-                            fontSize: 16,
-                            padding: 0,
-                            margin: 0,
-                            fontWeight: '600',
-                          }}
-                        >
-                          {el.position}
-                        </p>
-                        <p
-                          style={{
-                            fontSize: 12,
-                            padding: 0,
-                            margin: 0,
-                            color: '#888',
-                          }}
-                        >
-                          {moment(el.start_date).format('YYYY, MMM DD')} -{' '}
-                          {moment(el.end_date).format('YYYY, MMM DD')}{' '}
-                        </p>
-                        <p>{el.responsibilities}</p>
-                      </Card>
-                    </div>
-                  );
-                })}
+            </Flex>
+
+            <Divider dashed />
+
+            <Flex gap={30} align="center">
+              <div>
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    fontSize: 11,
+                    color: '#333',
+                    fontWeight: '600',
+                    marginTop: 10,
+                  }}
+                >
+                  SSS No.
+                </p>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
+                  {state.employee?.sss_no ?? 'N/A'}
+                </p>
               </div>
-            </div>
+
+              <div>
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    fontSize: 11,
+                    color: '#333',
+                    fontWeight: '600',
+                    marginTop: 10,
+                  }}
+                >
+                  Philhealth No.
+                </p>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
+                  {state.employee?.philhealth_no ?? 'N/A'}
+                </p>
+              </div>
+
+              <div>
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    fontSize: 11,
+                    color: '#333',
+                    fontWeight: '600',
+                    marginTop: 10,
+                  }}
+                >
+                  Pag-ibig No.
+                </p>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
+                  {state.employee?.pagibig_no ?? 'N/A'}
+                </p>
+              </div>
+
+              <div>
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    fontSize: 11,
+                    color: '#333',
+                    fontWeight: '600',
+                    marginTop: 10,
+                  }}
+                >
+                  TIN No.
+                </p>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
+                  {state.employee?.tin ?? 'N/A'}
+                </p>
+              </div>
+
+              <div>
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    fontSize: 11,
+                    color: '#333',
+                    fontWeight: '600',
+                    marginTop: 10,
+                  }}
+                >
+                  RVM Retirement No.
+                </p>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
+                  {state.employee?.rvm_retirement_no ?? 'N/A'}
+                </p>
+              </div>
+
+              <div>
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    fontSize: 11,
+                    color: '#333',
+                    fontWeight: '600',
+                    marginTop: 10,
+                  }}
+                >
+                  BPI ATM No.
+                </p>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
+                  {state.employee?.bpi_atm_account_no ?? 'N/A'}
+                </p>
+              </div>
+            </Flex>
+
+            <Divider dashed />
+            <Flex gap={30} align="center">
+              <div>
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    fontSize: 11,
+                    color: '#333',
+                    fontWeight: '600',
+                    marginTop: 10,
+                  }}
+                >
+                  Date hired
+                </p>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
+                  {state.employee?.date_hired}
+                </p>
+              </div>
+
+              <div>
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    fontSize: 11,
+                    color: '#333',
+                    fontWeight: '600',
+                    marginTop: 10,
+                  }}
+                >
+                  Date resigned
+                </p>
+                <p style={{ fontSize: 18, padding: 0, margin: 0 }}>
+                  {state.employee?.date_resigned ?? 'N/A'}
+                </p>
+              </div>
+            </Flex>
           </div>
         </Flex>
       </div>
