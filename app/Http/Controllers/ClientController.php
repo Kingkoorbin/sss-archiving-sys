@@ -313,7 +313,7 @@ class ClientController extends Controller
     {
         $user = auth()->user();
 
-        $allowedRoles = ["ADMIN"];
+        $allowedRoles = ["ADMIN", "STAFF"];
 
         if(!in_array($user->role, $allowedRoles)) {
             return response()->json([

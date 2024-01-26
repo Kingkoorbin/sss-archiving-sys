@@ -20,6 +20,7 @@ import StaffContributionRecord from './pages/dashboard/staff/staff-contribution-
 import StaffEmployeeList from './pages/dashboard/staff/staff-employee-list.page';
 import StaffEmployeePreview from './pages/dashboard/staff/staff-employee-preview.page';
 import StaffRequests from './pages/dashboard/staff/staff-requests.page';
+import StaffEmployeeEdit from './pages/dashboard/staff/admin-employee-edit.page';
 
 const router = createBrowserRouter([
   {
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
   {
     path: '/dashboard/a/activities',
     element: <AdminActivityLogs />,
+  },
+  {
+    path: '/dashboard/s/account-management/employee/:id/edit',
+    element: <StaffEmployeeEdit />,
   },
 ]);
 
