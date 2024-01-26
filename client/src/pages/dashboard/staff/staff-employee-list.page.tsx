@@ -241,7 +241,39 @@ function StaffEmployeeList() {
                 </Button>
               </Tooltip>
             </Popconfirm>
-
+            <Popconfirm
+              title="Do you want to update employee information?"
+              onConfirm={() =>
+                navigate(
+                  `/dashboard/s/account-management/employee/${el.school_id}/edit`,
+                  {
+                    state: el,
+                  }
+                )
+              }
+              okText="Yes"
+              cancelText="No"
+              placement="bottomLeft"
+            >
+              <Tooltip       title={
+                  !hasPermission(
+                    user?.user_permissions!,
+                    TPermissionTypes.EDIT
+                  )
+                    ? 'No permission'
+                    : 'Edit'
+                }>
+                <Button htmlType="button" type="dashed" icon={<EditOutlined />} 
+                       disabled={
+                        !hasPermission(
+                          user?.user_permissions!,
+                          TPermissionTypes.EDIT
+                        )
+                      }>
+                  Edit
+                </Button>
+              </Tooltip>
+            </Popconfirm>
             <Tooltip title="View">
               <Button
                 type="primary"
