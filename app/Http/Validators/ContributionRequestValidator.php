@@ -10,7 +10,7 @@ class ContributionRequestValidator {
     {
 
         $validator = Validator::make($request->all(), [
-            'sss_no' => 'required|string',
+            'sss_no' => 'nullable|string',
             'name' => 'required|string',
             'date_of_employment' => 'required|date',
             'date_of_resignation' => 'required|date',
