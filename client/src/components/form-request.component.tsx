@@ -122,7 +122,7 @@ const RequestFormFields: React.FC<RequestFormFieldsProps> = ({
           name="sss_no"
           control={control}
           rules={{
-            required: 'This field is required',
+            // required: 'This field is required',
             pattern: {
               value: /^[0-9]{2}-[0-9]+-[0-9]{1}$/,
               message: 'Format of SSS No. 00-00000000-0',
