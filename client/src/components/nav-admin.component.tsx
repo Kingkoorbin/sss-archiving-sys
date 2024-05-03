@@ -118,26 +118,26 @@ const AdminNavbar: React.FC = () => {
         color: '#999',
       },
       children: [
-        {
-          type: 'group',
-          label: 'Account',
-          children: [
-            {
-              label: 'Change Password',
-              key: 'setting:3',
-              disabled: true,
-            },
-          ],
-        },
+        // {
+        //   type: 'group',
+        //   label: 'Account',
+        //   children: [
+        //     {
+        //       label: 'Change Password',
+        //       key: 'setting:3',
+        //       disabled: true,
+        //     },
+        //   ],
+        // },
         {
           type: 'group',
           label: 'System',
           children: [
-            {
-              label: 'Maintenance Mode',
-              key: 'setting:1',
-              disabled: true,
-            },
+            // {
+            //   label: 'Maintenance Mode',
+            //   key: 'setting:1',
+            //   disabled: true,
+            // },
             {
               label: 'Sign out',
               key: 'setting:2',
