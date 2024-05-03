@@ -90,6 +90,12 @@ const AdminNavbar: React.FC = () => {
               onClick: () =>
                 navigate('/dashboard/a/account-management/staff/create'),
             },
+            {
+                label: 'Signatories',
+                key: 'item-staff-mgmt:2',
+                onClick: () =>
+                  navigate('/dashboard/a/account-management/staff/create'),
+              },
           ],
         },
       ],

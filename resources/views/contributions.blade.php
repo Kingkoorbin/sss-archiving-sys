@@ -174,7 +174,7 @@
                 @endif
                 <tr style="margin-bottom: 10px;">
                     <td style="text-align: center;" class="{{ $currentYear === substr($contribution['batchDate'], 0, 4) ? 'hidden' : '' }}">{{ substr($contribution['batchDate'], 0, 4) }}</td>
-                    <td>{{ Carbon\Carbon::parse($contribution['batchDate'])->format('F') }}</td>
+                    <td style="text-align: center;"> {{ Carbon\Carbon::parse($contribution['batchDate'])->format('F') }} </td>
                     <td style="text-align: right;">@if($index % 24 === 0) Php @endif{{ $contribution['ss'] }}</td>
                     <td style="text-align: right;">@if($index % 24 === 0) Php @endif{{ $contribution['ec'] }}</td>
                     <td style="text-align: center;">{{ $contribution['sbr_no'] }}</td>
