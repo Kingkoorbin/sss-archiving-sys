@@ -74,7 +74,7 @@
         }
 
         th.ec {
-            width: 50px;
+            width: 100px;
         }
 
         th.total {
@@ -152,7 +152,7 @@
         <tbody>
             @php
                 $currentYear = null;
-            @endphp
+           @endphp
             @foreach($contributions as $index => $contribution)
                 @if($index > 0 && $index % 24 === 0)
             </tbody>
@@ -191,11 +191,61 @@
     @endif
     <center>=== Nothing Follows ===</center>
     <br><br>
-    @if($index > 13 && $index % 13)
+    @if($index > 22)
     <div class="page-break"></div>
     <br><br><br><br><br><br><br><br>
+
+        <table>
+            <thead>
+            <tr>
+            <td colspan="2" style="background-color: none; text-align: center;">
+        <h5 style='padding: 0px; margin: 0px; font-size: 30px'>Employer Name : LOURDESS COLLEGE</h5>
+        <h5 style='padding: 0px; margin: 0px; font-size: 30px'>Employer Number : 08-0027000-1</h5>
+            </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td style="text-align: center;" >        <div style=' margin-top: 30px; '>
+            <h6 style='padding: 0px; margin-bottom: 50px; font-size: 30px;'>Prepared By</h6><br><br>
+            <p style='padding: 0px; margin: 0px'>MS. CRISTIE LYN. ABAMONGA</p>
+            <p style='padding: 0px; margin: 0px; font-size: 30px;'>Payroll Incharge</p>
+        </div></td>
+                <td style="text-align: center;" >        <div style=' margin-top: 30px; '>
+            <h6 style='padding: 0px; margin-bottom: 50px; font-size: 30px;'>Noted By</h6><br><br>
+            <p style='padding: 0px; margin: 0px'>S. MARIA MAE M. ANACAYA, RVM</p>
+            <p style='padding: 0px; margin: 0px; font-size: 30px;'>Vice President for Finance</p>
+        </div></td>
+            </tr>
+            </tbody>
+            </table>
+    @elseif($index < 22)
+    <table>
+            <thead>
+            <tr>
+            <td colspan="2" style="background-color: white; text-align: center;">
+        <h5 style='padding: 0px; margin: 0px; font-size: 30px'>Employer Name : LOURDESS COLLEGE</h5>
+        <h5 style='padding: 0px; margin: 0px; font-size: 30px'>Employer Number : 08-0027000-1</h5>
+            </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td style="text-align: center;" >        <div style=' margin-top: 30px; '>
+            <h6 style='padding: 0px; margin-bottom: 50px; font-size: 30px;'>Prepared By</h6><br><br>
+            <p style='padding: 0px; margin: 0px'>MS. CRISTIE LYN. ABAMONGA</p>
+            <p style='padding: 0px; margin: 0px; font-size: 30px;'>Payroll Incharge</p>
+        </div></td>
+                <td style="text-align: center;" >        <div style=' margin-top: 30px; '>
+            <h6 style='padding: 0px; margin-bottom: 50px; font-size: 30px;'>Noted By</h6><br><br>
+            <p style='padding: 0px; margin: 0px'>S. MARIA MAE M. ANACAYA, RVM</p>
+            <p style='padding: 0px; margin: 0px; font-size: 30px;'>Vice President for Finance</p>
+        </div></td>
+            </tr>
+            </tbody>
+            </table>
     @endif
-    <center>
+    <!-- <center>
         <h5 style='padding: 0px; margin: 0px'>Employer Name : LOURDESS COLLEGE</h5>
         <h5 style='padding: 0px; margin: 0px'>Employer Number : 08-0027000-1</h5>
     </center>
@@ -210,7 +260,7 @@
             <p style='padding: 0px; margin: 0px'>S. MARIA MAE M. ANACAYA, RVM</p>
             <p style='padding: 0px; margin: 0px; font-size: 30px;'>Vice President for Finance</p>
         </div>
-    </center>
+    </center> -->
 
 </body>
 </html>
