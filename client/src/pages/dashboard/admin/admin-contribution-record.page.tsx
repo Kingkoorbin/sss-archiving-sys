@@ -49,6 +49,8 @@ interface IState {
   isFetchingContributions: boolean;
   isSBRModalOpen: boolean;
   isModalSingleContributionOpen: boolean;
+  isConfirmOverwriteModalOpen: boolean;
+  triggerOverwrite: boolean;
   contributions: IContribution[];
   selectedContributionId: number | null;
   batchDate: string;
@@ -68,6 +70,8 @@ export default function AdminContributionRecord() {
     isAuthModalOpen: false,
     isFetchingContributions: false,
     isSBRModalOpen: false,
+    isConfirmOverwriteModalOpen: false,
+    triggerOverwrite: false,
     contributions: [],
     selectedContributionId: null,
     batchDate: '',
@@ -163,9 +167,9 @@ export default function AdminContributionRecord() {
                       moment(el.sbr_date, 'YYYY-MM-DD') as any
                     );
 
-                    const newDate =  moment(el.sbr_date, 'YYYY-MM-DD') as any;
+                    const newDate = moment(el.sbr_date, 'YYYY-MM-DD') as any;
 
-                    console.log("NEW DATE",newDate)
+                    console.log("NEW DATE", newDate)
                   }
                   if (el?.ec) {
                     setSbrValue('ec', el.ec);
@@ -234,8 +238,8 @@ export default function AdminContributionRecord() {
   const handleUpdateSbr: SubmitHandler<ISBRPayload> = async (data) => {
     const date = new Date(data.sbr_date);
     data.sbr_date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().substring(0, 10);
-    
-    const response =  await axios.put(`${API_BASE_URL}/api/record/v1/${state.selectedContributionId}/sbr`, data, {
+
+    const response = await axios.put(`${API_BASE_URL}/api/record/v1/${state.selectedContributionId}/sbr`, data, {
       headers: {
         Authorization: `Bearer ${getAuthResponse?.access_token}`,
       },
@@ -339,18 +343,18 @@ export default function AdminContributionRecord() {
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-                from: state?.generatePdfQuery.from,
-                to: state?.generatePdfQuery.to,
-              }
+              from: state?.generatePdfQuery.from,
+              to: state?.generatePdfQuery.to,
+            }
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-                displayCoverage: `${dayjs(
-                  state?.generatePdfQuery.from
-                ).format('MMMM YYYY')} up to ${dayjs(
-                  state?.generatePdfQuery.to
-                ).format('MMMM YYYY')}`,
-              }
+              displayCoverage: `${dayjs(
+                state?.generatePdfQuery.from
+              ).format('MMMM YYYY')} up to ${dayjs(
+                state?.generatePdfQuery.to
+              ).format('MMMM YYYY')}`,
+            }
             : {}),
         },
         headers: {
@@ -359,10 +363,10 @@ export default function AdminContributionRecord() {
         },
         responseType: 'blob',
       });
-  
+
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(pdfBlob);
-  
+
       // Open the PDF in a new tab
       window.open(url, '_blank');
     } catch (error) {
@@ -370,49 +374,10 @@ export default function AdminContributionRecord() {
     }
   };
 
-  
-  // const handleGeneratePdf = async () => {
-  //   try {
-  //     if (state.contributions.length >= 100) {
-  //       return toastError(
-  //         'Oops! Sorry, We cannot Generate PDF with more than 100 rows'
-  //       );
-  //     }
-  //     await axios
-  //       .get(API.generateContributionPdf, {
-  //         params: {
-           
-  //         },
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           Accept: 'application/pdf',
-  //         },
-  //         responseType: 'blob',
-  //       })
-  //       .then((response) => {
-  //         // console.log('response', response);
-  //         // const url = window.URL.createObjectURL(new Blob([response.data]));
-  //         // const link = document.createElement('a');
-  //         // link.href = url;
-  //         // link.setAttribute('download', `${new Date().toISOString()}.pdf`);
-  //         // document.body.appendChild(link);
-  //         // link.click();
-
-  //         const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-  //         const url = window.URL.createObjectURL(pdfBlob);
-      
-  //         // Open the PDF in a new tab
-  //         window.open(url, '_blank');
-  //       });
-  //   } catch (error) {
-  //     console.log('error', error);
-  //   }
-  // };
-
   const props: UploadProps = {
     name: 'csv',
     multiple: false,
-    customRequest({ file, onSuccess, onError }) {
+    async customRequest({ file, onSuccess, onError }) {
       if (typeof file === 'string') {
         console.log('String file:', file);
         return;
@@ -423,7 +388,10 @@ export default function AdminContributionRecord() {
       formData.append('batchDate', state.batchDate);
 
       try {
-        axios
+        if (state.triggerOverwrite) {
+          await handleSilentDeleteContributionsByBatch();
+        }
+        await axios
           .post(API.uploadCsv, formData)
           .then((response) => {
             onSuccess?.(response, file as any);
@@ -515,12 +483,29 @@ export default function AdminContributionRecord() {
     }
   };
 
-  const handleChangeBatchDate = (v: any) => {
+  const handleChangeBatchDate = async (v: any) => {
     if (!isEmpty(v)) {
+      const batchDate = new Date(v).toISOString().substring(0, 10);
+      await handleValidateBatchDate(batchDate);
       setState((prev) => ({
         ...prev,
-        batchDate: new Date(v).toISOString().substring(0, 10),
+        batchDate
       }));
+    }
+  };
+
+  const handleValidateBatchDate = async (batchDate: string) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/record/v1/validate`, {
+        params: { batchDate },
+        headers: { Authorization: `Bearer ${getAuthResponse?.access_token}` },
+      });
+      setState((prev) => ({
+        ...prev,
+        isConfirmOverwriteModalOpen: response.data?.exists
+      }))
+    } catch (error) {
+      toastError('Oops! Something went wrong, Please try again.');
     }
   };
 
@@ -563,6 +548,21 @@ export default function AdminContributionRecord() {
     }
   };
 
+  const handleSilentDeleteContributionsByBatch = async () => {
+    try {
+      await axios.delete(`${API_BASE_URL}/api/record/v1/batch/delete`, {
+        data: {
+          date: `${state.batchDate.substring(0, 7)}-01`,
+        },
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      });
+    } catch (error) {
+      toastError('Oops! Something went wrong, Please try again.');
+    }
+  };
+
   useEffect(() => {
     getContributions();
   }, []);
@@ -571,6 +571,27 @@ export default function AdminContributionRecord() {
     <>
       {contextHolder}
       <NavigationBarAdmin />
+      <Modal
+        title="Confirmation"
+        open={state.isConfirmOverwriteModalOpen}
+        onOk={async () => {
+          setState((prev) => ({
+            ...prev,
+            triggerOverwrite: true,
+            isConfirmOverwriteModalOpen: !prev.isConfirmOverwriteModalOpen
+          }))
+        }}
+        confirmLoading={false}
+        onCancel={() =>
+          setState((prev) => ({
+            ...prev, isConfirmOverwriteModalOpen:
+              !prev.isConfirmOverwriteModalOpen,
+            triggerOverwrite: false,
+          }))
+        }
+      >
+        <p>The batch date has already been recorded. Selecting 'OK' will result in the replacement of the existing data. Are you sure you wish to proceed with the overwrite?</p>
+      </Modal>
       <div style={{ padding: 50 }}>
         <div>
           <Dragger disabled={isEmpty(state.batchDate)} {...props}>

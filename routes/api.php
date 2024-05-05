@@ -78,6 +78,7 @@ Route::controller(ContributionRequestController::class)->group(function () {
 // Contributions (Records)
 Route::controller(ContributionController::class)->group(function () {
     Route::get('/record/v1', 'getAll');
+    Route::get('/record/v1/validate', 'checkBatchDateExists');
     Route::post('/record/v1', 'saveContributions');
     Route::post('/record/v1/s', 'saveContribution');
     Route::put('/record/v1/{id}/sbr', 'updateSbrValues');

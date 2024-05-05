@@ -21,7 +21,7 @@ class ContributionController extends Controller
         $this->middleware('auth:api')->only([
             'updateSbrValues', 
             'getAll',
-            'deleteContributionById'
+            'deleteContributionById',
         ]);
     }
 
@@ -164,6 +164,15 @@ class ContributionController extends Controller
                 'message' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function checkBatchDateExists(Request $request)
+    {
+        $batchDate = $request->query('batchDate');
+
+        $exists = Contributions::where('batchDate', $batchDate)->exists();
+
+        return response()->json(['exists' => $exists]);
     }
 
     public function deleteContributionsByBatch(Request $request) {

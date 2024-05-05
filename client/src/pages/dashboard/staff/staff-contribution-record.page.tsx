@@ -31,7 +31,6 @@ import {
 import { useEffect, useState } from 'react';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
 import { IApiResponse } from '../../../interfaces/api.interface';
-import HttpClient from '../../../utils/http-client.util';
 import SearchSSSNoFormFields from '../../../components/form-search-sssno-component';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import DateRangeeFormFields from '../../../components/form-daterange.component';
@@ -51,11 +50,13 @@ interface IState {
   isAuthModalOpen: boolean;
   isFetchingContributions: boolean;
   isSBRModalOpen: boolean;
+  isConfirmOverwriteModalOpen: boolean;
   contributions: IContribution[];
   selectedContributionId: number | null;
   batchDate: string;
   generatePdfQuery?: any;
   isModalSingleContributionOpen: boolean;
+  triggerOverwrite: boolean;
 }
 
 export default function StaffContributionRecord() {
@@ -68,6 +69,8 @@ export default function StaffContributionRecord() {
     isAuthModalOpen: false,
     isFetchingContributions: false,
     isSBRModalOpen: false,
+    isConfirmOverwriteModalOpen: false,
+    triggerOverwrite: false,
     contributions: [],
     selectedContributionId: null,
     batchDate: '',
@@ -290,8 +293,8 @@ export default function StaffContributionRecord() {
   const handleUpdateSbr: SubmitHandler<ISBRPayload> = async (data) => {
     const date = new Date(data.sbr_date);
     data.sbr_date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().substring(0, 10);
-    
-    const response =  await axios.put(`${API_BASE_URL}/api/record/v1/${state.selectedContributionId}/sbr`, data, {
+
+    const response = await axios.put(`${API_BASE_URL}/api/record/v1/${state.selectedContributionId}/sbr`, data, {
       headers: {
         Authorization: `Bearer ${getAuthResponse?.access_token}`,
       },
@@ -395,18 +398,18 @@ export default function StaffContributionRecord() {
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-                from: state?.generatePdfQuery.from,
-                to: state?.generatePdfQuery.to,
-              }
+              from: state?.generatePdfQuery.from,
+              to: state?.generatePdfQuery.to,
+            }
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-                displayCoverage: `${dayjs(
-                  state?.generatePdfQuery.from
-                ).format('MMMM YYYY')} up to ${dayjs(
-                  state?.generatePdfQuery.to
-                ).format('MMMM YYYY')}`,
-              }
+              displayCoverage: `${dayjs(
+                state?.generatePdfQuery.from
+              ).format('MMMM YYYY')} up to ${dayjs(
+                state?.generatePdfQuery.to
+              ).format('MMMM YYYY')}`,
+            }
             : {}),
         },
         headers: {
@@ -429,7 +432,7 @@ export default function StaffContributionRecord() {
   const props: UploadProps = {
     name: 'csv',
     multiple: false,
-    customRequest({ file, onSuccess, onError }) {
+    async customRequest({ file, onSuccess, onError }) {
       if (typeof file === 'string') {
         // Handle the case where 'file' is a string (e.g., file URL)
         console.log('String file:', file);
@@ -441,6 +444,9 @@ export default function StaffContributionRecord() {
       formData.append('batchDate', state.batchDate);
 
       try {
+        if (state.triggerOverwrite) {
+          await handleSilentDeleteContributionsByBatch();
+        }
         axios
           .post(API.uploadCsv, formData)
           .then((response) => {
@@ -499,12 +505,29 @@ export default function StaffContributionRecord() {
     }
   };
 
-  const handleChangeBatchDate = (v: any) => {
+  const handleChangeBatchDate = async (v: any) => {
     if (!isEmpty(v)) {
+      const batchDate = new Date(v).toISOString().substring(0, 10);
+      await handleValidateBatchDate(batchDate);
       setState((prev) => ({
         ...prev,
-        batchDate: new Date(v).toISOString().substring(0, 10),
+        batchDate
       }));
+    }
+  };
+
+  const handleValidateBatchDate = async (batchDate: string) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/record/v1/validate`, {
+        params: { batchDate },
+        headers: { Authorization: `Bearer ${getAuthResponse?.access_token}` },
+      });
+      setState((prev) => ({
+        ...prev,
+        isConfirmOverwriteModalOpen: response.data?.exists
+      }))
+    } catch (error) {
+      toastError('Oops! Something went wrong, Please try again.');
     }
   };
 
@@ -576,6 +599,21 @@ export default function StaffContributionRecord() {
     },
   });
 
+  const handleSilentDeleteContributionsByBatch = async () => {
+    try {
+      await axios.delete(`${API_BASE_URL}/api/record/v1/batch/delete`, {
+        data: {
+          date: `${state.batchDate.substring(0, 7)}-01`,
+        },
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      });
+    } catch (error) {
+      toastError('Oops! Something went wrong, Please try again.');
+    }
+  };
+
   useEffect(() => {
     getContributions();
     onGetUserProfile();
@@ -585,7 +623,27 @@ export default function StaffContributionRecord() {
     <>
       {contextHolder}
       <StaffNavbar />
-
+      <Modal
+        title="Confirmation"
+        open={state.isConfirmOverwriteModalOpen}
+        onOk={async () => {
+          setState((prev) => ({
+            ...prev,
+            triggerOverwrite: true,
+            isConfirmOverwriteModalOpen: !prev.isConfirmOverwriteModalOpen
+          }))
+        }}
+        confirmLoading={false}
+        onCancel={() =>
+          setState((prev) => ({
+            ...prev, isConfirmOverwriteModalOpen:
+              !prev.isConfirmOverwriteModalOpen,
+            triggerOverwrite: false,
+          }))
+        }
+      >
+        <p>The batch date has already been recorded. Selecting 'OK' will result in the replacement of the existing data. Are you sure you wish to proceed with the overwrite?</p>
+      </Modal>
       <div style={{ padding: 50 }}>
         <Tooltip
           title={
