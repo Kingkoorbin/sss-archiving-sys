@@ -168,6 +168,10 @@ function AdminRequests() {
                 >
                   <Flex justify="space-between" align="start">
                     <div>
+                      <div style={{ color: '#111', fontSize: 12 }}>Requester</div>
+                      <div style={{ color: '#111', fontSize: 32 }}>
+                        {el.requester}
+                      </div>
                       <div style={{ color: '#111', fontSize: 12 }}>SSS No.</div>
                       <div style={{ color: '#111', fontSize: 32 }}>
                         {el.sss_no}
