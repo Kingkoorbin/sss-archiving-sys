@@ -403,18 +403,18 @@ export default function StaffContributionRecord() {
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-                from: state?.generatePdfQuery.from,
-                to: state?.generatePdfQuery.to,
-              }
+              from: state?.generatePdfQuery.from,
+              to: state?.generatePdfQuery.to,
+            }
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-                displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
-                  'MMMM YYYY'
-                )} up to ${dayjs(state?.generatePdfQuery.to).format(
-                  'MMMM YYYY'
-                )}`,
-              }
+              displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
+                'MMMM YYYY'
+              )} up to ${dayjs(state?.generatePdfQuery.to).format(
+                'MMMM YYYY'
+              )}`,
+            }
             : {}),
         },
         headers: {
@@ -439,8 +439,6 @@ export default function StaffContributionRecord() {
     multiple: false,
     async customRequest({ file, onSuccess, onError }) {
       if (typeof file === 'string') {
-        // Handle the case where 'file' is a string (e.g., file URL)
-        console.log('String file:', file);
         return;
       }
 
@@ -457,12 +455,10 @@ export default function StaffContributionRecord() {
           .then((response) => {
             // Handle success
             onSuccess?.(response, file as any);
-            console.log('Upload success:', response);
           })
           .catch((error) => {
             // Handle error
             onError?.(error, file);
-            console.error('Upload error:', error);
           });
       } catch (error) {
         console.log(error);
@@ -471,18 +467,15 @@ export default function StaffContributionRecord() {
     onChange(info) {
       const { status } = info.file;
       if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
       }
       if (status === 'done') {
         getContributions();
       } else if (status === 'error') {
-        console.log('UPLOAD SUCCESS');
       }
     },
     accept: '.csv',
     showUploadList: true,
     onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
     },
   };
 

@@ -160,7 +160,6 @@ export default function AdminContributionRecord() {
                     setSbrValue('sbr_no', el.sbr_no);
                   }
                   if (el?.sbr_date) {
-                    console.log('MAP DATE', el.sbr_date);
                     setSbrValue(
                       'sbr_date',
                       moment(el.sbr_date, 'YYYY-MM-DD') as any
@@ -168,7 +167,6 @@ export default function AdminContributionRecord() {
 
                     const newDate = moment(el.sbr_date, 'YYYY-MM-DD') as any;
 
-                    console.log('NEW DATE', newDate);
                   }
                   if (el?.ec) {
                     setSbrValue('ec', el.ec);
@@ -347,18 +345,18 @@ export default function AdminContributionRecord() {
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-                from: state?.generatePdfQuery.from,
-                to: state?.generatePdfQuery.to,
-              }
+              from: state?.generatePdfQuery.from,
+              to: state?.generatePdfQuery.to,
+            }
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-                displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
-                  'MMMM YYYY'
-                )} up to ${dayjs(state?.generatePdfQuery.to).format(
-                  'MMMM YYYY'
-                )}`,
-              }
+              displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
+                'MMMM YYYY'
+              )} up to ${dayjs(state?.generatePdfQuery.to).format(
+                'MMMM YYYY'
+              )}`,
+            }
             : {}),
         },
         headers: {
@@ -383,7 +381,6 @@ export default function AdminContributionRecord() {
     multiple: false,
     async customRequest({ file, onSuccess, onError }) {
       if (typeof file === 'string') {
-        console.log('String file:', file);
         return;
       }
 
@@ -399,11 +396,9 @@ export default function AdminContributionRecord() {
           .post(API.uploadCsv, formData)
           .then((response) => {
             onSuccess?.(response, file as any);
-            console.log('Upload success:', response);
           })
           .catch((error) => {
             onError?.(error, file);
-            console.error('Upload error:', error);
           });
       } catch (error) {
         console.log(error);
@@ -413,18 +408,15 @@ export default function AdminContributionRecord() {
     onChange(info) {
       const { status } = info.file;
       if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
       }
       if (status === 'done') {
         getContributions();
       } else if (status === 'error') {
-        console.log('UPLOAD SUCCESS');
       }
     },
     accept: '.csv',
     showUploadList: true,
     onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
     },
   };
 
