@@ -255,21 +255,24 @@ function StaffEmployeeList() {
               cancelText="No"
               placement="bottomLeft"
             >
-              <Tooltip       title={
-                  !hasPermission(
-                    user?.user_permissions!,
-                    TPermissionTypes.EDIT
-                  )
+              <Tooltip
+                title={
+                  !hasPermission(user?.user_permissions!, TPermissionTypes.EDIT)
                     ? 'No permission'
                     : 'Edit'
-                }>
-                <Button htmlType="button" type="dashed" icon={<EditOutlined />} 
-                       disabled={
-                        !hasPermission(
-                          user?.user_permissions!,
-                          TPermissionTypes.EDIT
-                        )
-                      }>
+                }
+              >
+                <Button
+                  htmlType="button"
+                  type="dashed"
+                  icon={<EditOutlined />}
+                  disabled={
+                    !hasPermission(
+                      user?.user_permissions!,
+                      TPermissionTypes.EDIT
+                    )
+                  }
+                >
                   Edit
                 </Button>
               </Tooltip>

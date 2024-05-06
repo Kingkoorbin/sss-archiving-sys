@@ -160,8 +160,7 @@ export default function AdminContributionRecord() {
                     setSbrValue('sbr_no', el.sbr_no);
                   }
                   if (el?.sbr_date) {
-
-                    console.log("MAP DATE", el.sbr_date)
+                    console.log('MAP DATE', el.sbr_date);
                     setSbrValue(
                       'sbr_date',
                       moment(el.sbr_date, 'YYYY-MM-DD') as any
@@ -169,7 +168,7 @@ export default function AdminContributionRecord() {
 
                     const newDate = moment(el.sbr_date, 'YYYY-MM-DD') as any;
 
-                    console.log("NEW DATE", newDate)
+                    console.log('NEW DATE', newDate);
                   }
                   if (el?.ec) {
                     setSbrValue('ec', el.ec);
@@ -237,14 +236,19 @@ export default function AdminContributionRecord() {
 
   const handleUpdateSbr: SubmitHandler<ISBRPayload> = async (data) => {
     const date = new Date(data.sbr_date);
-    data.sbr_date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().substring(0, 10);
+    data.sbr_date = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+      .toISOString()
+      .substring(0, 10);
 
-    const response = await axios.put(`${API_BASE_URL}/api/record/v1/${state.selectedContributionId}/sbr`, data, {
-      headers: {
-        Authorization: `Bearer ${getAuthResponse?.access_token}`,
-      },
-    });
-
+    const response = await axios.put(
+      `${API_BASE_URL}/api/record/v1/${state.selectedContributionId}/sbr`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      }
+    );
 
     if (response?.data.message === 'Authentication required.') {
       setState((prev) => ({
@@ -343,18 +347,18 @@ export default function AdminContributionRecord() {
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-              from: state?.generatePdfQuery.from,
-              to: state?.generatePdfQuery.to,
-            }
+                from: state?.generatePdfQuery.from,
+                to: state?.generatePdfQuery.to,
+              }
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-              displayCoverage: `${dayjs(
-                state?.generatePdfQuery.from
-              ).format('MMMM YYYY')} up to ${dayjs(
-                state?.generatePdfQuery.to
-              ).format('MMMM YYYY')}`,
-            }
+                displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
+                  'MMMM YYYY'
+                )} up to ${dayjs(state?.generatePdfQuery.to).format(
+                  'MMMM YYYY'
+                )}`,
+              }
             : {}),
         },
         headers: {
@@ -489,21 +493,24 @@ export default function AdminContributionRecord() {
       await handleValidateBatchDate(batchDate);
       setState((prev) => ({
         ...prev,
-        batchDate
+        batchDate,
       }));
     }
   };
 
   const handleValidateBatchDate = async (batchDate: string) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/record/v1/validate`, {
-        params: { batchDate },
-        headers: { Authorization: `Bearer ${getAuthResponse?.access_token}` },
-      });
+      const response = await axios.get(
+        `${API_BASE_URL}/api/record/v1/validate`,
+        {
+          params: { batchDate },
+          headers: { Authorization: `Bearer ${getAuthResponse?.access_token}` },
+        }
+      );
       setState((prev) => ({
         ...prev,
-        isConfirmOverwriteModalOpen: response.data?.exists
-      }))
+        isConfirmOverwriteModalOpen: response.data?.exists,
+      }));
     } catch (error) {
       toastError('Oops! Something went wrong, Please try again.');
     }
@@ -578,19 +585,23 @@ export default function AdminContributionRecord() {
           setState((prev) => ({
             ...prev,
             triggerOverwrite: true,
-            isConfirmOverwriteModalOpen: !prev.isConfirmOverwriteModalOpen
-          }))
+            isConfirmOverwriteModalOpen: !prev.isConfirmOverwriteModalOpen,
+          }));
         }}
         confirmLoading={false}
         onCancel={() =>
           setState((prev) => ({
-            ...prev, isConfirmOverwriteModalOpen:
-              !prev.isConfirmOverwriteModalOpen,
+            ...prev,
+            isConfirmOverwriteModalOpen: !prev.isConfirmOverwriteModalOpen,
             triggerOverwrite: false,
           }))
         }
       >
-        <p>The batch date has already been recorded. Selecting 'OK' will result in the replacement of the existing data. Are you sure you wish to proceed with the overwrite?</p>
+        <p>
+          The batch date has already been recorded. Selecting 'OK' will result
+          in the replacement of the existing data. Are you sure you wish to
+          proceed with the overwrite?
+        </p>
       </Modal>
       <div style={{ padding: 50 }}>
         <div>

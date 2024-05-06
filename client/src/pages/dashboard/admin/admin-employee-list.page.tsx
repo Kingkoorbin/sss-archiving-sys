@@ -101,7 +101,7 @@ function AdminEmployeeList() {
   });
 
   const handleSearch: SubmitHandler<ISearchPayload> = async (data) => {
-      await getAllEmployees({ searchKeyword: data.searchKeyword?.trim() });
+    await getAllEmployees({ searchKeyword: data.searchKeyword?.trim() });
   };
 
   const handleOk = () => {
@@ -134,9 +134,7 @@ function AdminEmployeeList() {
     }
   };
 
-  const getAllEmployees = async (data?: {
-    searchKeyword?: string;
-  }) => {
+  const getAllEmployees = async (data?: { searchKeyword?: string }) => {
     setState((prev) => ({
       ...prev,
       isFetchingEmployees: true,
@@ -147,18 +145,16 @@ function AdminEmployeeList() {
     if (!isEmpty(data?.searchKeyword)) {
       const findBySchoolId = await HttpClient.setAuthToken(
         getAuthResponse?.access_token
-      ).get<IEmployeeProfile[], any>(
-        `${API.employees}/information`,
-        { searchKeyword: data?.searchKeyword }
-      );
+      ).get<IEmployeeProfile[], any>(`${API.employees}/information`, {
+        searchKeyword: data?.searchKeyword,
+      });
       if (findBySchoolId.message === 'Employee Not found.') {
         getAllEmployeesResponse = [];
       } else {
         findBySchoolId.data = [findBySchoolId.data as any];
         getAllEmployeesResponse = findBySchoolId;
       }
-    }
-    else {
+    } else {
       getAllEmployeesResponse = await HttpClient.setAuthToken(
         getAuthResponse?.access_token
       ).get<IEmployeeProfile[], { role: string }>(API.employees, {

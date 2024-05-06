@@ -51,7 +51,7 @@ function StaffEmployeeEdit() {
         `${API_BASE_URL}/api/client/v1/information`,
         {
           params: {
-            searchKeyword: locationState.school_id
+            searchKeyword: locationState.school_id,
           },
           headers: {
             Authorization: `Bearer ${getAuthResponse?.access_token}`,
