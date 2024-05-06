@@ -152,8 +152,12 @@
         <tbody>
             @php
                 $currentYear = null;
+                $totalss = 0;
+                $totalec = 0;
+                $overall = 0;
            @endphp
             @foreach($contributions as $index => $contribution)
+            @endphp
                 @if($index > 0 && $index % 24 === 0)
             </tbody>
                 </table>
@@ -175,10 +179,22 @@
                 <tr style="margin-bottom: 10px;">
                     <td style="text-align: center;" class="{{ $currentYear === substr($contribution['batchDate'], 0, 4) ? 'hidden' : '' }}">{{ substr($contribution['batchDate'], 0, 4) }}</td>
                     <td style="text-align: center;"> {{ Carbon\Carbon::parse($contribution['batchDate'])->format('F') }} </td>
-                    <td style="text-align: right;">@if($index % 24 === 0) Php @endif{{ $contribution['ss'] }}</td>
+                    <td style="text-align: right;">@if($index % 24 === 0) Php @endif{{ $contribution['ss'] }}</td>    
                     <td style="text-align: right;">@if($index % 24 === 0) Php @endif{{ $contribution['ec'] }}</td>
                     <td style="text-align: center;">{{ $contribution['sbr_no'] }}</td>
                     <td style="text-align: center;">{{ Carbon\Carbon::parse($contribution['sbr_date'])->format('m-d-Y') }}</td>
+                    @php
+                    // Remove non-numeric characters from $contribution['ss'] before converting to integer
+                    $ss_numeric = preg_replace('/[^0-9.]/', '', $contribution['ss']);
+                    $totalss += intval($ss_numeric); // Accumulate total SS contributions
+
+                    // Remove non-numeric characters from $contribution['ss'] before converting to integer
+                    $ss_numeric2 = preg_replace('/[^0-9.]/', '', $contribution['ec']);
+                    $totalec += intval($ss_numeric2); // Accumulate total SS contributions
+
+                    $overall = $totalss + $totalec;
+                @endphp
+
                 </tr>
                 @php
                     $currentYear = substr($contribution['batchDate'], 0, 4);
@@ -186,6 +202,12 @@
             @endforeach
         </tbody>
     </table>
+    <!-- <p>TOTAL SS: {{ $totalss }}</p>
+    <p>TOTAL ec: {{ $totalec }}</p>
+    <p>TOTAL ec: {{ $overall }}</p> -->
+   
+    <p style='font-size: 30px; font-weight: bolder; text-align: right; margin-right: 180px;'>Total Amount: Php {{ number_format($overall ?? 0, 2) }}</p>
+
     @if( $index > 0 && $index % 24 === 0)
     <center><div><h6 style='padding: 0px; margin-bottom: 50px;'></h6></div></center>
     @endif
