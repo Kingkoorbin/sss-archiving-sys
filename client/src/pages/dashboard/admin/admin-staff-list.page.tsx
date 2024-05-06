@@ -96,13 +96,11 @@ function AdminStaffList() {
     };
     try {
       if (type === 'DESELECT') {
-        console.log('DESELECT!!');
         await axios.delete(
           `${API_BASE_URL}/api/user/v1/permission/${value.permissionId}`,
           config
         );
       } else if (type === 'SELECT') {
-        console.log('SELECT!!');
         await axios.post(
           `${API_BASE_URL}/api/user/v1/permission`,
           {

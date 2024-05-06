@@ -292,14 +292,19 @@ export default function StaffContributionRecord() {
 
   const handleUpdateSbr: SubmitHandler<ISBRPayload> = async (data) => {
     const date = new Date(data.sbr_date);
-    data.sbr_date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().substring(0, 10);
+    data.sbr_date = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+      .toISOString()
+      .substring(0, 10);
 
-    const response = await axios.put(`${API_BASE_URL}/api/record/v1/${state.selectedContributionId}/sbr`, data, {
-      headers: {
-        Authorization: `Bearer ${getAuthResponse?.access_token}`,
-      },
-    });
-
+    const response = await axios.put(
+      `${API_BASE_URL}/api/record/v1/${state.selectedContributionId}/sbr`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        },
+      }
+    );
 
     if (response?.data.message === 'Authentication required.') {
       setState((prev) => ({
@@ -404,11 +409,11 @@ export default function StaffContributionRecord() {
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-              displayCoverage: `${dayjs(
-                state?.generatePdfQuery.from
-              ).format('MMMM YYYY')} up to ${dayjs(
-                state?.generatePdfQuery.to
-              ).format('MMMM YYYY')}`,
+              displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
+                'MMMM YYYY'
+              )} up to ${dayjs(state?.generatePdfQuery.to).format(
+                'MMMM YYYY'
+              )}`,
             }
             : {}),
         },
@@ -434,8 +439,6 @@ export default function StaffContributionRecord() {
     multiple: false,
     async customRequest({ file, onSuccess, onError }) {
       if (typeof file === 'string') {
-        // Handle the case where 'file' is a string (e.g., file URL)
-        console.log('String file:', file);
         return;
       }
 
@@ -452,12 +455,10 @@ export default function StaffContributionRecord() {
           .then((response) => {
             // Handle success
             onSuccess?.(response, file as any);
-            console.log('Upload success:', response);
           })
           .catch((error) => {
             // Handle error
             onError?.(error, file);
-            console.error('Upload error:', error);
           });
       } catch (error) {
         console.log(error);
@@ -466,18 +467,15 @@ export default function StaffContributionRecord() {
     onChange(info) {
       const { status } = info.file;
       if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
       }
       if (status === 'done') {
         getContributions();
       } else if (status === 'error') {
-        console.log('UPLOAD SUCCESS');
       }
     },
     accept: '.csv',
     showUploadList: true,
     onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
     },
   };
 
@@ -511,21 +509,24 @@ export default function StaffContributionRecord() {
       await handleValidateBatchDate(batchDate);
       setState((prev) => ({
         ...prev,
-        batchDate
+        batchDate,
       }));
     }
   };
 
   const handleValidateBatchDate = async (batchDate: string) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/record/v1/validate`, {
-        params: { batchDate },
-        headers: { Authorization: `Bearer ${getAuthResponse?.access_token}` },
-      });
+      const response = await axios.get(
+        `${API_BASE_URL}/api/record/v1/validate`,
+        {
+          params: { batchDate },
+          headers: { Authorization: `Bearer ${getAuthResponse?.access_token}` },
+        }
+      );
       setState((prev) => ({
         ...prev,
-        isConfirmOverwriteModalOpen: response.data?.exists
-      }))
+        isConfirmOverwriteModalOpen: response.data?.exists,
+      }));
     } catch (error) {
       toastError('Oops! Something went wrong, Please try again.');
     }
@@ -630,19 +631,23 @@ export default function StaffContributionRecord() {
           setState((prev) => ({
             ...prev,
             triggerOverwrite: true,
-            isConfirmOverwriteModalOpen: !prev.isConfirmOverwriteModalOpen
-          }))
+            isConfirmOverwriteModalOpen: !prev.isConfirmOverwriteModalOpen,
+          }));
         }}
         confirmLoading={false}
         onCancel={() =>
           setState((prev) => ({
-            ...prev, isConfirmOverwriteModalOpen:
-              !prev.isConfirmOverwriteModalOpen,
+            ...prev,
+            isConfirmOverwriteModalOpen: !prev.isConfirmOverwriteModalOpen,
             triggerOverwrite: false,
           }))
         }
       >
-        <p>The batch date has already been recorded. Selecting 'OK' will result in the replacement of the existing data. Are you sure you wish to proceed with the overwrite?</p>
+        <p>
+          The batch date has already been recorded. Selecting 'OK' will result
+          in the replacement of the existing data. Are you sure you wish to
+          proceed with the overwrite?
+        </p>
       </Modal>
       <div style={{ padding: 50 }}>
         <Tooltip

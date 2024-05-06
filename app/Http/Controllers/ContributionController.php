@@ -169,9 +169,14 @@ class ContributionController extends Controller
     public function checkBatchDateExists(Request $request)
     {
         $batchDate = $request->query('batchDate');
+        $year = date('Y', strtotime($batchDate));
+        $month = date('m', strtotime($batchDate));
 
-        $exists = Contributions::where('batchDate', $batchDate)->exists();
-
+        // Check if any batch date exists with the same year and month
+        $exists = Contributions::whereYear('batchDate', $year)
+                               ->whereMonth('batchDate', $month)
+                               ->exists();
+                               
         return response()->json(['exists' => $exists]);
     }
 

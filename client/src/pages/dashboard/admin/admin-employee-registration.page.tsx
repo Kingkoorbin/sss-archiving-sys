@@ -36,8 +36,6 @@ function AdminEmployeeRegistration() {
   const handleEmployeeRegistration: SubmitHandler<
     IEmployeeRegistrationPayload
   > = async (data) => {
-    // console.log(data)
-
     data.date_hired = new Date(data.date_hired).toISOString().substring(0, 10);
     data.birthdate = new Date(data.birthdate).toISOString().substring(0, 10);
     if (data.date_resigned) {

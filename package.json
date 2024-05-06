@@ -16,7 +16,7 @@
         "migration:revert": "php artisan migrate:rollback",
         "migration:create": "php artisan make:migration %npm_config_name% --create=%npm_config_table%",
         "migration:reset": "php artisan migrate:reset",
-        "format": "cd _client && npm run format"
+        "format": "cd client && npm run format"
     },
     "devDependencies": {
         "axios": "^1.4.0",
