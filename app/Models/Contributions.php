@@ -20,6 +20,12 @@ class Contributions extends Model
         'batchDate'
     ];
 
+    /**
+     * Saves a contribution with the given data.
+     *
+     * @param array $data The data to be saved.
+     * @return Model The created contribution instance.
+     */
     public static function saveContribution(array $data)
     {
         return self::create($data);

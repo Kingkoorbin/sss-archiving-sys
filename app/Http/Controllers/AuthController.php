@@ -21,11 +21,24 @@ use App\Models\User;
 class AuthController extends Controller
 {
 
+    /**
+     * Constructor for the class.
+     *
+     * This function sets up the middleware for authentication using the 'auth:api' guard.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->middleware('auth:api')->only('register');
     }
 
+    /**
+     * Logs in a user.
+     *
+     * @param Request $request The request object containing the login credentials.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the login result.
+     */
     public function login(Request $request)
     {
         $validator = AuthValidator::validateLogin($request);
@@ -64,6 +77,20 @@ class AuthController extends Controller
 
     }
 
+    /**
+     * Registers a new user.
+     *
+     * This function checks if the authenticated user has the role of "ADMIN". If not, it returns a JSON response with an error message.
+     * Then, it validates the registration request using the `AuthValidator::validateRegistration()` method. If the validation fails, it returns a JSON response with the validation errors.
+     * If the validation passes, it creates a new user in the database with the provided username, role, and password.
+     * It generates a JWT token for the newly created user using the `JWTAuth::customClaims()` method.
+     * It triggers a `UserActivity` event with the message "Registered an account." and the ID of the authenticated user.
+     * Finally, it returns a JSON response with the user's role and the generated access token. The response status code is 201 (Created).
+     *
+     * @param Request $request The request object containing the registration data.
+     * @throws JWTException If there is an error generating the JWT token.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the user's role and access token.
+     */
     public function register(Request $request)
     {
         $allowedRoles = ["ADMIN"];

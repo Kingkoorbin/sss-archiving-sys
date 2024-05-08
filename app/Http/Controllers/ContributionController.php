@@ -25,6 +25,16 @@ class ContributionController extends Controller
         ]);
     }
 
+    /**
+     * Retrieves all contributions based on the provided query parameters.
+     *
+     * @param Request $request The HTTP request object containing the query parameters.
+     *                        - name: The name to filter contributions by (optional).
+     *                        - sssNo: The SSS number to filter contributions by (optional).
+     *                        - from: The start date to filter contributions by (optional).
+     *                        - to: The end date to filter contributions by (optional).
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the retrieved contributions.
+     */
     public function getAll(Request $request)
     {
         $name = $request->query('name');
@@ -54,6 +64,13 @@ class ContributionController extends Controller
         return response()->json($contributions);
     }
 
+    /**
+     * Saves contributions from a request.
+     *
+     * @param Request $request The HTTP request object containing the contributions data.
+     *                        - contributions: The array of contributions data.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the saved contributions data or an error message.
+     */
     public function saveContributions(Request $request) {
         $validator = ContributionValidator::validateSaveContributions($request);
 
@@ -78,6 +95,12 @@ class ContributionController extends Controller
         return response()->json($contributionsData, 201);
     }
 
+    /**
+     * Saves a contribution based on the provided request data.
+     *
+     * @param Request $request The HTTP request object containing the contribution data.
+     * @return \Illuminate\Http\JsonResponse The JSON response indicating the result of the contribution save operation.
+     */
     public function saveContribution(Request $request) {
         $validator = ContributionValidator::validateSaveContribution($request);
 
@@ -97,6 +120,13 @@ class ContributionController extends Controller
         ], 201);
     }
 
+    /**
+     * Updates the SBR values of a contribution.
+     *
+     * @param Request $request The HTTP request object containing the updated SBR values.
+     * @param int $id The ID of the contribution to update.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the updated contribution or an error message.
+     */
     public function updateSbrValues(Request $request, $id) {
         $allowedRoles = ["ADMIN", "STAFF"];
         $user = auth()->user();
@@ -136,6 +166,13 @@ class ContributionController extends Controller
         return response()->json($contribution);
     }
 
+    /**
+     * Deletes a contribution by its ID.
+     *
+     * @param datatype $id The ID of the contribution to delete.
+     * @throws \Exception If an error occurs during the deletion process.
+     * @return \Illuminate\Http\JsonResponse The JSON response indicating the result of the deletion operation.
+     */
     public function deleteContributionById($id)
     {
        try {
@@ -166,6 +203,12 @@ class ContributionController extends Controller
         }
     }
 
+    /**
+     * Check if a batch date exists with the same year and month.
+     *
+     * @param Request $request The HTTP request object.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the existence status.
+     */
     public function checkBatchDateExists(Request $request)
     {
         $batchDate = $request->query('batchDate');
@@ -180,6 +223,13 @@ class ContributionController extends Controller
         return response()->json(['exists' => $exists]);
     }
 
+    /**
+     * Deletes contributions by batch.
+     *
+     * @param Request $request The request object containing the date to delete contributions for.
+     * @throws \Exception If an error occurs during the deletion process.
+     * @return \Illuminate\Http\JsonResponse The JSON response indicating the result of the deletion operation.
+     */
     public function deleteContributionsByBatch(Request $request) {
         try {
             $validator = ContributionValidator::validateDeleteContributionsByBatch($request);

@@ -17,6 +17,14 @@ use App\Models\ContributionRequest;
 
 class ContributionRequestController extends Controller
 {
+    /**
+     * Constructor for the class.
+     *
+     * This function sets up the middleware for authentication using the 'auth:api' guard.
+     * It applies the middleware to the 'updateStatusById' and 'getAll' methods.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->middleware('auth:api')->only([
@@ -25,6 +33,14 @@ class ContributionRequestController extends Controller
         ]);;
     }
 
+    /**
+     * Retrieves all contribution requests based on the provided query parameters.
+     *
+     * @param Request $request The HTTP request object containing the query parameters.
+     *                        - status: The status to filter contribution requests by (optional).
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the retrieved contribution requests.
+     *                                       If an error occurs, a JSON response with the error message and status code 500 is returned.
+     */
     public function getAll(Request $request)
     {
         try {
@@ -44,6 +60,24 @@ class ContributionRequestController extends Controller
     }
     
 
+    /**
+     * Creates a new contribution request.
+     *
+     * @param Request $request The HTTP request object containing the contribution request data.
+     *                        - sss_no: The SSS number of the contributor.
+     *                        - name: The name of the contributor.
+     *                        - date_of_employment: The date of employment of the contributor.
+     *                        - date_of_resignation: The date of resignation of the contributor.
+     *                        - requester: The name of the requester.
+     *                        - email: The email address of the requester.
+     *                        - phone_number: The phone number of the requester.
+     *                        - date_needed: The date needed for the request.
+     *                        - all: Indicates if all contributions are requested.
+     *                        - status: The status of the request.
+     *                        - relationship: The relationship of the contributor to the requester.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the created contribution request.
+     *                                       If validation fails, a JSON response with the error message and status code 400 is returned.
+     */
     public function createRequest(Request $request) {
         $validator = ContributionRequestValidator::validateCreateRequest($request);
 
@@ -75,6 +109,13 @@ class ContributionRequestController extends Controller
         return response()->json($request, 201);
     }
 
+    /**
+     * Updates the status of a contribution request by ID.
+     *
+     * @param Request $request The HTTP request object containing the contribution request data.
+     * @throws \Exception If an error occurs during the update process.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the updated contribution request.
+     */
     public function updateStatusById(Request $request)
     {
         try {

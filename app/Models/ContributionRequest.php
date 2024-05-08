@@ -24,6 +24,11 @@ class ContributionRequest extends Model
         'relationship'
     ];
 
+    /**
+     * Retrieve the user that is associated with this contribution request as the editor.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The belongsTo relationship for the editor.
+     */
     public function editor()
     {
         return $this->belongsTo(User::class, 'editor');

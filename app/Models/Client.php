@@ -46,21 +46,43 @@ class Client extends Model
     //     return $this->belongsTo(User::class);
     // }
 
+    /**
+     * Retrieves the work history associated with this client.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany The work history relationship.
+     */
     public function workHistory()
     {
         return $this->hasMany(WorkHistory::class);
     }
 
+    /**
+     * Retrieves the contributions associated with this client.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function contributions()
     {
         return $this->hasMany(Contributions::class, 'sss_no', 'sss_no');
     }
 
+    /**
+     * Find a record by the SSS number.
+     *
+     * @param Builder $query The query builder instance.
+     * @param mixed $sssNo The SSS number to search for.
+     * @return Builder The query builder instance.
+     */
     public function scopeFindBySSSNo(Builder $query, $sssNo)
     {
         return $query->where('sss_no', $sssNo);
     }
 
+    /**
+     * Retrieves the full name of the client.
+     *
+     * @return string The full name of the client.
+     */
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->middle_name} {$this->last_name}";
