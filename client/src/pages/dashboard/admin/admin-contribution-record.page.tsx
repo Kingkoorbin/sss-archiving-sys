@@ -636,7 +636,7 @@ export default function AdminContributionRecord() {
       </Modal>
       <div style={{ padding: 50 }}>
         <Flex>
-          <div style={{ width: '60%' }}>
+          <div style={{ width: '80%' }}>
             <Dragger disabled={isEmpty(state.batchDate)} {...props}>
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
@@ -653,18 +653,18 @@ export default function AdminContributionRecord() {
           <Row gutter={16} style={{ width: 'full', marginLeft: 20 }} justify={"space-between"}>
             <Col span={14}>
               <Card
-                title="Transaction total"
+                title="Transaction Total"
                 bordered={false}
                 style={{ fontSize: 24, fontWeight: 'bold', height: "100%"}}
               >
                 {state.generatedTotal}
               </Card>
             </Col>
-            <Col span={10}>
+            <Col span={14} style={{width: 'full'}}>
               <Card
-                title="Transaction count"
+                title="Transaction Count"
                 bordered={false}
-                style={{ fontSize: 24, fontWeight: 'bold', height: "100%" }}
+                style={{ fontSize: 24, fontWeight: 'bold', height: "100%", width: "100%" }}
               >
                 {state.generatedCount}
               </Card>
