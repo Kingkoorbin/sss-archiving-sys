@@ -61,7 +61,25 @@ class ContributionController extends Controller
 
         $contributions = $query->get();
 
-        return response()->json($contributions);
+        $contributions = $query->get();
+
+        // Get the total count of JSON objects
+        $count = $contributions->count();
+    
+        $totalSum = $contributions->reduce(function ($carry, $contribution) {
+            // Remove comma separators from the 'total' string and then cast to float
+            $total = (float) str_replace(',', '', $contribution->total);
+            return $carry + $total;
+        }, 0);
+        
+    
+        // Attach the total count and total sum in headers
+        $headers = [
+            'nodex-generated-count' => $count,
+            'nodex-generated-total' => $totalSum,
+        ];
+    
+        return response()->json($contributions, 200, $headers);    
     }
 
     /**
