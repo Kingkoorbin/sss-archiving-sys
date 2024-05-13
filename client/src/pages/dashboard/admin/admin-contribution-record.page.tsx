@@ -11,10 +11,13 @@ import {
 import type { UploadProps } from 'antd';
 import {
   Button,
+  Card,
+  Col,
   DatePicker,
   Flex,
   Modal,
   Popconfirm,
+  Row,
   Table,
   Tooltip,
   Upload,
@@ -26,25 +29,28 @@ import {
   IContribution,
   IGeneratePdfPayload,
   ISBRPayload,
+  IUser,
 } from '../../../interfaces/client.interface';
 import { useEffect, useState } from 'react';
 import useLocalStorage from '../../../hooks/useLocalstorage.hook';
 import { IApiResponse } from '../../../interfaces/api.interface';
-import HttpClient from '../../../utils/http-client.util';
 import SearchSSSNoFormFields from '../../../components/form-search-sssno-component';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import DateRangeeFormFields from '../../../components/form-daterange.component';
-import axios from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ContributionFormFields from '../../../components/form-sbr.component';
 import { isEmpty } from '../../../utils/util';
 
 import dayjs from 'dayjs';
 import moment from 'moment';
+import { currency } from '../../../utils/converter.util';
 
 const { Dragger } = Upload;
 
 interface IState {
+  generatedTotal: string;
+  generatedCount: string;
   isAuthModalOpen: boolean;
   isFetchingContributions: boolean;
   isSBRModalOpen: boolean;
@@ -67,6 +73,8 @@ export default function AdminContributionRecord() {
     null
   );
   const [state, setState] = useState<IState>({
+    generatedTotal: '0.00',
+    generatedCount: '0.00',
     isAuthModalOpen: false,
     isFetchingContributions: false,
     isSBRModalOpen: false,
@@ -112,124 +120,156 @@ export default function AdminContributionRecord() {
   } = useForm<IContribution>();
 
   const getContributions = async (data?: IGeneratePdfPayload) => {
-    setState((prev) => ({
-      ...prev,
-      isFetchingContributions: true,
-    }));
+    const config: AxiosRequestConfig = {
+      headers: {
+        Authorization: `Bearer ${getAuthResponse?.access_token}`,
+        Accept: '*/*',
+        'Content-Type': 'application/json',
+      },
+    };
 
-    const getAllContributionsResponse = await HttpClient.setAuthToken(
-      getAuthResponse?.access_token
-    ).get<IContribution[], IGeneratePdfPayload>(API.contributions, data!);
-
-    if (getAllContributionsResponse.message === 'Authentication required.') {
+    try {
       setState((prev) => ({
         ...prev,
-        isAuthModalOpen: true,
+        isFetchingContributions: true,
       }));
 
-      return;
+      const getAllContributionsResponse: AxiosResponse & {
+        data: IContribution[];
+      } = await axios.get(`${API_BASE_URL}/api/record/v1`, {
+        params: data,
+        ...config,
+      });
+
+      const getProfileResponse: AxiosResponse = await axios.get(
+        `${API_BASE_URL}/api/user/v1`,
+        {
+          ...config,
+        }
+      );
+
+      const user: IUser = getProfileResponse.data;
+
+      if (!user.user_permissions.length) {
+        setState((prev) => ({
+          ...prev,
+          isFetchingContributions: false,
+        }));
+      }
+
+      if (!Array.isArray(getAllContributionsResponse.data)) {
+        return;
+      }
+
+      // If there is a state coming from redirection
+      if (!isEmpty(location.state)) {
+        setSearchValue('searchKeyword', location.state?.request?.sss_no ?? '');
+      }
+
+      setState((prev) => ({
+        ...prev,
+        generatedCount:
+          getAllContributionsResponse.headers['nodex-generated-count'],
+        generatedTotal: currency.format(
+          getAllContributionsResponse.headers['nodex-generated-total']
+        ),
+        isFetchingContributions: false,
+        contributions: getAllContributionsResponse.data?.map((el: any) => {
+          return {
+            ...el,
+            key: el.id,
+            batchDate: dayjs(el.batchDate).format('MMM YYYY'),
+            ec: '₱' + el.ec,
+            ss: '₱' + el.ss,
+            total: '₱' + el.total,
+            actions: (
+              <Flex gap={10}>
+                <Popconfirm
+                  title="Do you want to edit this contribution?"
+                  onConfirm={() => {
+                    sbrFormReset();
+                    if (el?.sbr_no) {
+                      setSbrValue('sbr_no', el.sbr_no);
+                    }
+                    if (el?.sbr_date) {
+                      setSbrValue(
+                        'sbr_date',
+                        moment(el.sbr_date, 'YYYY-MM-DD') as any
+                      );
+
+                      const newDate = moment(el.sbr_date, 'YYYY-MM-DD') as any;
+                    }
+                    if (el?.ec) {
+                      setSbrValue('ec', el.ec);
+                    }
+                    if (el?.ss) {
+                      setSbrValue('ss', el.ss);
+                    }
+                    if (el?.total) {
+                      setSbrValue('total', el.total);
+                    }
+                    if (el?.name) {
+                      setSbrValue('name', el.name);
+                    }
+                    if (el?.sbr_no) {
+                      setSbrValue('sbr_no', el.sbr_no);
+                    }
+                    if (el?.sss_no) {
+                      setSbrValue('sss_no', el.sss_no);
+                    }
+
+                    setState((prev) => ({
+                      ...prev,
+                      selectedContributionId: el.id,
+                      isSBRModalOpen: !prev.isSBRModalOpen,
+                    }));
+                  }}
+                  okText="Yes"
+                  cancelText="No"
+                  placement="bottomLeft"
+                >
+                  <Tooltip title="Edit">
+                    <Button
+                      htmlType="button"
+                      type="dashed"
+                      icon={<EditOutlined />}
+                    >
+                      Edit
+                    </Button>
+                  </Tooltip>
+                </Popconfirm>
+
+                <Popconfirm
+                  title="Do you want to delete this contribution?"
+                  onConfirm={() => onDeleteContribution(el.id)}
+                  okText="Yes"
+                  cancelText="No"
+                  placement="left"
+                >
+                  <Tooltip title="Delete">
+                    <Button
+                      htmlType="button"
+                      style={{ color: 'red' }}
+                      icon={<CloseOutlined />}
+                    >
+                      Delete
+                    </Button>
+                  </Tooltip>
+                </Popconfirm>
+              </Flex>
+            ),
+          };
+        }) as any,
+      }));
+    } catch (error: any) {
+      if (error?.response?.status == 401) {
+        setState((prev) => ({
+          ...prev,
+          isAuthModalOpen: true,
+          isFetchingContributions: false,
+        }));
+      }
     }
-
-    if (!Array.isArray(getAllContributionsResponse.data)) {
-      return;
-    }
-
-    // If there is a state coming from redirection
-    if (!isEmpty(location.state)) {
-      setSearchValue('searchKeyword', location.state?.request?.sss_no ?? '');
-    }
-
-    setState((prev) => ({
-      ...prev,
-      isFetchingContributions: false,
-      contributions: getAllContributionsResponse.data?.map((el) => {
-        return {
-          ...el,
-          key: el.id,
-          batchDate: dayjs(el.batchDate).format('MMM YYYY'),
-          ec: '₱' + el.ec,
-          ss: '₱' + el.ss,
-          total: '₱' + el.total,
-          actions: (
-            <Flex gap={10}>
-              <Popconfirm
-                title="Do you want to edit this contribution?"
-                onConfirm={() => {
-                  sbrFormReset();
-                  if (el?.sbr_no) {
-                    setSbrValue('sbr_no', el.sbr_no);
-                  }
-                  if (el?.sbr_date) {
-                    setSbrValue(
-                      'sbr_date',
-                      moment(el.sbr_date, 'YYYY-MM-DD') as any
-                    );
-
-                    const newDate = moment(el.sbr_date, 'YYYY-MM-DD') as any;
-
-                  }
-                  if (el?.ec) {
-                    setSbrValue('ec', el.ec);
-                  }
-                  if (el?.ss) {
-                    setSbrValue('ss', el.ss);
-                  }
-                  if (el?.total) {
-                    setSbrValue('total', el.total);
-                  }
-                  if (el?.name) {
-                    setSbrValue('name', el.name);
-                  }
-                  if (el?.sbr_no) {
-                    setSbrValue('sbr_no', el.sbr_no);
-                  }
-                  if (el?.sss_no) {
-                    setSbrValue('sss_no', el.sss_no);
-                  }
-
-                  setState((prev) => ({
-                    ...prev,
-                    selectedContributionId: el.id,
-                    isSBRModalOpen: !prev.isSBRModalOpen,
-                  }));
-                }}
-                okText="Yes"
-                cancelText="No"
-                placement="bottomLeft"
-              >
-                <Tooltip title="Edit">
-                  <Button
-                    htmlType="button"
-                    type="dashed"
-                    icon={<EditOutlined />}
-                  >
-                    Edit
-                  </Button>
-                </Tooltip>
-              </Popconfirm>
-
-              <Popconfirm
-                title="Do you want to delete this contribution?"
-                onConfirm={() => onDeleteContribution(el.id)}
-                okText="Yes"
-                cancelText="No"
-                placement="left"
-              >
-                <Tooltip title="Delete">
-                  <Button
-                    htmlType="button"
-                    style={{ color: 'red' }}
-                    icon={<CloseOutlined />}
-                  >
-                    Delete
-                  </Button>
-                </Tooltip>
-              </Popconfirm>
-            </Flex>
-          ),
-        };
-      }) as any,
-    }));
   };
 
   const handleUpdateSbr: SubmitHandler<ISBRPayload> = async (data) => {
@@ -345,18 +385,18 @@ export default function AdminContributionRecord() {
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-              from: state?.generatePdfQuery.from,
-              to: state?.generatePdfQuery.to,
-            }
+                from: state?.generatePdfQuery.from,
+                to: state?.generatePdfQuery.to,
+              }
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-              displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
-                'MMMM YYYY'
-              )} up to ${dayjs(state?.generatePdfQuery.to).format(
-                'MMMM YYYY'
-              )}`,
-            }
+                displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
+                  'MMMM YYYY'
+                )} up to ${dayjs(state?.generatePdfQuery.to).format(
+                  'MMMM YYYY'
+                )}`,
+              }
             : {}),
         },
         headers: {
@@ -416,8 +456,7 @@ export default function AdminContributionRecord() {
     },
     accept: '.csv',
     showUploadList: true,
-    onDrop(e) {
-    },
+    onDrop(e) {},
   };
 
   const rowProps = (record: IContribution) => ({
@@ -596,21 +635,42 @@ export default function AdminContributionRecord() {
         </p>
       </Modal>
       <div style={{ padding: 50 }}>
-        <div>
-          <Dragger disabled={isEmpty(state.batchDate)} {...props}>
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">
-              Click or drag the CSV file to this area to upload
-            </p>
-            <p className="ant-upload-hint">
-              Strictly prohibited from uploading company data or other banned
-              files.
-            </p>
-          </Dragger>
-        </div>
-
+        <Flex>
+          <div style={{ width: '60%' }}>
+            <Dragger disabled={isEmpty(state.batchDate)} {...props}>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">
+                Click or drag the CSV file to this area to upload
+              </p>
+              <p className="ant-upload-hint">
+                Strictly prohibited from uploading company data or other banned
+                files.
+              </p>
+            </Dragger>
+          </div>
+          <Row gutter={16} style={{ width: 'full', marginLeft: 20 }} justify={"space-between"}>
+            <Col span={14}>
+              <Card
+                title="Transaction total"
+                bordered={false}
+                style={{ fontSize: 24, fontWeight: 'bold', height: "100%"}}
+              >
+                {state.generatedTotal}
+              </Card>
+            </Col>
+            <Col span={10}>
+              <Card
+                title="Transaction count"
+                bordered={false}
+                style={{ fontSize: 24, fontWeight: 'bold', height: "100%" }}
+              >
+                {state.generatedCount}
+              </Card>
+            </Col>
+          </Row>
+        </Flex>
         <div style={{ marginTop: 20 }}>
           <form onSubmit={handleSubmitGenerateFormData(handleApplyFilter)}>
             <Flex gap={5}>

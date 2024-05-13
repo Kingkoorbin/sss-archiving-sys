@@ -21,11 +21,26 @@ use App\Models\WorkHistory;
 class ClientController extends Controller
 {
 
+    /**
+     * Constructor for the class.
+     *
+     * This function sets up the middleware for authentication using the 'auth:api' guard.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->middleware('auth:api');
     }
 
+    /**
+     * Creates a new client with the provided data.
+     *
+     * @param Request $request The HTTP request containing client data
+     * @param int $id The school ID of the client
+     * @throws \Exception If an error occurs during the creation process
+     * @return \Illuminate\Http\JsonResponse The JSON response with the created client data
+     */
     public function createClient(Request $request, $id)
     {
        try {
@@ -102,6 +117,13 @@ class ClientController extends Controller
         }
     }
 
+    /**
+     * Creates a new work history entry for a client.
+     *
+     * @param Request $request The HTTP request containing the work history data.
+     * @param int $id The ID of the client.
+     * @return \Illuminate\Http\JsonResponse The JSON response with the created work history data or an error message.
+     */
     public function createWorkHistory(Request $request, $id) {
         $allowedRoles = ["ADMIN", "EMPLOYEE"];
         $user = auth()->user();
@@ -142,6 +164,13 @@ class ClientController extends Controller
         return response()->json($workHistory, 201);
     }
 
+    /**
+     * Deletes a work history record by its ID.
+     *
+     * @param int $id The ID of the work history to be deleted
+     * @throws \Exception If an error occurs during the deletion process
+     * @return \Illuminate\Http\JsonResponse The JSON response indicating the deletion status
+     */
     public function deleteWorkHistoryById($id)
     {
         try {
@@ -183,6 +212,13 @@ class ClientController extends Controller
         }
     }
 
+    /**
+     * Deletes a client by its ID.
+     *
+     * @param int $id The ID of the client to be deleted.
+     * @throws \Exception If an error occurs during the deletion process.
+     * @return \Illuminate\Http\JsonResponse The JSON response indicating the deletion status.
+     */
     public function deleteClientById($id) {
         try {
             $allowedRoles = ["ADMIN", "STAFF"];
@@ -222,6 +258,13 @@ class ClientController extends Controller
         }
     }
 
+    /**
+     * Retrieves a client based on the provided search keyword.
+     *
+     * @param Request $request The HTTP request object.
+     * @throws \Illuminate\Http\Exceptions\HttpResponseException If the employee is not found or the role is not authorized.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the client information.
+     */
     public function getClient(Request $request)
     {
         $user = auth()->user();
@@ -268,6 +311,13 @@ class ClientController extends Controller
         }
     }
 
+    /**
+     * Retrieves all data based on the provided query parameters.
+     *
+     * @param Request $request The HTTP request object containing the query parameters.
+     * @throws \Exception If an error occurs during the retrieval process.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the retrieved data.
+     */
     public function getAll(Request $request)
     {
         $allowedRoles = ["ADMIN", "STAFF"];
@@ -309,6 +359,13 @@ class ClientController extends Controller
         ], 404);
     }
 
+    /**
+     * Updates a client's information.
+     *
+     * @param Request $request The HTTP request containing the updated client data.
+     * @param int $id The ID of the client to be updated.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the updated client data or an error message.
+     */
     public function updateClient(Request $request, $id)
     {
         $user = auth()->user();

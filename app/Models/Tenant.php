@@ -19,6 +19,11 @@ class Tenant extends Model
         'user_id',
     ];
 
+    /**
+     * Retrieve the user associated with this activity.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The belongsTo relationship for the user.
+     */
     public function user()
     {
         return $this->belongsTo(User::class);

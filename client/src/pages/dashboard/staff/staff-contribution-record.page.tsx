@@ -11,10 +11,13 @@ import type { UploadProps } from 'antd';
 import {
   Alert,
   Button,
+  Card,
+  Col,
   DatePicker,
   Flex,
   Modal,
   Popconfirm,
+  Row,
   Table,
   Tooltip,
   Upload,
@@ -42,10 +45,13 @@ import { TPermissionTypes } from '../../../interfaces/permission.interface';
 import dayjs from 'dayjs';
 import ContributionFormFields from '../../../components/form-sbr.component';
 import moment from 'moment';
+import { currency } from '../../../utils/converter.util';
 
 const { Dragger } = Upload;
 
 interface IState {
+  generatedTotal: string;
+  generatedCount: string;
   user?: IUser;
   isAuthModalOpen: boolean;
   isFetchingContributions: boolean;
@@ -65,6 +71,8 @@ export default function StaffContributionRecord() {
     null
   );
   const [state, setState] = useState<IState>({
+    generatedTotal: '0.00',
+    generatedCount: '0.00',
     user: undefined,
     isAuthModalOpen: false,
     isFetchingContributions: false,
@@ -168,6 +176,11 @@ export default function StaffContributionRecord() {
 
       setState((prev) => ({
         ...prev,
+        generatedCount:
+          getAllContributionsResponse.headers['nodex-generated-count'],
+        generatedTotal: currency.format(
+          getAllContributionsResponse.headers['nodex-generated-total']
+        ),
         isFetchingContributions: false,
         contributions: getAllContributionsResponse.data?.map(
           (el: IContribution) => ({
@@ -403,18 +416,18 @@ export default function StaffContributionRecord() {
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-              from: state?.generatePdfQuery.from,
-              to: state?.generatePdfQuery.to,
-            }
+                from: state?.generatePdfQuery.from,
+                to: state?.generatePdfQuery.to,
+              }
             : {}),
           ...(state?.generatePdfQuery.from && state?.generatePdfQuery.to
             ? {
-              displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
-                'MMMM YYYY'
-              )} up to ${dayjs(state?.generatePdfQuery.to).format(
-                'MMMM YYYY'
-              )}`,
-            }
+                displayCoverage: `${dayjs(state?.generatePdfQuery.from).format(
+                  'MMMM YYYY'
+                )} up to ${dayjs(state?.generatePdfQuery.to).format(
+                  'MMMM YYYY'
+                )}`,
+              }
             : {}),
         },
         headers: {
@@ -475,8 +488,7 @@ export default function StaffContributionRecord() {
     },
     accept: '.csv',
     showUploadList: true,
-    onDrop(e) {
-    },
+    onDrop(e) {},
   };
 
   const handleRequireLogin = () => {
@@ -662,27 +674,54 @@ export default function StaffContributionRecord() {
         >
           <div style={{ padding: 50 }}>
             <div style={{ position: 'relative' }}>
-              <Dragger
-                disabled={
-                  isEmpty(state.batchDate) ||
-                  !hasPermission(
-                    state.user?.user_permissions!,
-                    TPermissionTypes.UPLOAD
-                  )
-                }
-                {...props}
-              >
-                <p className="ant-upload-drag-icon">
-                  <InboxOutlined />
-                </p>
-                <p className="ant-upload-text">
-                  Click or drag the CSV file to this area to upload
-                </p>
-                <p className="ant-upload-hint">
-                  Strictly prohibited from uploading company data or other
-                  banned files.
-                </p>
-              </Dragger>
+              <Flex>
+                <div style={{ width: '60%' }}>
+                  <Dragger disabled={isEmpty(state.batchDate)} {...props}>
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined />
+                    </p>
+                    <p className="ant-upload-text">
+                      Click or drag the CSV file to this area to upload
+                    </p>
+                    <p className="ant-upload-hint">
+                      Strictly prohibited from uploading company data or other
+                      banned files.
+                    </p>
+                  </Dragger>
+                </div>
+                <Row
+                  gutter={16}
+                  style={{ width: 'full', marginLeft: 20 }}
+                  justify={'space-between'}
+                >
+                  <Col span={14}>
+                    <Card
+                      title="Transaction total"
+                      bordered={false}
+                      style={{
+                        fontSize: 24,
+                        fontWeight: 'bold',
+                        height: '100%',
+                      }}
+                    >
+                      {state.generatedTotal}
+                    </Card>
+                  </Col>
+                  <Col span={10}>
+                    <Card
+                      title="Transaction count"
+                      bordered={false}
+                      style={{
+                        fontSize: 24,
+                        fontWeight: 'bold',
+                        height: '100%',
+                      }}
+                    >
+                      {state.generatedCount}
+                    </Card>
+                  </Col>
+                </Row>
+              </Flex>
               <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
                 <DatePicker
                   onChange={(v) => handleChangeBatchDate(v)}

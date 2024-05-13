@@ -16,6 +16,11 @@ class Activity extends Model
         'action_name',
     ];
 
+    /**
+     * Retrieve the user associated with this activity.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -12,6 +12,12 @@ use App\Models\Client;
 
 class GeneratePDFController extends Controller
 {
+    /**
+     * Generates a PDF based on the given query parameters.
+     *
+     * @param Request $request The HTTP request object.
+     * @return \Illuminate\Http\Response The PDF file response.
+     */
     public function generatePDF(Request $request)
     {
         $displaySSSNo = $request->query('displaySSSNo');

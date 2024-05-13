@@ -10,6 +10,14 @@ class RunAllSeeds extends Command
     protected $signature = 'run:seeds';
     protected $description = 'Run all database seeders';
 
+    /**
+     * Handles the execution of the command.
+     *
+     * This function runs the migrations, seeds the database with an administrator account,
+     * user permissions, and signatories. It displays informational messages during the process.
+     *
+     * @return void
+     */
     public function handle()
     {
         $this->info('Running migrations...');
@@ -22,6 +30,9 @@ class RunAllSeeds extends Command
 
         $this->info('Seeding user permissions...');
         Artisan::call('db:seed', ['--class' => 'PermissionNameSeeder']);
+
+        $this->info('Seeding signatories...');
+        Artisan::call('db:seed', ['--class' => 'SignatoriesSeeder']);
 
         $this->info('Seeding completed.');
     }

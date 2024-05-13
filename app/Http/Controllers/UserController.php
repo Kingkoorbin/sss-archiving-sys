@@ -21,11 +21,26 @@ use App\Events\UserActivity;
 
 class UserController extends Controller
 {
+    /**
+     * Constructor for the class.
+     *
+     * This function sets up the middleware for authentication using the 'auth:api' guard.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->middleware('auth:api');
     }
 
+    /**
+     * Retrieves the user information by the authenticated user's ID.
+     *
+     * @return \Illuminate\Http\JsonResponse Returns the JSON response containing the user information or an error message.
+     *                                       - If the user is not found, returns a JSON response with status 'error' and message 'User not found.'
+     *                                       - If an error occurs, returns a JSON response with status 'error' and the error message.
+     * @throws \Throwable Throws an exception if an error occurs.
+     */
     public function getByUserId() {
         try {
             // Get the authenticated user
@@ -50,6 +65,16 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Deletes a user by their ID if the authenticated user has the ADMIN role.
+     *
+     * @param int $id The ID of the user to delete.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the result of the deletion.
+     *                                       - If the user's role is not ADMIN, returns a JSON response with the error message and status code 401.
+     *                                       - If the user is not found, returns a JSON response with the error message and status code 404.
+     *                                       - If the user is deleted successfully, returns a JSON response with the success message and status code 200.
+     * @throws \Exception If an error occurs during the deletion process.
+     */
     public function deleteUserById($id) {
         try {
             $allowedRoles = ["ADMIN"];
@@ -90,6 +115,16 @@ class UserController extends Controller
     }
     
 
+    /**
+     * Create a user permission by ID if the authenticated user has the ADMIN role.
+     *
+     * @param Request $request The HTTP request containing the user ID and permission name ID.
+     * @throws \Exception If an error occurs during the creation process.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the created user permission or an error message.
+     *                                       - If the user's role is not ADMIN, returns a JSON response with the error message and status code 401.
+     *                                       - If the user or permission does not exist, returns a JSON response with the error message and status code 404.
+     *                                       - If the user permission is created successfully, returns a JSON response with the created user permission and status code 201.
+     */
     public function createPermissionById(Request $request) {
         try {
             $allowedRoles = ["ADMIN"];
@@ -150,6 +185,16 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Deletes a user permission by ID if the authenticated user has the ADMIN role.
+     *
+     * @param int $id The ID of the user permission to delete.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the result of the deletion.
+     *                                       - If the user's role is not ADMIN, returns a JSON response with the error message and status code 401.
+     *                                       - If the user permission is not found, returns a JSON response with the error message and status code 404.
+     *                                       - If the user permission is deleted successfully, returns a JSON response with the success message.
+     * @throws \Exception If an error occurs during the deletion process.
+     */
     public function deleteUserPermissionById($id)
     {
        try {

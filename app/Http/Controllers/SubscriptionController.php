@@ -16,11 +16,21 @@ Stripe::setApiKey(env('STRIPE_API_KEY'));
 
 class SubscriptionController extends Controller
 {
+    /**
+     * Constructor method for the SubscriptionController.
+     */
     public function __construct()
     {
         $this->middleware('auth:api');
     }
 
+    /**
+     * Create a new Checkout Session.
+     *
+     * @param Request $request The request containing the necessary data.
+     * @throws \Exception Handle any errors that occur.
+     * @return mixed The payment URL to the client or an error message.
+     */
     public function createCheckoutSession(Request $request)
     {
         try {
@@ -46,6 +56,13 @@ class SubscriptionController extends Controller
         }
     }
 
+    /**
+     * Create a new subscription.
+     *
+     * @param Request $request The HTTP request object containing the necessary data.
+     * @param int $id The ID of the customer.
+     * @return \Illuminate\Http\JsonResponse The JSON response with the subscription details or an error message.
+     */
     public function createSubscription(Request $request, $id)
     {
         $validator = StripeValidator::validateCreateSubscription($request);
@@ -83,6 +100,17 @@ class SubscriptionController extends Controller
         }
     }
 
+    /**
+     * Create a new one-time payment.
+     *
+     * @param Request $request The HTTP request object containing the necessary data.
+     *                       - amount: The amount of the payment in the smallest currency unit.
+     *                       - currency: The currency of the payment.
+     *                       - payment_method: The payment method to be used.
+     *                       - customer: The ID of the customer making the payment.
+     * @throws \Exception If an error occurs while creating the payment intent.
+     * @return \Illuminate\Http\JsonResponse The JSON response with the status of the payment creation and the client secret.
+     */
     function createOneTimePayment(Request $request)
     {
         try {
@@ -112,6 +140,13 @@ class SubscriptionController extends Controller
         }
     }
 
+    /**
+     * Retrieve the payment status based on the provided payment intent ID.
+     *
+     * @param datatype $paymentIntentId The ID of the payment intent to check.
+     * @throws \Exception If an error occurs while retrieving the payment status.
+     * @return Illuminate\Http\JsonResponse The JSON response with the payment status.
+     */
     function checkPaymentStatus($paymentIntentId)
     {
         try {
@@ -132,6 +167,13 @@ class SubscriptionController extends Controller
         }
     }
 
+    /**
+     * Retrieves a subscription from Stripe by its ID and returns the subscription data as a JSON response.
+     *
+     * @param int $id The ID of the subscription to retrieve.
+     * @throws \Exception If an error occurs while retrieving the subscription.
+     * @return \Illuminate\Http\JsonResponse The subscription data as a JSON response.
+     */
     public function getSubscription($id)
     {
         // Set your Stripe API secret key
@@ -151,6 +193,14 @@ class SubscriptionController extends Controller
         }
     }
 
+    /**
+     * Generate a payment link for a product and price ID.
+     *
+     * @param datatype $product_id description
+     * @param datatype $price_id description
+     * @throws \Exception Handle any errors that occur.
+     * @return \Illuminate\Http\JsonResponse The JSON response with the payment link or an error message.
+     */
     public function generatePaymentLink($product_id, $price_id)
     {
         try {
@@ -177,6 +227,13 @@ class SubscriptionController extends Controller
         }
     }
 
+    /**
+     * Check the status of a payment link.
+     *
+     * @param string $paymentLinkId The ID of the payment link.
+     * @throws \Exception If an error occurs while retrieving the payment link or handling the status.
+     * @return \Illuminate\Http\JsonResponse The JSON response with the payment link status.
+     */
     public function checkPaymentLinkStatus($paymentLinkId)
     {
         try {

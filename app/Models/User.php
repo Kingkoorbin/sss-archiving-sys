@@ -44,11 +44,21 @@ class User extends Authenticatable implements JWTSubject
         'password' => 'hashed',
     ];
 
+    /**
+     * Retrieves the client associated with this user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function client()
     {
         return $this->hasOne(Client::class);
     }
 
+    /**
+     * Retrieves the user permissions associated with this user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function userPermissions()
     {
         return $this->hasMany(UserPermission::class);

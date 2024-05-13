@@ -20,6 +20,11 @@ class WorkHistory extends Model
         'client_id',
     ];
 
+    /**
+     * Get the client that owns the work history.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function client()
     {
         return $this->belongsTo(Client::class);
